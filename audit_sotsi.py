@@ -56,6 +56,28 @@ DRAFT_PAGES = [
     {"title":"Life School","author":"SOTS","last_modified":"2021-04-06 05:10","status":"draft"},
 ]
 
+# ── draft posts (from WP Admin — not accessible via public API) ───────────────
+
+DRAFT_POSTS = [
+    {"title":"Soul Snack #25 – What is Evil?","author":"SOTS","categories":"Uncategorized","last_modified":"2025-03-12 14:02","status":"draft"},
+    {"title":"The Compassion Virus","author":"SOTS","categories":"Blog, Exclude","last_modified":"2021-03-10 21:05","status":"draft"},
+    {"title":"MULTISENSORY THANKS GIVING","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-20 07:56","status":"draft"},
+    {"title":"KAVANAUGH HEARING AND SPIRITUAL GROWTH","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-20 08:40","status":"draft"},
+    {"title":"WHAT TO DO WHEN YOU HAVE A BROKEN HEART","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-20 08:42","status":"draft"},
+    {"title":"The Most Dangerous Virus","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-20 08:43","status":"draft"},
+    {"title":"WHAT ILLUSIONS ARE YOU CAUGHT IN?","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-23 11:41","status":"draft"},
+    {"title":"Love, Fear, and the Coronavirus","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-03-20 07:55","status":"draft"},
+    {"title":"SYMPHONY OF PEACE PRAYERS","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 07:57","status":"draft"},
+    {"title":"SMALL THINGS WITH GREAT LOVE","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:04","status":"draft"},
+    {"title":"A DIFFERENT EXPERIENCE OF CHRISTMAS","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:10","status":"draft"},
+    {"title":"SPIRITUAL GROWTH AND SEXUAL ABUSE","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:16","status":"draft"},
+    {"title":"SPIRITUAL PARTNERSHIPS AND FRIENDSHIPS","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 07:47","status":"draft"},
+    {"title":"THANKS AND GIVING","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:25","status":"draft"},
+    {"title":"YOUR BUCKET LIST","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:30","status":"draft"},
+    {"title":"LAS VEGAS – CLOSE TO HOME","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-19 08:35","status":"draft"},
+    {"title":"TOTAL ECLIPSE","author":"Gary Zukav","categories":"Blog, Exclude","last_modified":"2021-04-20 06:03","status":"draft"},
+]
+
 # ── network ───────────────────────────────────────────────────────────────────
 
 def fetch(url, timeout=15):
@@ -187,17 +209,79 @@ def get_nav():
         out.insert(0, BASE_URL)
     return out
 
+# ── page classification ───────────────────────────────────────────────────────
+
+def normalize_title(t):
+    t = re.sub(r'&[a-zA-Z0-9#]+;', ' ', t)
+    t = re.sub(r'<[^>]+>', '', t)
+    return re.sub(r'\s+', ' ', t).strip().lower()
+
+def classify_page(slug):
+    s = slug.lower()
+
+    # Thank You / Confirmation (check first)
+    if any(k in s for k in ['-ty', '-thank-you', 'thank-you', 'thankyou',
+                             'message-to-linda-received', 'registration-received',
+                             'linda-celebration-thank']):
+        return 'Thank You'
+
+    # System / Membership
+    if s in ('sg', 'style-sheet', 'evening-welcome', 'email-series-update') or \
+       any(k in s for k in ['cart', 'checkout', 'my-account', 'soul2soul', 'your-profile',
+                             'opt-out', 'privacy-policy', 'refund-cancel', 'terms-of-use']):
+        return 'System'
+
+    # Program / Event
+    if any(k in s for k in ['registration', 'waitlist', 'questionnaire', 'optin',
+                             'apsp', 'spp-', 'spt-', 'jou23', 'jtts', 'lav-terms',
+                             'beyond-the-five-senses', 'cultivatingemotional',
+                             'intuitivemultisensory', 'daily-intuition-practice',
+                             'listen-in', 'listen-with-gary', 'mutli-five',
+                             'cultivating-love', 'fear-evaluation', 'love-evaluation',
+                             'join-the-waitlist', 'garyzukavlive', 'video-april',
+                             'universal-human-audiobook', 'universal-human-celebrates',
+                             'join-seat-of-the-soul-team', 'seat-of-the-soul-career',
+                             '33rd-anniversary', 'ground-rules', 'garys-welcome',
+                             'apg-optin', 'event-waitlist', 'journey-questionnaire',
+                             'authentic-power-support-program',
+                             'journey-to-the-soul-questionnaire']):
+        return 'Program / Event'
+
+    # Content
+    if any(k in s for k in ['universalhuman', 'heartofthesoul', 'for-linda',
+                             'linda-celebrat', 'linda-francis-celebrat',
+                             'lindas-mailbox', 'messages-for-linda',
+                             'happy-birthday', 'wishes-for-gary', 'paulo-coelhos',
+                             'multi-sensory-vocab', 'responsible-choice',
+                             'love-fear', 'judgment', 'addiction',
+                             'gifts-of-the-pandemic', 'share-your-favorite',
+                             'subscribe-to-podcast', 'free-tools',
+                             'questions-and-answers', 'seat-of-the-soul-33rd']):
+        return 'Content'
+
+    return 'Main Site'
+
 # ── data builders ─────────────────────────────────────────────────────────────
 
 def build_page_data(pages):
+    # detect duplicates by normalized title
+    title_count = {}
+    for p in pages:
+        nt = normalize_title(title_text(p))
+        title_count[nt] = title_count.get(nt, 0) + 1
+
     rows = []
     for p in sorted(pages, key=lambda x: x.get("slug","")):
         slug = p.get("slug","")
         rd, rm = p.get("date",""), p.get("modified","")
+        t  = title_text(p)
         rows.append({"id": p.get("id",""), "slug": slug,
-                     "url": f"{BASE_URL}/{slug}", "title": title_text(p),
+                     "url": f"{BASE_URL}/{slug}", "title": t,
                      "published": fmt_date(rd), "pub_iso": rd[:10] if rd else "",
-                     "modified":  fmt_date(rm), "mod_iso": rm[:10] if rm else ""})
+                     "modified":  fmt_date(rm), "mod_iso": rm[:10] if rm else "",
+                     "category":  classify_page(slug),
+                     "year":      rd[:4] if rd else "",
+                     "is_dup":    title_count.get(normalize_title(t), 0) > 1})
     return rows
 
 def build_post_data(posts):
@@ -635,6 +719,157 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem;
     }
 
+    /* ── classification tab ─────────────────────────────────── */
+    .cc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: .75rem; margin-bottom: 1.25rem;
+    }
+    .cc {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid var(--border);
+      border-radius: var(--r); box-shadow: var(--shadow);
+      padding: 1rem 1.1rem; cursor: pointer;
+      transition: var(--t);
+    }
+    .cc:hover, .cc.active { border-top-color: var(--cc-color); box-shadow: var(--shadow-h); }
+    .cc.active { background: rgba(0,0,0,.015); }
+    .cc-count { font-size: 2rem; font-weight: 800; letter-spacing: -.03em;
+                color: var(--cc-color); line-height: 1; }
+    .cc-label { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                letter-spacing: .06em; color: var(--muted); margin-top: .3rem; }
+
+    .cat-filter-row { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+    .cat-filter-btn {
+      font-family: var(--font); font-size: .75rem; font-weight: 600;
+      padding: .3rem .8rem; border-radius: 99px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); transition: var(--t);
+    }
+    .cat-filter-btn:hover { border-color: currentColor; }
+    .cat-filter-btn.active { color: #fff; border-color: transparent; }
+
+    /* ── summary category modal ─────────────────────────────── */
+    .sum-backdrop {
+      position: fixed; inset: 0; z-index: 1100;
+      background: rgba(28,35,51,.48);
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .sum-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .sum-modal {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%,-48%) scale(.97);
+      width: min(880px, 92vw); max-height: 82vh;
+      background: var(--surface); border-radius: var(--r);
+      box-shadow: 0 12px 48px rgba(28,35,51,.28);
+      display: flex; flex-direction: column;
+      z-index: 1101; opacity: 0; pointer-events: none;
+      transition: opacity .22s, transform .22s cubic-bezier(.22,1,.36,1);
+    }
+    .sum-modal.open { opacity: 1; pointer-events: all; transform: translate(-50%,-50%) scale(1); }
+
+    .sum-modal-hdr {
+      background: var(--navy); padding: .9rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-radius: var(--r) var(--r) 0 0; flex-shrink: 0;
+    }
+    .sum-modal-title { display: flex; align-items: center; gap: .75rem; }
+    .sum-modal-cat {
+      font-family: var(--font-qs); font-size: 1rem; font-weight: 700;
+    }
+    .sum-modal-cnt { font-size: .78rem; color: rgba(255,255,255,.4); }
+    .sum-modal-body {
+      padding: 1rem 1.25rem 1.25rem;
+      overflow: hidden; display: flex; flex-direction: column; gap: .75rem;
+    }
+
+    .ebd-row { cursor: default; }
+    .ebd-row.clickable { cursor: pointer; transition: background .12s; border-radius: 6px; padding-left:.35rem; padding-right:.35rem; margin:0 -.35rem; }
+    .ebd-row.clickable:hover { background: rgba(64,81,137,.06); }
+    .ebd-row.clickable:hover .ebd-view { opacity: 1; }
+    .ebd-view { font-size: .7rem; color: var(--primary); opacity: 0; transition: opacity .15s; margin-left: .4rem; flex-shrink:0; }
+
+    /* ── executive summary tab ──────────────────────────────── */
+    .exec-hero {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; margin-bottom: 1.25rem;
+    }
+    .exec-hero-left {
+      background: var(--navy); border-radius: var(--r);
+      padding: 2rem 2.25rem; display: flex; flex-direction: column; gap: .5rem;
+    }
+    .exec-eyebrow {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: rgba(255,255,255,.4);
+    }
+    .exec-big-num {
+      font-family: var(--font-qs); font-size: 5rem; font-weight: 700;
+      color: #fff; line-height: 1; letter-spacing: -.04em;
+    }
+    .exec-big-label {
+      font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,.85);
+    }
+    .exec-hero-sub {
+      font-size: .8rem; color: rgba(255,255,255,.4);
+      line-height: 1.5; margin-top: .25rem; max-width: 300px;
+    }
+    .exec-right-col {
+      display: flex; flex-direction: column; gap: .75rem;
+    }
+    .emc {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); box-shadow: var(--shadow);
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex: 1;
+    }
+    .emc-info { display: flex; flex-direction: column; gap: .15rem; }
+    .emc-label { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                 letter-spacing: .06em; color: var(--muted); }
+    .emc-sub   { font-size: .72rem; color: var(--muted); line-height: 1.4; }
+    .emc-val   { font-size: 2.4rem; font-weight: 800; letter-spacing: -.03em;
+                 line-height: 1; color: var(--text); flex-shrink: 0; }
+    .emc-val.green  { color: var(--success); }
+    .emc-val.blue   { color: var(--primary); }
+    .emc-val.danger { color: var(--danger); }
+    .emc-val.yellow { color: #c9950a; }
+
+    .exec-breakdown { display: flex; flex-direction: column; gap: 0; }
+    .ebd-row {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: .85rem 0; border-bottom: 1px solid var(--border);
+    }
+    .ebd-row:last-child { border-bottom: none; }
+    .ebd-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .ebd-bar      { height: 100%; border-radius: 99px; transition: width .6s ease; }
+    .ebd-label    { font-size: .82rem; font-weight: 600; color: var(--text); width: 200px; flex-shrink: 0; }
+    .ebd-val      { font-size: .88rem; font-weight: 800; color: var(--text); width: 44px; text-align: right; flex-shrink: 0; }
+    .ebd-note     { font-size: .72rem; color: var(--muted); width: 240px; flex-shrink: 0; }
+
+    .copy-btn {
+      font-family: var(--font); font-size: .78rem; font-weight: 700;
+      padding: .35rem 1rem; border-radius: 6px; cursor: pointer;
+      border: 1px solid var(--primary); color: var(--primary);
+      background: transparent; transition: var(--t);
+    }
+    .copy-btn:hover { background: var(--primary); color: #fff; }
+    .copy-btn.copied { background: var(--success); border-color: var(--success); color: #fff; }
+
+    .exec-copybox {
+      font-family: monospace; font-size: .8rem; line-height: 1.7;
+      color: var(--text); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 1.1rem 1.25rem; white-space: pre-wrap; margin: 0;
+      user-select: all;
+    }
+
+    @media (max-width: 768px) {
+      .exec-hero { grid-template-columns: 1fr; }
+      .ebd-note { display: none; }
+    }
+
     /* ── row preview panel (slides in from right, half screen) ─ */
     .rp-backdrop {
       position: fixed; inset: 0; z-index: 1000;
@@ -789,11 +1024,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 <!-- TABS -->
 <div class="tab-bar" role="tablist">
-  <button class="tab-btn active" onclick="switchTab('nav',this)">
+  <button class="tab-btn active" onclick="switchTab('summary',this)">
+    Executive Summary
+  </button>
+  <button class="tab-btn" onclick="switchTab('nav',this)">
     Main Navigation <span class="tab-count">__N_NAV__</span>
   </button>
   <button class="tab-btn" onclick="switchTab('pages',this)">
     Active Pages <span class="tab-count">__N_PAGES__</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('classify',this)">
+    Classification <span class="tab-count">__N_PAGES__</span>
   </button>
   <button class="tab-btn danger-tab" onclick="switchTab('drafts',this)">
     Draft Pages <span class="tab-count">__N_DRAFTS__</span>
@@ -806,8 +1047,31 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </button>
 </div>
 
+<!-- TAB: EXECUTIVE SUMMARY -->
+<div id="tab-summary" class="tab-panel active">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Active Pages by Category</h2>
+        <span class="ch-meta">__N_PAGES__ published pages</span>
+      </div>
+      <div class="card-body" id="sum-cat-body"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Active Pages by Year Created</h2>
+        <span class="ch-meta">when each page was first published</span>
+      </div>
+      <div class="card-body" id="sum-year-body"></div>
+    </div>
+
+  </div>
+</div>
+
 <!-- TAB: MAIN NAV -->
-<div id="tab-nav" class="tab-panel active">
+<div id="tab-nav" class="tab-panel">
   <div class="nav-layout">
     <div class="nc-col">__NAV_CARDS_HTML__</div>
     <div class="preview-wrap">
@@ -844,13 +1108,49 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div id="pages-table"></div>
 </div>
 
+<!-- TAB: CLASSIFICATION -->
+<div id="tab-classify" class="tab-panel">
+  <div class="cc-grid" id="cc-grid">
+    <!-- injected by JS -->
+  </div>
+
+  <div class="search-bar" style="margin-bottom:.75rem">
+    <input class="search-input" id="classify-search" type="search" placeholder="Search title or slug&hellip;"/>
+    <div class="cat-filter-row" id="cat-filter-row">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <div id="classify-table"></div>
+</div>
+
 <!-- TAB: DRAFT PAGES -->
 <div id="tab-drafts" class="tab-panel">
-  <div class="search-bar">
-    <input class="search-input" id="drafts-search" type="search" placeholder="Search draft pages&hellip;"/>
-    <span class="search-hint">__N_DRAFTS__ draft pages from WP Admin &mdash; not publicly accessible</span>
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header">
+      <h2>Draft Pages <span class="tab-count" style="background:var(--danger);color:#fff">__N_DRAFTS__</span></h2>
+      <span class="ch-meta">Not publicly visible &mdash; from WP Admin</span>
+    </div>
+    <div class="card-body">
+      <div class="search-bar" style="margin-bottom:.75rem">
+        <input class="search-input" id="drafts-search" type="search" placeholder="Search draft pages&hellip;"/>
+      </div>
+      <div id="drafts-table"></div>
+    </div>
   </div>
-  <div id="drafts-table"></div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Draft Posts <span class="tab-count" style="background:var(--danger);color:#fff">__N_DRAFT_POSTS__</span></h2>
+      <span class="ch-meta">Unpublished blog posts &mdash; from WP Admin</span>
+    </div>
+    <div class="card-body">
+      <div class="search-bar" style="margin-bottom:.75rem">
+        <input class="search-input" id="draft-posts-search" type="search" placeholder="Search draft posts&hellip;"/>
+      </div>
+      <div id="draft-posts-table"></div>
+    </div>
+  </div>
 </div>
 
 <!-- TAB: BLOG POSTS -->
@@ -900,6 +1200,22 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
 </div><!-- /page-body -->
 
+<!-- SUMMARY CATEGORY MODAL -->
+<div class="sum-backdrop" id="sum-backdrop" onclick="closeSumModal()"></div>
+<div class="sum-modal" id="sum-modal">
+  <div class="sum-modal-hdr">
+    <div class="sum-modal-title">
+      <span class="sum-modal-cat" id="sum-modal-cat"></span>
+      <span class="sum-modal-cnt" id="sum-modal-cnt"></span>
+    </div>
+    <button class="rp-close" onclick="closeSumModal()" title="Close (Esc)">&#x2715;</button>
+  </div>
+  <div class="sum-modal-body">
+    <input class="search-input" id="sum-modal-search" type="search" placeholder="Search title or slug&hellip;" style="width:100%"/>
+    <div id="sum-modal-table"></div>
+  </div>
+</div>
+
 <!-- ROW PREVIEW PANEL -->
 <div class="rp-backdrop" id="rp-backdrop" onclick="closeRowPanel()"></div>
 <div class="row-panel" id="row-panel">
@@ -931,10 +1247,115 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </div>
 
 <script>
-const PAGES_DATA   = __PAGES_JSON__;
-const POSTS_DATA   = __POSTS_JSON__;
-const DRAFTS_DATA  = __DRAFTS_JSON__;
-const SITEMAP_DATA = __SM_JSON__;
+const PAGES_DATA        = __PAGES_JSON__;
+const POSTS_DATA        = __POSTS_JSON__;
+const DRAFTS_DATA       = __DRAFTS_JSON__;
+const DRAFT_POSTS_DATA  = __DRAFT_POSTS_JSON__;
+const SITEMAP_DATA      = __SM_JSON__;
+
+// ── summary tab ────────────────────────────────────────────────────────────
+function initSummary() {
+  var catEl  = document.getElementById('sum-cat-body');
+  var yearEl = document.getElementById('sum-year-body');
+  if (catEl.children.length) return;
+
+  var catColors = {
+    'Main Site':'#405189','Program / Event':'#0ab39c',
+    'Content':'#299cdb','System':'#878a99','Thank You':'#f7b84b'
+  };
+  var catCounts = {}, yearCounts = {};
+  PAGES_DATA.forEach(function(d) {
+    catCounts[d.category]  = (catCounts[d.category]  || 0) + 1;
+    var y = d.year || 'Unknown';
+    yearCounts[y] = (yearCounts[y] || 0) + 1;
+  });
+
+  var total = PAGES_DATA.length;
+
+  function barRow(label, count, maxVal, color, clickable, color2) {
+    var pct = Math.round(count / maxVal * 100);
+    var cls = clickable ? ' clickable' : '';
+    var data = clickable ? ' data-cat="' + label + '" data-color="' + color2 + '"' : '';
+    return '<div class="ebd-row' + cls + '"' + data + '>'
+      + '<span class="ebd-label" style="width:160px">' + label + '</span>'
+      + '<div class="ebd-bar-wrap"><div class="ebd-bar" style="width:' + pct + '%;background:' + color + '"></div></div>'
+      + '<span class="ebd-val">' + count + '</span>'
+      + '<span class="ebd-note" style="width:52px;color:var(--muted);font-size:.72rem">' + Math.round(count / total * 100) + '%</span>'
+      + (clickable ? '<span class="ebd-view">View &rarr;</span>' : '')
+      + '</div>';
+  }
+
+  var catMax = Math.max.apply(null, Object.values(catCounts));
+  var catHtml = '<div class="exec-breakdown">';
+  Object.keys(catColors).forEach(function(k) {
+    catHtml += barRow(k, catCounts[k] || 0, catMax, catColors[k], true, catColors[k]);
+  });
+  catEl.innerHTML = catHtml + '</div>';
+  catEl.querySelectorAll('.ebd-row.clickable').forEach(function(row) {
+    row.addEventListener('click', function() {
+      openSumModal(this.dataset.cat, this.dataset.color);
+    });
+  });
+
+  var yearKeys = Object.keys(yearCounts).sort();
+  var yearMax  = Math.max.apply(null, Object.values(yearCounts));
+  var yearHtml = '<div class="exec-breakdown">';
+  yearKeys.forEach(function(y) {
+    yearHtml += barRow(y, yearCounts[y], yearMax, 'var(--primary)', false);
+  });
+  yearEl.innerHTML = yearHtml + '</div>';
+}
+
+// ── summary category modal ─────────────────────────────────────────────────
+var sumModalTable = null;
+
+function openSumModal(cat, color) {
+  var data = PAGES_DATA.filter(function(d) { return d.category === cat; });
+  document.getElementById('sum-modal-cat').textContent = cat;
+  document.getElementById('sum-modal-cat').style.color = color;
+  document.getElementById('sum-modal-cnt').textContent = data.length + ' pages';
+  document.getElementById('sum-modal-search').value = '';
+  document.getElementById('sum-backdrop').classList.add('open');
+  document.getElementById('sum-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  if (sumModalTable) {
+    sumModalTable.replaceData(data);
+    sumModalTable.clearFilter();
+  } else {
+    sumModalTable = new Tabulator('#sum-modal-table', {
+      data: data, layout: 'fitColumns', height: 420,
+      columns: [
+        { title:'Title',     field:'title',   widthGrow:3, formatter:titleFmt,  sorter:'string' },
+        { title:'Slug',      field:'slug',    widthGrow:2, formatter:slugFmt,   sorter:'string' },
+        { title:'Published', field:'pub_iso', width:130, sorter:'date',
+          sorterParams:{format:'YYYY-MM-DD'},
+          formatter:function(c){ return dateFmt(c.getData().published); } },
+        { title:'Modified',  field:'mod_iso', width:130, sorter:'date',
+          sorterParams:{format:'YYYY-MM-DD'},
+          formatter:function(c){ return dateFmt(c.getData().modified); } },
+      ],
+    });
+    sumModalTable.on('rowClick', function(e, row) {
+      var d = row.getData();
+      closeSumModal();
+      setTimeout(function(){ openRowPanel(d.url, d.title); }, 260);
+    });
+    document.getElementById('sum-modal-search').addEventListener('input', function() {
+      var v = this.value.toLowerCase();
+      if (!v) { sumModalTable.clearFilter(); return; }
+      sumModalTable.setFilter(function(d) {
+        return d.title.toLowerCase().includes(v) || d.slug.toLowerCase().includes(v);
+      });
+    });
+  }
+}
+
+function closeSumModal() {
+  document.getElementById('sum-backdrop').classList.remove('open');
+  document.getElementById('sum-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 // ── tab switching ──────────────────────────────────────────────────────────
 function switchTab(id, btn) {
@@ -942,9 +1363,11 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'pages')  initPages();
-  if (id === 'posts')  initPosts();
-  if (id === 'drafts') initDrafts();
+  if (id === 'summary')  initSummary();
+  if (id === 'pages')    initPages();
+  if (id === 'posts')    initPosts();
+  if (id === 'drafts')   initDrafts();
+  if (id === 'classify') initClassify();
 }
 
 // ── formatters ─────────────────────────────────────────────────────────────
@@ -993,6 +1416,138 @@ function pagesCols() {
   ];
 }
 
+// ── classification ─────────────────────────────────────────────────────────
+var CAT_CFG = [
+  { key:'Main Site',      color:'#405189', label:'Main Site' },
+  { key:'Program / Event',color:'#0ab39c', label:'Program / Event' },
+  { key:'Content',        color:'#299cdb', label:'Content' },
+  { key:'System',         color:'#878a99', label:'System' },
+  { key:'Thank You',      color:'#f7b84b', label:'Thank You' },
+];
+
+function catBadgeFmt(cell) {
+  var v = cell.getValue();
+  var cfg = CAT_CFG.find(function(c){ return c.key === v; }) || { color:'#878a99' };
+  return '<span style="background:'+cfg.color+'22;color:'+cfg.color+';padding:.18rem .48rem;border-radius:4px;font-size:.68rem;font-weight:700;white-space:nowrap">'+v+'</span>';
+}
+
+function dupFmt(cell) {
+  return cell.getValue()
+    ? '<span style="background:#f0654820;color:#f06548;padding:.18rem .48rem;border-radius:4px;font-size:.68rem;font-weight:700">Possible dup</span>'
+    : '';
+}
+
+var classifyTable = null;
+var activeFilter  = '';
+
+function initClassify() {
+  if (classifyTable) {
+    buildCcGrid();
+    return;
+  }
+
+  // count by category
+  var counts = {};
+  var dupCount = 0;
+  PAGES_DATA.forEach(function(d) {
+    counts[d.category] = (counts[d.category] || 0) + 1;
+    if (d.is_dup) dupCount++;
+  });
+
+  buildCcGrid(counts, dupCount);
+
+  classifyTable = new Tabulator('#classify-table', {
+    data: PAGES_DATA, layout: 'fitColumns', height: 480,
+    initialSort: [{ column:'category', dir:'asc' }],
+    columns: [
+      { title:'Category',  field:'category', width:150, formatter:catBadgeFmt, sorter:'string' },
+      { title:'Title',     field:'title',    widthGrow:3, formatter:titleFmt,  sorter:'string' },
+      { title:'Slug',      field:'slug',     widthGrow:2, formatter:slugFmt,   sorter:'string' },
+      { title:'Year',      field:'year',     width:72,  hozAlign:'center',
+        formatter:function(c){ return '<span class="t-muted">'+c.getValue()+'</span>'; } },
+      { title:'Duplicate?',field:'is_dup',   width:120, hozAlign:'center', formatter:dupFmt },
+      { title:'Published', field:'pub_iso',  width:130, sorter:'date',
+        sorterParams:{format:'YYYY-MM-DD'},
+        formatter:function(c){ return dateFmt(c.getData().published); } },
+    ],
+  });
+  classifyTable.on('rowClick', function(e, row) { var d = row.getData(); openRowPanel(d.url, d.title); });
+
+  document.getElementById('classify-search').addEventListener('input', function() {
+    var v = this.value.toLowerCase();
+    applyClassifyFilter(v, activeFilter);
+  });
+}
+
+function buildCcGrid(counts, dupCount) {
+  // cards
+  var grid = document.getElementById('cc-grid');
+  if (grid.children.length) return;
+  CAT_CFG.forEach(function(cfg) {
+    var n = (counts && counts[cfg.key]) || 0;
+    var el = document.createElement('div');
+    el.className = 'cc'; el.style.setProperty('--cc-color', cfg.color);
+    el.innerHTML = '<div class="cc-count">'+n+'</div><div class="cc-label">'+cfg.label+'</div>';
+    el.onclick = function() { filterCat(cfg.key, el); };
+    grid.appendChild(el);
+  });
+  // dup card
+  var dup = document.createElement('div');
+  dup.className = 'cc'; dup.style.setProperty('--cc-color', '#f06548');
+  dup.innerHTML = '<div class="cc-count" style="color:#f06548">'+(dupCount||0)+'</div><div class="cc-label">Possible Dup</div>';
+  dup.onclick = function() { filterDups(dup); };
+  grid.appendChild(dup);
+
+  // filter buttons
+  var row = document.getElementById('cat-filter-row');
+  var allBtn = document.createElement('button');
+  allBtn.className = 'cat-filter-btn active'; allBtn.textContent = 'All';
+  allBtn.style.background = '#405189';
+  allBtn.onclick = function() { filterCat('', allBtn); };
+  row.appendChild(allBtn);
+  CAT_CFG.forEach(function(cfg) {
+    var btn = document.createElement('button');
+    btn.className = 'cat-filter-btn'; btn.textContent = cfg.label;
+    btn.style.color = cfg.color;
+    btn.onclick = function() { filterCat(cfg.key, btn); };
+    row.appendChild(btn);
+  });
+  var dupBtn = document.createElement('button');
+  dupBtn.className = 'cat-filter-btn'; dupBtn.textContent = 'Possible Dup';
+  dupBtn.style.color = '#f06548';
+  dupBtn.onclick = function() { filterDups(dupBtn); };
+  row.appendChild(dupBtn);
+}
+
+function filterCat(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.cat-filter-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=''; });
+  document.querySelectorAll('.cc').forEach(function(c){ c.classList.remove('active'); });
+  if (btn) {
+    btn.classList.add('active');
+    var color = btn.style.color || '#405189';
+    btn.style.background = color;
+    btn.style.color = '#fff';
+  }
+  applyClassifyFilter(document.getElementById('classify-search').value.toLowerCase(), cat, false);
+}
+
+function filterDups(btn) {
+  activeFilter = '__dup__';
+  document.querySelectorAll('.cat-filter-btn').forEach(function(b){ b.classList.remove('active'); b.style.background=''; });
+  if (btn) { btn.classList.add('active'); btn.style.background='#f06548'; btn.style.color='#fff'; }
+  classifyTable.setFilter(function(d){ return d.is_dup; });
+}
+
+function applyClassifyFilter(search, cat, isDup) {
+  if (!classifyTable) return;
+  classifyTable.setFilter(function(d) {
+    var matchCat = !cat || d.category === cat;
+    var matchSearch = !search || d.title.toLowerCase().includes(search) || d.slug.toLowerCase().includes(search);
+    return matchCat && matchSearch;
+  });
+}
+
 // ── pages table ────────────────────────────────────────────────────────────
 var pagesTable = null;
 function initPages() {
@@ -1012,28 +1567,53 @@ function initPages() {
 }
 
 // ── drafts table ───────────────────────────────────────────────────────────
-var draftsTable = null;
+var draftsTable     = null;
+var draftPostsTable = null;
+
+function draftCols(extraCols) {
+  var base = [
+    { title:'Title',         field:'title',         widthGrow:4, formatter:titleFmt, sorter:'string' },
+    { title:'Author',        field:'author',        width:160, sorter:'string',
+      formatter:function(c){ return '<span class="t-muted">'+c.getValue()+'</span>'; } },
+    { title:'Last Modified', field:'last_modified', width:155, sorter:'date',
+      sorterParams:{format:'YYYY-MM-DD HH:mm'}, formatter:draftDateFmt },
+    { title:'Status', field:'status', width:80, hozAlign:'center', formatter:statusFmt },
+  ];
+  return extraCols ? base.concat(extraCols) : base;
+}
+
 function initDrafts() {
-  if (draftsTable) return;
-  draftsTable = new Tabulator('#drafts-table', {
-    data: DRAFTS_DATA, layout: 'fitColumns', height: 420,
-    initialSort: [{ column:'last_modified', dir:'desc' }],
-    columns: [
-      { title:'Title',         field:'title',         widthGrow:4, formatter:titleFmt, sorter:'string' },
-      { title:'Author',        field:'author',        width:170, sorter:'string',
-        formatter:function(c){ return '<span class="t-muted">'+c.getValue()+'</span>'; } },
-      { title:'Last Modified', field:'last_modified', width:160, sorter:'date',
-        sorterParams:{format:'YYYY-MM-DD HH:mm'}, formatter:draftDateFmt },
-      { title:'Status', field:'status', width:90, hozAlign:'center', formatter:statusFmt },
-    ]
-  });
-  document.getElementById('drafts-search').addEventListener('input', function() {
-    var v = this.value.toLowerCase();
-    if (!v) { draftsTable.clearFilter(); return; }
-    draftsTable.setFilter(function(d) {
-      return d.title.toLowerCase().includes(v) || (d.author||'').toLowerCase().includes(v);
+  if (!draftsTable) {
+    draftsTable = new Tabulator('#drafts-table', {
+      data: DRAFTS_DATA, layout: 'fitColumns', height: 360,
+      initialSort: [{ column:'last_modified', dir:'desc' }],
+      columns: draftCols(),
     });
-  });
+    document.getElementById('drafts-search').addEventListener('input', function() {
+      var v = this.value.toLowerCase();
+      if (!v) { draftsTable.clearFilter(); return; }
+      draftsTable.setFilter(function(d) {
+        return d.title.toLowerCase().includes(v) || (d.author||'').toLowerCase().includes(v);
+      });
+    });
+  }
+  if (!draftPostsTable) {
+    draftPostsTable = new Tabulator('#draft-posts-table', {
+      data: DRAFT_POSTS_DATA, layout: 'fitColumns', height: 320,
+      initialSort: [{ column:'last_modified', dir:'desc' }],
+      columns: draftCols([
+        { title:'Categories', field:'categories', width:180, sorter:'string',
+          formatter:function(c){ return '<span class="t-muted">'+c.getValue()+'</span>'; } },
+      ]),
+    });
+    document.getElementById('draft-posts-search').addEventListener('input', function() {
+      var v = this.value.toLowerCase();
+      if (!v) { draftPostsTable.clearFilter(); return; }
+      draftPostsTable.setFilter(function(d) {
+        return d.title.toLowerCase().includes(v) || (d.author||'').toLowerCase().includes(v);
+      });
+    });
+  }
 }
 
 // ── posts table ────────────────────────────────────────────────────────────
@@ -1200,8 +1780,11 @@ function showRpBlocked() {
 }
 
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeRowPanel();
+  if (e.key === 'Escape') { closeSumModal(); closeRowPanel(); }
 });
+
+// init default tab on load
+initSummary();
 
 // wire rp-frame events here so onRpLoad / showRpBlocked are already defined
 (function() {
@@ -1219,9 +1802,14 @@ document.addEventListener('keydown', function(e) {
 # ── generate ──────────────────────────────────────────────────────────────────
 
 def generate_html(today, n_pages, n_posts, n_drafts, n_nav, total_sm,
-                  nav, sm, pages_json, posts_json, sm_json, drafts_json, first_nav):
+                  nav, sm, pages_json, posts_json, sm_json, drafts_json,
+                  draft_posts_json, first_nav):
     nav_cards_html = render_nav_cards(nav)
     sm_tiles_html  = render_sitemap_tiles(sm)
+
+    n_total  = n_pages + n_posts
+    top      = max(n_pages, n_posts, n_drafts, n_nav)
+    pct      = lambda n: str(round(n / top * 100)) if top else "0"
 
     return (HTML_TEMPLATE
         .replace("__TODAY__",         today)
@@ -1231,13 +1819,20 @@ def generate_html(today, n_pages, n_posts, n_drafts, n_nav, total_sm,
         .replace("__N_POSTS__",       str(n_posts))
         .replace("__N_DRAFTS__",      str(n_drafts))
         .replace("__N_NAV__",         str(n_nav))
+        .replace("__N_TOTAL__",       str(n_total))
+        .replace("__PCT_PAGES__",     pct(n_pages))
+        .replace("__PCT_POSTS__",     pct(n_posts))
+        .replace("__PCT_DRAFTS__",    pct(n_drafts))
+        .replace("__PCT_NAV__",       pct(n_nav))
         .replace("__TOTAL_SM__",      str(total_sm))
         .replace("__FIRST_NAV__",     first_nav)
         .replace("__PAGES_JSON__",    pages_json)
         .replace("__POSTS_JSON__",    posts_json)
         .replace("__SM_JSON__",       sm_json)
-        .replace("__DRAFTS_JSON__",   drafts_json)
-        .replace("__NAV_CARDS_HTML__",nav_cards_html)
+        .replace("__DRAFTS_JSON__",      drafts_json)
+        .replace("__DRAFT_POSTS_JSON__", draft_posts_json)
+        .replace("__N_DRAFT_POSTS__",    str(len(DRAFT_POSTS)))
+        .replace("__NAV_CARDS_HTML__",   nav_cards_html)
         .replace("__SM_TILES_HTML__", sm_tiles_html)
     )
 
@@ -1263,9 +1858,10 @@ def run():
     nav = get_nav()
     print(f"  → {len(nav)} nav links")
 
-    pages_json  = json.dumps(build_page_data(pages_raw),  ensure_ascii=False)
-    posts_json  = json.dumps(build_post_data(posts_raw),  ensure_ascii=False)
-    drafts_json = json.dumps(DRAFT_PAGES,                 ensure_ascii=False)
+    pages_json       = json.dumps(build_page_data(pages_raw), ensure_ascii=False)
+    posts_json       = json.dumps(build_post_data(posts_raw), ensure_ascii=False)
+    drafts_json      = json.dumps(DRAFT_PAGES,                ensure_ascii=False)
+    draft_posts_json = json.dumps(DRAFT_POSTS,                ensure_ascii=False)
 
     sm_payload = {
         name: {"label": d["label"], "desc": d["desc"],
@@ -1277,7 +1873,8 @@ def run():
 
     html = generate_html(today, len(pages_raw), len(posts_raw), len(DRAFT_PAGES),
                          len(nav), total_sm, nav, sm,
-                         pages_json, posts_json, sm_json, drafts_json, first_nav)
+                         pages_json, posts_json, sm_json, drafts_json,
+                         draft_posts_json, first_nav)
 
     with open(HTML_OUT, "w", encoding="utf-8") as f:
         f.write(html)
