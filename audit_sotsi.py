@@ -749,6 +749,46 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     .cat-filter-btn:hover { border-color: currentColor; }
     .cat-filter-btn.active { color: #fff; border-color: transparent; }
 
+    /* ── triage tab ─────────────────────────────────────────── */
+    .tri-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: .75rem;
+    }
+    .tri-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--cc-color); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 1rem 1.1rem; cursor: pointer;
+      transition: var(--t);
+    }
+    .tri-card:hover, .tri-card.active { box-shadow: var(--shadow-h); }
+    .tri-card.active { background: rgba(0,0,0,.02); }
+    .tri-count { font-size: 1.9rem; font-weight: 800; color: var(--cc-color);
+                 line-height: 1; letter-spacing: -.03em; }
+    .tri-label { font-size: .72rem; font-weight: 700; text-transform: uppercase;
+                 letter-spacing: .06em; color: var(--muted); margin-top: .3rem; }
+    .tri-sub   { font-size: .68rem; color: var(--muted); margin-top: .2rem; line-height: 1.4; }
+
+    .verdict-badge {
+      display: inline-block; padding: .2rem .55rem; border-radius: 4px;
+      font-size: .68rem; font-weight: 800; letter-spacing: .04em;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .verdict-keep  { background: rgba(10,179,156,.12);  color: #0ab39c; }
+    .verdict-drop  { background: rgba(240,101,72,.12);  color: #f06548; }
+    .verdict-review{ background: rgba(247,184,75,.15);  color: #c9950a; }
+    .tab-btn.triage-tab.active { color: #0ab39c; border-bottom-color: #0ab39c; }
+    .tab-btn.triage-tab.active .tab-count { background: #0ab39c; color: #fff; }
+    .tab-btn.triage-tab .tab-count { background: rgba(10,179,156,.15); color: #0ab39c; }
+
+    .flag-chip {
+      display: inline-block; padding: .12rem .4rem; border-radius: 3px;
+      font-size: .62rem; font-weight: 600; background: rgba(64,81,137,.08);
+      color: var(--primary); margin-right: .25rem; margin-bottom: .15rem;
+    }
+    .flag-chip.warn { background: rgba(247,184,75,.16); color: #c9950a; }
+    .flag-chip.bad  { background: rgba(240,101,72,.12); color: #f06548; }
+
     /* ── summary category modal ─────────────────────────────── */
     .sum-backdrop {
       position: fixed; inset: 0; z-index: 1100;
@@ -1004,6 +1044,14 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <div class="kpi-sub">published</div>
     </div>
   </div>
+  <div class="kpi" style="cursor:pointer" onclick="document.querySelector('.tab-btn.triage-tab').click()">
+    <div class="kpi-icon" style="background:rgba(10,179,156,.12);color:#0ab39c">__N_TRIAGE_KEEP__</div>
+    <div class="kpi-body">
+      <div class="kpi-label">Migration Triage</div>
+      <div class="kpi-val"><span style="color:#0ab39c">__N_TRIAGE_KEEP__</span><span style="font-size:.7em;color:var(--muted);font-weight:500"> keep</span> · <span style="color:#f06548">__N_TRIAGE_DROP__</span><span style="font-size:.7em;color:var(--muted);font-weight:500"> drop</span></div>
+      <div class="kpi-sub">click to review</div>
+    </div>
+  </div>
   <div class="kpi">
     <div class="kpi-icon yellow">__N_NAV__</div>
     <div class="kpi-body">
@@ -1041,6 +1089,9 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   </button>
   <button class="tab-btn" onclick="switchTab('posts',this)">
     Blog Posts <span class="tab-count">__N_POSTS__</span>
+  </button>
+  <button class="tab-btn triage-tab" onclick="switchTab('triage',this)">
+    Blog Migration Triage <span class="tab-count">__N_TRIAGE__</span>
   </button>
   <button class="tab-btn" onclick="switchTab('sitemap',this)">
     Sitemap Breakdown <span class="tab-count">__TOTAL_SM__</span>
@@ -1162,6 +1213,24 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <div id="posts-table"></div>
 </div>
 
+<!-- TAB: BLOG MIGRATION TRIAGE -->
+<div id="tab-triage" class="tab-panel">
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header">
+      <h2>Blog Migration Triage</h2>
+      <span class="ch-meta">Planning-only output &mdash; nothing here touches WordPress or the live site</span>
+    </div>
+    <div class="card-body">
+      <div class="tri-grid" id="tri-grid"><!-- injected --></div>
+    </div>
+  </div>
+  <div class="search-bar" style="margin-bottom:.75rem">
+    <input class="search-input" id="triage-search" type="search" placeholder="Search title or slug&hellip;"/>
+    <div class="cat-filter-row" id="tri-filter-row"><!-- injected --></div>
+  </div>
+  <div id="triage-table"></div>
+</div>
+
 <!-- TAB: SITEMAP -->
 <div id="tab-sitemap" class="tab-panel">
   <div class="sm-grid">__SM_TILES_HTML__</div>
@@ -1252,6 +1321,7 @@ const POSTS_DATA        = __POSTS_JSON__;
 const DRAFTS_DATA       = __DRAFTS_JSON__;
 const DRAFT_POSTS_DATA  = __DRAFT_POSTS_JSON__;
 const SITEMAP_DATA      = __SM_JSON__;
+const TRIAGE_DATA       = __TRIAGE_JSON__;
 
 // ── summary tab ────────────────────────────────────────────────────────────
 function initSummary() {
@@ -1368,6 +1438,7 @@ function switchTab(id, btn) {
   if (id === 'posts')    initPosts();
   if (id === 'drafts')   initDrafts();
   if (id === 'classify') initClassify();
+  if (id === 'triage')   initTriage();
 }
 
 // ── formatters ─────────────────────────────────────────────────────────────
@@ -1635,6 +1706,132 @@ function initPosts() {
   });
 }
 
+// ── triage table ───────────────────────────────────────────────────────────
+var triageTable = null;
+var triageFilter = '';
+
+var TRIAGE_BUCKETS = [
+  { key:'KEEP',   label:'Keep — migrate',   sub:'Evergreen series + clean content', color:'#0ab39c' },
+  { key:'DROP',   label:'Drop — skip',      sub:'WP team pre-tagged as Exclude',    color:'#f06548' },
+  { key:'REVIEW', label:'Manual review',    sub:'Heuristics need a second look',    color:'#c9950a' },
+];
+
+function verdictBadgeFmt(cell) {
+  var v = (cell.getValue() || '').toUpperCase();
+  var cls = v === 'KEEP' ? 'verdict-keep' : (v === 'DROP' ? 'verdict-drop' : 'verdict-review');
+  return '<span class="verdict-badge ' + cls + '">' + v + '</span>';
+}
+
+function flagsFmt(cell) {
+  var flags = cell.getValue() || [];
+  if (!flags.length) return '<span class="t-muted" style="opacity:.4">—</span>';
+  return flags.slice(0, 4).map(function(f) {
+    var cls = 'flag-chip';
+    if (/missing|gaps|short/.test(f)) cls += ' warn';
+    return '<span class="'+cls+'">' + f + '</span>';
+  }).join('');
+}
+
+function wordsFmt(cell) {
+  var v = cell.getValue() || 0;
+  var color = v < 200 ? '#f06548' : (v < 400 ? '#c9950a' : 'var(--muted)');
+  return '<span class="t-muted" style="color:'+color+'">' + v + '</span>';
+}
+
+function initTriage() {
+  if (triageTable) return;
+
+  var counts = { KEEP: 0, DROP: 0, REVIEW: 0 };
+  TRIAGE_DATA.forEach(function(d) {
+    counts[d.verdict] = (counts[d.verdict] || 0) + 1;
+  });
+
+  // build verdict cards
+  var grid = document.getElementById('tri-grid');
+  TRIAGE_BUCKETS.forEach(function(cfg) {
+    var n = counts[cfg.key] || 0;
+    var el = document.createElement('div');
+    el.className = 'tri-card';
+    el.style.setProperty('--cc-color', cfg.color);
+    el.innerHTML =
+      '<div class="tri-count">' + n + '</div>' +
+      '<div class="tri-label">' + cfg.label + '</div>' +
+      '<div class="tri-sub">' + cfg.sub + '</div>';
+    el.onclick = function() { filterTriage(cfg.key, el); };
+    grid.appendChild(el);
+  });
+
+  // chip filters
+  var row = document.getElementById('tri-filter-row');
+  var allBtn = document.createElement('button');
+  allBtn.className = 'cat-filter-btn active';
+  allBtn.textContent = 'All (' + TRIAGE_DATA.length + ')';
+  allBtn.style.background = '#405189';
+  allBtn.onclick = function() { filterTriage('', allBtn); };
+  row.appendChild(allBtn);
+  TRIAGE_BUCKETS.forEach(function(cfg) {
+    var btn = document.createElement('button');
+    btn.className = 'cat-filter-btn';
+    btn.textContent = cfg.key + ' (' + (counts[cfg.key] || 0) + ')';
+    btn.style.color = cfg.color;
+    btn.dataset.color = cfg.color;
+    btn.onclick = function() { filterTriage(cfg.key, btn); };
+    row.appendChild(btn);
+  });
+
+  triageTable = new Tabulator('#triage-table', {
+    data: TRIAGE_DATA, layout: 'fitColumns', height: 540,
+    initialSort: [{ column:'verdict', dir:'asc' }, { column:'pub_iso', dir:'desc' }],
+    columns: [
+      { title:'Verdict', field:'verdict', width:96, hozAlign:'center', sorter:'string', formatter:verdictBadgeFmt },
+      { title:'Title',   field:'title', widthGrow:3, formatter:titleFmt, sorter:'string' },
+      { title:'Slug',    field:'slug',  widthGrow:2, formatter:slugFmt,  sorter:'string' },
+      { title:'Category',field:'cat_primary', width:160, sorter:'string',
+        formatter:function(c){ return '<span class="t-muted">'+(c.getValue()||'—')+'</span>'; } },
+      { title:'Published',field:'pub_iso', width:120, sorter:'date', sorterParams:{format:'YYYY-MM-DD'},
+        formatter:function(c){ return dateFmt(c.getData().published); } },
+      { title:'Words',   field:'words', width:74, hozAlign:'right', sorter:'number', formatter:wordsFmt },
+      { title:'SEO/Quality flags', field:'flags', widthGrow:2, sorter:false, formatter:flagsFmt },
+    ],
+  });
+
+  triageTable.on('rowClick', function(e, row) {
+    var d = row.getData();
+    openRowPanel(d.url, d.title);
+  });
+
+  document.getElementById('triage-search').addEventListener('input', function() {
+    applyTriageFilter(this.value.toLowerCase(), triageFilter);
+  });
+}
+
+function filterTriage(verdict, btn) {
+  triageFilter = verdict;
+  document.querySelectorAll('#tri-filter-row .cat-filter-btn').forEach(function(b){
+    b.classList.remove('active'); b.style.background = '';
+  });
+  btn.classList.add('active');
+  if (verdict) {
+    var color = btn.dataset.color || '#405189';
+    btn.style.background = color;
+    btn.style.color = '#fff';
+  } else {
+    btn.style.background = '#405189';
+    btn.style.color = '#fff';
+  }
+  var search = document.getElementById('triage-search').value.toLowerCase();
+  applyTriageFilter(search, verdict);
+}
+
+function applyTriageFilter(search, verdict) {
+  if (!triageTable) return;
+  triageTable.setFilter(function(d) {
+    if (verdict && d.verdict !== verdict) return false;
+    if (!search) return true;
+    return d.title.toLowerCase().includes(search) || d.slug.toLowerCase().includes(search);
+  });
+}
+
 // ── sitemap panel (single Tabulator, data replaced per tile) ───────────────
 var smTable  = null;
 var smActive = null;
@@ -1803,13 +2000,17 @@ initSummary();
 
 def generate_html(today, n_pages, n_posts, n_drafts, n_nav, total_sm,
                   nav, sm, pages_json, posts_json, sm_json, drafts_json,
-                  draft_posts_json, first_nav):
+                  draft_posts_json, triage_json, triage_counts, first_nav):
     nav_cards_html = render_nav_cards(nav)
     sm_tiles_html  = render_sitemap_tiles(sm)
 
     n_total  = n_pages + n_posts
     top      = max(n_pages, n_posts, n_drafts, n_nav)
     pct      = lambda n: str(round(n / top * 100)) if top else "0"
+
+    n_triage = triage_counts.get("total", 0)
+    n_keep   = triage_counts.get("keep", 0)
+    n_drop   = triage_counts.get("drop", 0)
 
     return (HTML_TEMPLATE
         .replace("__TODAY__",         today)
@@ -1825,18 +2026,86 @@ def generate_html(today, n_pages, n_posts, n_drafts, n_nav, total_sm,
         .replace("__PCT_DRAFTS__",    pct(n_drafts))
         .replace("__PCT_NAV__",       pct(n_nav))
         .replace("__TOTAL_SM__",      str(total_sm))
+        .replace("__N_TRIAGE__",      str(n_triage))
+        .replace("__N_TRIAGE_KEEP__", str(n_keep))
+        .replace("__N_TRIAGE_DROP__", str(n_drop))
         .replace("__FIRST_NAV__",     first_nav)
         .replace("__PAGES_JSON__",    pages_json)
         .replace("__POSTS_JSON__",    posts_json)
         .replace("__SM_JSON__",       sm_json)
         .replace("__DRAFTS_JSON__",      drafts_json)
         .replace("__DRAFT_POSTS_JSON__", draft_posts_json)
+        .replace("__TRIAGE_JSON__",      triage_json)
         .replace("__N_DRAFT_POSTS__",    str(len(DRAFT_POSTS)))
         .replace("__NAV_CARDS_HTML__",   nav_cards_html)
         .replace("__SM_TILES_HTML__", sm_tiles_html)
     )
 
 # ── main ──────────────────────────────────────────────────────────────────────
+
+VERDICT_LABEL_MAP = {
+    "auto_drop": "DROP",
+    "auto_keep": "KEEP",
+    "auto_flag_review": "REVIEW",
+    "neutral": "KEEP",
+}
+
+
+def load_triage_data():
+    """Load extract_blog_data.py output if present, return (rows, counts) for HTML.
+
+    rows is the compact JSON-ready list the Tabulator triage table consumes;
+    counts is a small dict with total/keep/drop for KPI binding. If the
+    sidecar file is missing, returns empty data so the tab degrades gracefully.
+    """
+    sidecar = os.path.join(OUT_DIR, "data", "posts_extracted.json")
+    if not os.path.isfile(sidecar):
+        print(f"  → no triage data found at {sidecar} (run extract_blog_data.py first)")
+        return [], {"total": 0, "keep": 0, "drop": 0, "review": 0}
+
+    try:
+        with open(sidecar, "r", encoding="utf-8") as fh:
+            payload = json.load(fh)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"  → failed to load triage data: {exc}")
+        return [], {"total": 0, "keep": 0, "drop": 0, "review": 0}
+
+    posts = payload.get("posts", [])
+    rows = []
+    counts = {"total": 0, "keep": 0, "drop": 0, "review": 0}
+    for p in posts:
+        verdict = VERDICT_LABEL_MAP.get(p.get("auto_verdict", ""), "REVIEW")
+        rows.append({
+            "id": p.get("id"),
+            "slug": p.get("slug", ""),
+            "url": p.get("url", ""),
+            "title": p.get("title", ""),
+            "verdict": verdict,
+            "categories": p.get("categories", []),
+            "cat_primary": (p.get("categories") or ["—"])[0],
+            "published": fmt_date(p.get("published_iso", "")),
+            "pub_iso": (p.get("published_iso", "") or "")[:10],
+            "modified": fmt_date(p.get("modified_iso", "")),
+            "mod_iso": (p.get("modified_iso", "") or "")[:10],
+            "words": p.get("word_count", 0),
+            "images": p.get("image_count", 0),
+            "images_no_alt": p.get("images_missing_alt", 0),
+            "internal_links": p.get("internal_link_count", 0),
+            "yoast_title": p.get("yoast_title", ""),
+            "yoast_description": p.get("yoast_description", ""),
+            "flags": p.get("quality_flags", []),
+            "reasons": p.get("auto_reasons", []),
+        })
+        counts["total"] += 1
+        if verdict == "DROP":
+            counts["drop"] += 1
+        elif verdict == "REVIEW":
+            counts["review"] += 1
+        else:
+            counts["keep"] += 1
+    rows.sort(key=lambda r: (r["verdict"] != "DROP", r["pub_iso"]), reverse=True)
+    return rows, counts
+
 
 def run():
     today = datetime.now().strftime("%B %d, %Y")
@@ -1858,10 +2127,15 @@ def run():
     nav = get_nav()
     print(f"  → {len(nav)} nav links")
 
+    print("Loading blog migration triage…")
+    triage_rows, triage_counts = load_triage_data()
+    print(f"  → {triage_counts['total']} triage rows (keep={triage_counts['keep']}, drop={triage_counts['drop']})")
+
     pages_json       = json.dumps(build_page_data(pages_raw), ensure_ascii=False)
     posts_json       = json.dumps(build_post_data(posts_raw), ensure_ascii=False)
     drafts_json      = json.dumps(DRAFT_PAGES,                ensure_ascii=False)
     draft_posts_json = json.dumps(DRAFT_POSTS,                ensure_ascii=False)
+    triage_json      = json.dumps(triage_rows,                ensure_ascii=False)
 
     sm_payload = {
         name: {"label": d["label"], "desc": d["desc"],
@@ -1874,7 +2148,7 @@ def run():
     html = generate_html(today, len(pages_raw), len(posts_raw), len(DRAFT_PAGES),
                          len(nav), total_sm, nav, sm,
                          pages_json, posts_json, sm_json, drafts_json,
-                         draft_posts_json, first_nav)
+                         draft_posts_json, triage_json, triage_counts, first_nav)
 
     with open(HTML_OUT, "w", encoding="utf-8") as f:
         f.write(html)
@@ -1882,6 +2156,7 @@ def run():
     print(f"\nReport → {HTML_OUT}")
     print(f"  Pages: {len(pages_raw)}  Posts: {len(posts_raw)}  Drafts: {len(DRAFT_PAGES)}")
     print(f"  Nav: {len(nav)}  Sitemap URLs: {total_sm}")
+    print(f"  Triage: {triage_counts['total']} (keep={triage_counts['keep']}, drop={triage_counts['drop']})")
 
 
 if __name__ == "__main__":

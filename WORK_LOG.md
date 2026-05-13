@@ -110,3 +110,60 @@ GitHub Pages updates in ~1 minute after push.
 - [ ] Add year filter to Blog Posts tab
 - [ ] Schedule auto-regeneration via GitHub Actions (weekly cron)
 - [ ] Get exact inactive page count from WP Admin (private + trash)
+
+---
+
+## Session · 2026-05-13 — Blog Migration Triage (Sprint 1: machote MD)
+
+### Task: Christopher asked for a triage of all old blog posts — flag dated/event content that should NOT migrate to the new SOTSI site, rate the rest, and add SEO suggestions.
+
+### Architecture decision
+
+- **No paid API calls.** Joel uses the Claude monthly plan ($100/mo), not the Anthropic API. So:
+  - Python does ALL the heavy lifting (REST API fetch, HTML parsing, heuristics, classification).
+  - Token cost minimized — Claude only reads what Python flags as ambiguous.
+  - Zero `ANTHROPIC_API_KEY` in the repo; no `anthropic` SDK dependency.
+
+### Sprint 1 deliverable: `BLOG_MIGRATION_TRIAGE.md`
+
+New script `extract_blog_data.py` (stdlib-only, zero pip deps):
+
+- Fetches every published blog post from `/wp-json/wp/v2/posts` with `content.rendered`, `excerpt`, `categories`, `yoast_head_json`.
+- Resolves WP category IDs to names via `/wp-json/wp/v2/categories`.
+- Parses each post body with stdlib `html.parser` to count: headings (H1–H4), images + missing alts, internal/external links, word count.
+- Applies deterministic heuristics:
+  1. **WP category `Exclude` → `auto_drop`** (the SOTSI team already pre-tagged these in WordPress).
+  2. **Slug matches `soul-snack-*` / `soul-feast-*` / `soul-seed-*` / `wisdom-wednesday-*` → `auto_keep`** (evergreen series).
+  3. Event-keyword detection (`register`, `Zoom`, `RSVP`, `tickets`, `webinar`, `early bird`, etc.) and past-year regex for the remaining posts.
+- Generates:
+  - `data/posts_extracted.json` — structured payload (187 posts).
+  - `BLOG_MIGRATION_TRIAGE.md` — human-readable triage report (~4,000 lines) grouped into Section A (drop), B (keep), C/D (manual review — empty in this run).
+
+### Results
+
+| Bucket | Posts | Notes |
+|---|---:|---|
+| **DROP** (Section A) | **20** | All `Exclude`-tagged in WP — confirmed by Christopher's team |
+| **KEEP** (Section B) | **167** | Soul Snacks/Feasts/Seeds/Wisdom Wednesdays |
+| Manual review (Section C/D) | **0** | All posts resolved by rules — no AI tokens spent on per-post review |
+
+**Total:** 187 published posts (site grew from 166 since April 30 audit).
+
+### QA validation
+
+- Spot-checked 19 evergreen posts that triggered "registration CTA" / "enrollment CTA" keyword hits.
+- Confirmed: all hits are the same boilerplate footer ("Enroll in Soul Themes Today") — Soul Themes is a permanent program, not an expired event. Correctly classified as KEEP.
+
+### Next sprint (Sprint 2 — UI/UX)
+
+Convert `BLOG_MIGRATION_TRIAGE.md` into a new dynamic tab inside the existing audit reporter (`SOTSI_Audit_Report.html`). Likely tab name: **"Blog Migration Triage"**. Same Tabulator + slide-panel UX as the existing tabs.
+
+### To regenerate
+
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/SOTSI-WordPress-Audit"
+python3 extract_blog_data.py
+# outputs: data/posts_extracted.json + BLOG_MIGRATION_TRIAGE.md
+```
+
+Run takes ~5–10 seconds. No API key required.
