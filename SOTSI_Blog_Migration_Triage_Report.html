@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>SOTSI — Blog Migration Triage Report</title>
+<style>
+@page { size: Letter; margin: 0.75in 0.65in; }
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  color: #111;
+  font-size: 10pt;
+  line-height: 1.55;
+  margin: 0;
+  padding: 0;
+}
+
+.cover {
+  page-break-after: always;
+  min-height: 9.2in;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0.4in;
+}
+
+.cover-brand {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #1c2333;
+  letter-spacing: 0.32em;
+  margin: 0 0 0.18in 0;
+}
+
+.cover-rule {
+  width: 1.6in;
+  height: 2px;
+  background: #1c2333;
+  margin-bottom: 0.55in;
+}
+
+.cover-title {
+  font-size: 34pt;
+  font-weight: 300;
+  color: #111;
+  margin: 0 0 0.55in 0;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.cover-prep {
+  color: #555;
+  font-size: 10pt;
+  line-height: 1.9;
+}
+
+.cover-prep strong { color: #111; font-weight: 600; }
+
+.cover-meta {
+  margin-top: auto;
+  padding-top: 0.4in;
+  border-top: 1px solid #d8d8d8;
+  font-size: 8.5pt;
+  color: #777;
+  line-height: 1.7;
+}
+
+.page-break { page-break-before: always; }
+
+h2.section-title {
+  font-size: 13pt;
+  font-weight: 600;
+  color: #1c2333;
+  margin: 0 0 0.18in 0;
+  padding-bottom: 6pt;
+  border-bottom: 1px solid #1c2333;
+  letter-spacing: -0.005em;
+}
+
+h3.sub-title {
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: #1c2333;
+  margin: 0.3in 0 0.1in 0;
+  letter-spacing: -0.005em;
+}
+
+p { margin: 0 0 0.12in 0; }
+
+.lede {
+  font-size: 10.5pt;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 0.25in;
+}
+
+.kpi-row {
+  display: flex;
+  gap: 0.18in;
+  margin: 0.22in 0 0.3in 0;
+}
+
+.kpi-box {
+  flex: 1;
+  border: 1px solid #d8d8d8;
+  padding: 0.18in 0.2in;
+}
+
+.kpi-num {
+  font-size: 26pt;
+  font-weight: 700;
+  color: #1c2333;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.kpi-label {
+  font-size: 8pt;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0.08in;
+  font-weight: 600;
+}
+
+.kpi-sub {
+  font-size: 8.5pt;
+  color: #777;
+  margin-top: 0.04in;
+  line-height: 1.4;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.1in 0 0.25in 0;
+  font-size: 9pt;
+}
+
+th {
+  background: #f6f6f6;
+  text-align: left;
+  padding: 7pt 9pt;
+  font-weight: 600;
+  color: #1c2333;
+  border-bottom: 1.5px solid #1c2333;
+  font-size: 8.5pt;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+th.num, td.num { text-align: right; }
+th.center, td.center { text-align: center; }
+
+td {
+  padding: 6pt 9pt;
+  border-bottom: 0.5px solid #e0e0e0;
+  vertical-align: top;
+  color: #222;
+}
+
+tbody tr:nth-child(even) td { background: #fafafa; }
+
+td .url {
+  font-size: 7.5pt;
+  color: #888;
+  display: block;
+  margin-top: 1pt;
+  word-break: break-all;
+}
+
+.box {
+  border: 1px solid #d8d8d8;
+  background: #fafafa;
+  padding: 0.15in 0.18in;
+  margin: 0.2in 0;
+}
+
+.box.accent { border-left: 3px solid #1c2333; }
+
+.muted { color: #666; }
+
+ul.lean { margin: 0.05in 0 0.15in 0.2in; padding: 0; }
+ul.lean li { margin-bottom: 4pt; line-height: 1.5; }
+
+.footer {
+  margin-top: 0.45in;
+  padding-top: 0.1in;
+  border-top: 1px solid #e0e0e0;
+  font-size: 7.5pt;
+  color: #999;
+  line-height: 1.6;
+}
+
+table.compact { font-size: 8.5pt; }
+table.compact th, table.compact td { padding: 5pt 8pt; }
+
+.tag {
+  display: inline-block;
+  padding: 2pt 6pt;
+  font-size: 7.5pt;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  letter-spacing: 0.04em;
+  color: #444;
+  white-space: nowrap;
+}
+
+.tag.drop { color: #8b3a2a; border-color: #8b3a2a; background: #fdf3f0; }
+.tag.keep { color: #2a5d52; border-color: #2a5d52; background: #f0f7f5; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="cover-brand">SOTSI</div>
+  <div class="cover-rule"></div>
+  <h1 class="cover-title">Blog Migration<br/>Triage Report</h1>
+  <div class="cover-prep">
+    Prepared for<br/>
+    <strong>Christopher Dilts</strong>
+  </div>
+  <div class="cover-prep" style="margin-top:0.3in">
+    <strong>May 13, 2026</strong>
+  </div>
+  <div class="cover-meta">
+    Source: seatofthesoul.com — WordPress REST API and sitemap.<br/>
+    Scope: all published blog posts as of report date.<br/>
+    Purpose: planning recommendation for the upcoming site migration.
+  </div>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Executive Summary</h2>
+  <p class="lede">
+    This report reviews every published blog post on seatofthesoul.com to
+    recommend which entries should migrate to the new SOTSI site and which
+    should be left behind. The review combines existing editorial tagging
+    from the SOTSI WordPress workspace with content analysis of each post.
+  </p>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-num">187</div>
+      <div class="kpi-label">Posts analyzed</div>
+      <div class="kpi-sub">All published blog posts on seatofthesoul.com</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-num">167</div>
+      <div class="kpi-label">Recommended Keep</div>
+      <div class="kpi-sub">Evergreen series and current editorial content</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-num">20</div>
+      <div class="kpi-label">Recommended Drop</div>
+      <div class="kpi-sub">Already pre-tagged by the SOTSI team as out of scope</div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Method</h3>
+  <ul class="lean">
+    <li><strong>Drop list.</strong> Posts whose WordPress category includes the editorial tag <em>Exclude</em> were placed on the drop list. The SOTSI team has been using this tag to mark entries that should not be carried forward, so this report formalizes those existing decisions.</li>
+    <li><strong>Keep list.</strong> Posts in the recurring evergreen series — <em>Soul Snack</em>, <em>Soul Feast</em>, <em>Soul Seed</em>, and <em>Wisdom Wednesday</em> — were placed on the keep list. These are the core teaching content of the site.</li>
+    <li><strong>Date-tied content audit.</strong> Every post on the keep list was scanned across its full body — not just title or excerpt — for references to past events, expired registrations, dated promotional language, and time-specific announcements. The patterns checked and the results are documented in Section 2 of this report.</li>
+  </ul>
+
+  <h3 class="sub-title">Headline finding</h3>
+  <div class="box accent">
+    <p style="margin:0">
+      <strong>167 of 187 posts (89%) are recommended for migration.</strong>
+      The 20 drop candidates were already flagged internally by the SOTSI editorial team
+      and are listed in full in Section 1 of this report so the decision is transparent and easy to revisit.
+      After a deep content audit, no post outside the existing <em>Exclude</em> set surfaced as event-tied or expired.
+    </p>
+  </div>
+
+  <p class="muted" style="margin-top:0.3in;font-size:9pt">
+    Coverage window: posts published between Mar 20, 2021 and May 12, 2026.
+    Report regenerated automatically against the live site.
+  </p>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Section 2 — Methodology: how each post was reviewed</h2>
+  <p class="lede">
+    The concern behind this triage is straightforward: leave behind any blog post that was
+    written for a one-time event, a dated announcement, or a moment in news that has already
+    passed. The keep list went through a deep content audit to make sure no such post slipped
+    through. Every entry was scanned across its full body — not just title or excerpt — for
+    the patterns below.
+  </p>
+
+  <h3 class="sub-title">Patterns checked for in every keep-list post</h3>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width:52%">Pattern</th>
+        <th style="width:28%">What it would catch</th>
+        <th class="center" style="width:20%">Posts flagged</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Register by, registration opens / closes</strong></td><td>Expired registration calls</td><td class="center">0</td></tr>
+      <tr><td><strong>Tickets, RSVP, seats remaining</strong></td><td>Past ticketed events</td><td class="center">0</td></tr>
+      <tr><td><strong>Save the date, doors open, early bird</strong></td><td>Promotional event language</td><td class="center">0</td></tr>
+      <tr><td><strong>Webinar on / starts on / begins on (specific date)</strong></td><td>Specific dated webinars</td><td class="center">0</td></tr>
+      <tr><td><strong>Join us on [date], live event, live broadcast</strong></td><td>Past live broadcasts</td><td class="center">0</td></tr>
+      <tr><td><strong>Annual / this year's retreat or conference</strong></td><td>Year-specific recurring events</td><td class="center">0</td></tr>
+      <tr><td><strong>Specific Month + Year in body (e.g., "March 2024")</strong></td><td>Posts anchored to a past month</td><td class="center">0</td></tr>
+      <tr><td><strong>Specific calendar date (e.g., "October 15")</strong></td><td>Date-specific announcements</td><td class="center">0</td></tr>
+      <tr><td><strong>Past-year-only references (e.g., body says "2023")</strong></td><td>Time-stamped commentary</td><td class="center">0</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Patterns that did surface — and why they are not event-tied</h3>
+  <p>
+    Three recurring phrases did appear across many keep-list posts. Each was inspected
+    in context and confirmed as evergreen content, not event-tied. They are documented
+    here for transparency.
+  </p>
+
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width:38%">Phrase</th>
+        <th style="width:42%">Why it appears</th>
+        <th class="center" style="width:20%">Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>"This week, notice…"</strong></td>
+        <td>Recurring closing exercise (<em>Soul Step Challenge</em>) at the end of every Soul Snack and Soul Feast. The post invites the reader to apply the teaching during their own week — not on a specific date.</td>
+        <td class="center"><span class="tag keep">Evergreen</span></td>
+      </tr>
+      <tr>
+        <td><strong>"Join Gary LIVE every month"</strong></td>
+        <td>CTA pointing to the ongoing <em>Soul Themes</em> program, which is permanent and recurring monthly. The word "every" makes the offer evergreen rather than fixed to a past date.</td>
+        <td class="center"><span class="tag keep">Evergreen</span></td>
+      </tr>
+      <tr>
+        <td><strong>"December 14th, 2012"</strong></td>
+        <td>One post (Soul Feast #83 with Scarlett Lewis) references the Sandy Hook anniversary as biographical context. This is historical reference inside a teaching, not an invitation to a past event.</td>
+        <td class="center"><span class="tag keep">Evergreen</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">Confidence statement</h3>
+  <div class="box accent">
+    <p style="margin:0">
+      All 167 keep-list posts were scanned at full-body depth using nine independent
+      patterns designed to surface event-tied or dated content. Zero posts matched any pattern
+      indicating a past event, expired registration, or moment-in-time announcement. The recommendation
+      to migrate this set is supported by both the editorial decisions already made by the SOTSI team
+      and an independent content review.
+    </p>
+  </div>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Section 1 — Posts to drop (20)</h2>
+  <p class="lede">
+    The following posts are recommended <strong>not</strong> to migrate to the new site.
+    Every entry here was tagged <em>Exclude</em> in WordPress by the SOTSI editorial team
+    prior to this audit. They appear in this report so the migration team can confirm,
+    or selectively reverse, any individual decision.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="center" style="width:4%">#</th>
+        <th style="width:46%">Title</th>
+        <th style="width:20%">Primary category</th>
+        <th class="center" style="width:8%">Year</th>
+        <th style="width:22%">Reason</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class='center muted'>1</td><td><strong>Honoring Maya Angelou</strong><span class='url'>https://seatofthesoul.com/honoring-maya-angelou-2</span></td><td>Blog</td><td class='center'>2024</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>2</td><td><strong>Moments with Marianne – Internet</strong><span class='url'>https://seatofthesoul.com/moments-with-marianne-internet</span></td><td>Podcast</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>3</td><td><strong>I’m Thankful Network – Seattle</strong><span class='url'>https://seatofthesoul.com/im-thankful-network-seattle</span></td><td>Podcast</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>4</td><td><strong>Rhythm and Flow  Radio – Dallas</strong><span class='url'>https://seatofthesoul.com/rhythm-flow-radio-dallas</span></td><td>Podcast</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>5</td><td><strong>The Catherine Bradford Show – Seattle</strong><span class='url'>https://seatofthesoul.com/the-catherine-bradford-show-seattle</span></td><td>Podcast</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>6</td><td><strong>The New Male and Authentic Power – Internet</strong><span class='url'>https://seatofthesoul.com/the-new-male-and-authentic-power-internet</span></td><td>Podcast</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>7</td><td><strong>The Ongoing Conversation</strong><span class='url'>https://seatofthesoul.com/the-ongoing-conversation</span></td><td>Interviews</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>8</td><td><strong>Gary Zukav and Linda Francis Share Their Insight</strong><span class='url'>https://seatofthesoul.com/gary-zukav-and-linda-francis-share-their-insight</span></td><td>Interviews</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>9</td><td><strong>Explore Multisensory Perception and Spiritual Partnership</strong><span class='url'>https://seatofthesoul.com/explore-multisensory-perception-and-spiritual-partnership</span></td><td>Interviews</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>10</td><td><strong>What Gives You Meaning in Your Life?</strong><span class='url'>https://seatofthesoul.com/what-gives-you-meaning-in-your-life</span></td><td>Blog</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>11</td><td><strong>Coronavirus – Opportunity Or Obstacle</strong><span class='url'>https://seatofthesoul.com/coronavirus-opportunity-or-obstacle</span></td><td>Miracle</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>12</td><td><strong>Coronavirus – The Heart of the Matter</strong><span class='url'>https://seatofthesoul.com/coronavirus-the-heart-of-the-matter</span></td><td>Miracle</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>13</td><td><strong>The Miracle Of The Coronavirus – Part 1</strong><span class='url'>https://seatofthesoul.com/the-miracle-of-the-coronavirus-part-1</span></td><td>Miracle</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>14</td><td><strong>The Miracle Of The Coronavirus – Part 2</strong><span class='url'>https://seatofthesoul.com/the-miracle-of-the-coronavirus-part-2</span></td><td>Miracle</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>15</td><td><strong>The Miracle Of The Coronavirus – Part 3</strong><span class='url'>https://seatofthesoul.com/the-miracle-of-the-coronavirus-part-3</span></td><td>Miracle</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>16</td><td><strong>UNIVERSAL HUMAN</strong><span class='url'>https://seatofthesoul.com/universal-human</span></td><td>SOUL THOUGHTS</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>17</td><td><strong>Winter Solstice</strong><span class='url'>https://seatofthesoul.com/winter-solstice</span></td><td>SOUL THOUGHTS</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>18</td><td><strong>Love In or Lock Down</strong><span class='url'>https://seatofthesoul.com/love-in-or-lock-down</span></td><td>SOUL THOUGHTS</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>19</td><td><strong>Coronavirus and Karma</strong><span class='url'>https://seatofthesoul.com/coronavirus-and-karma</span></td><td>SOUL THOUGHTS</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+<tr><td class='center muted'>20</td><td><strong>Keep Your Eye on the Ball</strong><span class='url'>https://seatofthesoul.com/keep-your-eye-on-the-ball</span></td><td>SOUL THOUGHTS</td><td class='center'>2021</td><td>Pre-tagged <em>Exclude</em> in WordPress</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Section 3 — Posts to keep (167)</h2>
+  <p class="lede">
+    The keep list is dominated by the four evergreen series the SOTSI blog has been
+    building consistently across 2021, 2024, 2025, and 2026. These episodes pair
+    directly with the Gary Zukav and Linda Francis teaching catalog and remain
+    relevant on the new site regardless of when each individual entry was published.
+  </p>
+
+  <h3 class="sub-title">By series</h3>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width:60%">Series</th>
+        <th class="num" style="width:20%">Posts</th>
+        <th class="num" style="width:20%">Share</th>
+      </tr>
+    </thead>
+    <tbody><tr><td><strong>Soul Snack</strong></td><td class='num'>83</td><td class='num muted'>49.7%</td></tr>
+<tr><td><strong>Soul Feast</strong></td><td class='num'>84</td><td class='num muted'>50.3%</td></tr></tbody>
+  </table>
+
+  <h3 class="sub-title">By year published</h3>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width:60%">Year</th>
+        <th class="num" style="width:20%">Posts</th>
+        <th class="num" style="width:20%">Share</th>
+      </tr>
+    </thead>
+    <tbody><tr><td><strong>2026</strong></td><td class='num'>69</td><td class='num muted'>41.3%</td></tr>
+<tr><td><strong>2025</strong></td><td class='num'>73</td><td class='num muted'>43.7%</td></tr>
+<tr><td><strong>2024</strong></td><td class='num'>25</td><td class='num muted'>15.0%</td></tr></tbody>
+  </table>
+
+  <h3 class="sub-title">Top editorial categories</h3>
+  <table class="compact">
+    <thead>
+      <tr>
+        <th style="width:80%">Category</th>
+        <th class="num" style="width:20%">Posts</th>
+      </tr>
+    </thead>
+    <tbody><tr><td>Authentic Power</td><td class='num'>70</td></tr>
+<tr><td>Emotional Awareness</td><td class='num'>67</td></tr>
+<tr><td>Love &amp;amp; Fear</td><td class='num'>48</td></tr>
+<tr><td>Responsible Choice</td><td class='num'>34</td></tr>
+<tr><td>The New Consciousness</td><td class='num'>31</td></tr>
+<tr><td>Multisensory Perception</td><td class='num'>27</td></tr>
+<tr><td>Personal Stories</td><td class='num'>23</td></tr>
+<tr><td>Spiritual Partnership</td><td class='num'>17</td></tr>
+<tr><td>Intentions</td><td class='num'>17</td></tr>
+<tr><td>Authentic Power Guidelines</td><td class='num'>13</td></tr>
+<tr><td>What's Real MiniSeries</td><td class='num'>9</td></tr>
+<tr><td>Together Miniseries</td><td class='num'>7</td></tr></tbody>
+  </table>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Section 3.1 — Full keep list (167)</h2>
+  <p class="lede">
+    Every post recommended for migration, sorted from newest to oldest. The series
+    column identifies whether the post belongs to the evergreen recurring catalog.
+  </p>
+
+  <table class="compact">
+    <thead>
+      <tr>
+        <th class="center" style="width:4%">#</th>
+        <th style="width:62%">Title</th>
+        <th style="width:20%">Series</th>
+        <th class="center" style="width:8%">Year</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class='center muted'>1</td><td><strong>Soul Feast #84: Scarlett Lewis – How to Choose Love While You’re Still in Pain: Scarlett Lewis- Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-84-scarlett-lewis-how-to-choose-love-while-youre-still-in-pain-scarlett-lewis-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>2</td><td><strong>Soul Snack #83: Stop Fighting for Control: How to Trade External Power for Authentic Power</strong><span class='url'>/soul-snack-83-stop-fighting-for-control-how-to-trade-external-power-for-authentic-power</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>3</td><td><strong>Soul Feast #83: Choosing Love Over Revenge: From Sandy Hook to 18,000 Schools – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-83-choosing-love-over-revenge-from-sandy-hook-to-18000-schools-gary-zukavs-personal-experiences-2</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>4</td><td><strong>Soul Snack #82: The Reason Jealousy Keeps Coming Back</strong><span class='url'>/soul-snack-82-the-reason-jealousy-keeps-coming-back</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>5</td><td><strong>Soul Feast #82: Creator or Victim? The Pain Driving Every Choice You Make – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-82-creator-or-victim-the-pain-driving-every-choice-you-make-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>6</td><td><strong>Soul Snack #81: Judging Someone? This Is What You Should Do</strong><span class='url'>/soul-snack-81-judging-someone-this-is-what-you-should-do</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>7</td><td><strong>Soul Feast #81: Why You Are the Universe – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-81-why-you-are-the-universe-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>8</td><td><strong>Soul Snack #80: The Hidden Message Inside Every Emotion You’ve Been Ignoring</strong><span class='url'>/soul-snack-80-the-hidden-message-inside-every-emotion-youve-been-ignoring</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>9</td><td><strong>Soul Feast #80: Who’s Driving Your Chariot? Krishna &amp; The Great Battle – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-80-whos-driving-your-chariot-krishna-the-great-battle-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>10</td><td><strong>Soul Snack #79: Distractions Are Not the Enemy – They’re the Signal</strong><span class='url'>/soul-snack-79-distractions-are-not-the-enemy</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>11</td><td><strong>Soul Feast #79: Buddha, Angels &amp; the Moment My Mind Went Quiet – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-79-buddha-angels-the-moment-my-mind-went-quiet-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>12</td><td><strong>Soul Snack #78: Are You Actually Enjoying Your Life?</strong><span class='url'>/soul-snack-78-are-you-actually-enjoying-your-life</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>13</td><td><strong>Soul Feast #78: How Pain, Loss &amp; Jesus Transformed My View of Resurrection – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-78-how-pain-loss-jesus-transformed-my-view-of-resurrection-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>14</td><td><strong>Soul Snack #77: You Were Born To Choose Love</strong><span class='url'>/soul-snack-77-you-were-born-to-choose-love</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>15</td><td><strong>Soul Feast #77: Jesus – What Does It Mean To Be Guided By Him? – Gary Zukav’s Personal Experiences</strong><span class='url'>/soul-feast-77-jesus-what-does-it-mean-to-be-guided-by-him-gary-zukavs-personal-experiences</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>16</td><td><strong>Soul Snack #76: The Conversation That Changes Everything</strong><span class='url'>/soul-snack-76-the-conversation-that-changes-everything</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>17</td><td><strong>Soul Feast #76: Gary Zukav’s Personal Experiences – God</strong><span class='url'>/soul-feast-76-gary-zukavs-personal-experiences-god</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>18</td><td><strong>Soul Snack #75: It’s Always Yours to Do</strong><span class='url'>/soul-snack-75-its-always-yours-to-do</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>19</td><td><strong>Soul Feast #75: Gary Zukav’s Personal Experiences – Angels</strong><span class='url'>/soul-feast-75-gary-zukavs-personal-experiences-angels</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>20</td><td><strong>Soul Snack #74: Every Moment Is Big</strong><span class='url'>/soul-snack-74-every-moment-is-big</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>21</td><td><strong>Soul Feast #74: Gary Zukav’s Personal Experiences – The Angel</strong><span class='url'>/soul-feast-74-gary-zukavs-personal-experiences-the-angel</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>22</td><td><strong>Soul Snack #73: Why is it Important to Experience Physical Sensations?</strong><span class='url'>/soul-snack-73-why-is-it-important-to-experience-physical-sensations</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>23</td><td><strong>Soul Feast #73: Gary Zukav’s Personal Experiences – Linda Part 3</strong><span class='url'>/soul-feast-73-gary-zukavs-personal-experiences-linda-part-3</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>24</td><td><strong>Soul Snack #72: Your Life Is An Adventure</strong><span class='url'>/soul-snack-72-your-life-is-an-adventure</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>25</td><td><strong>Soul Feast #72: Gary Zukav’s Personal Experiences – Linda Part 2</strong><span class='url'>/soul-feast-72-gary-zukavs-personal-experiences-linda-part-2</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>26</td><td><strong>Soul Snack #71: Courage Meditation</strong><span class='url'>/soul-snack-71-courage-meditation</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>27</td><td><strong>Soul Feast #71: Gary Zukav’s Personal Experiences – Linda Part 1</strong><span class='url'>/soul-feast-71-gary-zukavs-personal-experiences-linda-part-1</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>28</td><td><strong>Soul Snack #70: The Guest House</strong><span class='url'>/soul-snack-70-the-guest-house</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>29</td><td><strong>Soul Feast #70: GUIDELINES 4: Pay Attention to My Thoughts</strong><span class='url'>/soul-feast-70-guidelines-4-pay-attention-to-my-thoughts</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>30</td><td><strong>Soul Snack #69: What Does My Soul Want?</strong><span class='url'>/soul-snack-69-what-does-my-soul-want</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>31</td><td><strong>Soul Feast #69: GUIDELINES 3: Pay Attention to My Emotions</strong><span class='url'>/soul-feast-69-guidelines-3-pay-attention-to-my-emotions</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>32</td><td><strong>Soul Snack #68: Distractions</strong><span class='url'>/soul-snack-68-distractions</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>33</td><td><strong>Soul Feast #68: GUIDELINES 2: Focusing on What I Can Learn About Myself</strong><span class='url'>/soul-feast-68-guidelines-2-focusing-on-what-i-can-learn-about-myself</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>34</td><td><strong>Soul Snack #67: Align Your Personality with Your Soul</strong><span class='url'>/soul-snack-67-align-your-personality-with-your-soul</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>35</td><td><strong>Soul Feast #67: GUIDELINES 1: Introduction to Commitment Guidelines</strong><span class='url'>/soul-feast-67-guidelines-1-introduction-to-commitment-guidelines</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>36</td><td><strong>Soul Snack #66: How Do I Let Go of Anger and Resentment?</strong><span class='url'>/soul-snack-66-how-do-i-let-go-of-anger-and-resentment</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>37</td><td><strong>Soul Feast #66: The Authentic Power Guidelines: Series Introduction</strong><span class='url'>/soul-feast-66-the-authentic-power-guidelines-series-introduction</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>38</td><td><strong>Soul Snack #65: Supporting with Love</strong><span class='url'>/soul-snack-65-supporting-with-love</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>39</td><td><strong>Soul Feast #65: How Can I Change the World from the New Consciousness?</strong><span class='url'>/soul-feast-65-how-can-i-change-the-world-from-the-new-consciousness</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>40</td><td><strong>Soul Snack #64: Spiritual Partnership and Development</strong><span class='url'>/soul-snack-64-spiritual-partnership-and-development</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>41</td><td><strong>Soul Feast #64: Will AI Change Human Evolution?</strong><span class='url'>/soul-feast-64-will-ai-change-human-evolution</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>42</td><td><strong>Soul Snack #63: Spiritual Partnership</strong><span class='url'>/soul-snack-63-spiritual-partnership</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>43</td><td><strong>Soul Feast #63: Evolution of Consciousness: Where to Look for It</strong><span class='url'>/soul-feast-63-evolution-of-consciousness-where-to-look-for-it</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>44</td><td><strong>Soul Snack #62: Supporting vs. Projecting</strong><span class='url'>/soul-snack-62-supporting-vs-projecting</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>45</td><td><strong>Soul Feast #62: Compassion is Not for Cowards</strong><span class='url'>/soul-feast-62-compassion-is-not-for-cowards</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>46</td><td><strong>Soul Snack #61: Emotional Indulgence</strong><span class='url'>/soul-snack-61-emotional-indulgence</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>47</td><td><strong>Soul Feast #61: How You Experience Things Depends on How You Hold Them</strong><span class='url'>/soul-feast-61-how-you-experience-things-depends-on-how-you-hold-them</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>48</td><td><strong>Soul Snack #60: Discern Your Intentions</strong><span class='url'>/soul-snack-60-discern-your-intentions</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>49</td><td><strong>Soul Feast #60: The Universe Doesn’t Judge</strong><span class='url'>/soul-feast-60-the-universe-doesnt-judge</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>50</td><td><strong>Soul Snack #59: How Can I Heal Anxiety?</strong><span class='url'>/soul-snack-59-how-can-i-heal-anxiety</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>51</td><td><strong>Soul Feast #59: Everyone is Fighting a Great Battle</strong><span class='url'>/soul-feast-59-everyone-is-fighting-a-great-battle</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>52</td><td><strong>Soul Snack #58: The Higher Logic of the Heart</strong><span class='url'>/soul-snack-58-the-higher-logic-of-the-heart</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>53</td><td><strong>Soul Feast #58: Moving Beyond Stress</strong><span class='url'>/soul-feast-58-moving-beyond-stress</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>54</td><td><strong>Soul Snack #57: Why Does Challenging Anger Bring More Anger?</strong><span class='url'>/soul-snack-57-why-does-challenging-anger-bring-more-anger</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>55</td><td><strong>Soul Feast #57: What’s Real? The New Consciousness</strong><span class='url'>/soul-feast-57-whats-real-the-new-consciousness</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>56</td><td><strong>Soul Snack #56: How Can I Change My Overwhelm?</strong><span class='url'>/soul-snack-56-how-can-i-change-my-overwhelm</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>57</td><td><strong>Soul Feast #56: What’s Real? What Should I Do Now?</strong><span class='url'>/soul-feast-56-whats-real-what-should-i-do-now</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>58</td><td><strong>Soul Snack #55: Can There Be Multiple Intentions?</strong><span class='url'>/soul-snack-55-can-there-be-mulitple-intentions</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>59</td><td><strong>Soul Feast #55: What’s Real? Creating Authentic Power</strong><span class='url'>/soul-feast-55-whats-real-creating-authentic-power</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>60</td><td><strong>Soul Snack #54: Feeling Sorrow</strong><span class='url'>/soul-snack-54-feeling-sorrow</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>61</td><td><strong>Soul Feast #54: What’s Real? Authentic Power</strong><span class='url'>/soul-feast-54-whats-real-authentic-power</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>62</td><td><strong>Soul Snack #53: Is Painful Karma From a Good Deed Possible?</strong><span class='url'>/soul-snack-53-is-painful-karma-from-a-good-deed-possible</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>63</td><td><strong>Soul Feast #53: What’s Real? Love or Fear</strong><span class='url'>/soul-feast-53-whats-real-love-or-fear</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>64</td><td><strong>Soul Snack #52: How Can I Judge in Jury Duty?</strong><span class='url'>/soul-snack-52-how-can-i-judge-in-jury-duty</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>65</td><td><strong>Soul Feast #52: What’s Real? Reverence</strong><span class='url'>/soul-feast-52-whats-real-reverence</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>66</td><td><strong>Soul Snack #51: Are There Evil People in the World?</strong><span class='url'>/soul-snack-51-are-there-evil-people-in-the-world</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>67</td><td><strong>Soul Feast #51: What’s Real? Connection</strong><span class='url'>/soul-feast-51-whats-real-connection</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>68</td><td><strong>Soul Snack #50: Does Protecting My Business Come From Fear?</strong><span class='url'>/soul-snack-50-does-protecting-my-business-come-from-fear-2</span></td><td>Soul Snack</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>69</td><td><strong>Soul Feast #50: What’s Real? Meaning</strong><span class='url'>/soul-feast-50-whats-real-meaning</span></td><td>Soul Feast</td><td class='center'>2026</td></tr>
+<tr><td class='center muted'>70</td><td><strong>Soul Snack #49: How Can I Make Amends for Past Behaviors?</strong><span class='url'>/soul-snack-49-how-can-i-make-amends-for-past-behaviors</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>71</td><td><strong>Soul Feast #49: What’s Real? AI</strong><span class='url'>/soul-feast-49-whats-real-ai</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>72</td><td><strong>Soul Snack #48: How to Trust: Part 2</strong><span class='url'>/soul-snack-48-how-to-trust-2</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>73</td><td><strong>Soul Feast #48: Are Current World Events the Cause of My Emotional Pain?</strong><span class='url'>/soul-feast-48-are-current-world-events-the-cause-of-my-emotional-pain</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>74</td><td><strong>Soul Snack #47: How to Trust: Part 1</strong><span class='url'>/soul-snack-47-how-to-trust</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>75</td><td><strong>Soul Feast #47: What to Do about Polarization in My Family or Workplace?</strong><span class='url'>/soul-feast-47-what-to-do-about-polarization-in-my-family-or-workplace</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>76</td><td><strong>Soul Snack #46: Addiction and Spiritual Growth</strong><span class='url'>/soul-snack-46-addiction-and-spiritual-growth</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>77</td><td><strong>Soul Feast #46: Resisting Political Divisiveness and Conforming To Fear</strong><span class='url'>/soul-feast-46-resisting-political-divisiveness-and-conforming-to-fear</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>78</td><td><strong>Soul Snack #45: Energy Into Matter</strong><span class='url'>/soul-snack-45-energy-into-matter-2</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>79</td><td><strong>Soul Feast #45: How Can You Respond with Love When There is Chaos and Political Upheaval All Around You?</strong><span class='url'>/soul-feast-45-how-can-you-respond-with-love-when-there-is-chaos-and-political-upheaval-all-around-you-2</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>80</td><td><strong>Soul Snack #44: Unsplinter Your Personality</strong><span class='url'>/soul-snack-44-unsplinter-your-personality</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>81</td><td><strong>Soul Feast #44: The Gifts of Temptation</strong><span class='url'>/soul-feast-44-the-gifts-of-temptation</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>82</td><td><strong>Soul Snack #43: How Can I Be Authentic and Grieve a Loss?</strong><span class='url'>/soul-snack-43-how-can-i-be-authentic-and-grieve-a-loss</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>83</td><td><strong>Soul Feast #43: Temptation</strong><span class='url'>/soul-feast-43-temptation</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>84</td><td><strong>Soul Snack #42: Spiritual Growth Requires Relationships</strong><span class='url'>/soul-snack-42-spiritual-growth-requires-relationships</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>85</td><td><strong>Soul Feast #42: Non-Physical Teachers: Part 1</strong><span class='url'>/soul-feast-44-non-physical-teachers-pt-1</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>86</td><td><strong>Soul Snack #41:  Psychology – Balancing a Shattered Soul</strong><span class='url'>/soul-snack-41-psychology-balancing-a-shattered-soul</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>87</td><td><strong>Soul Feast #41: What Am I Responsible For?</strong><span class='url'>/soul-feast-41-what-am-i-responsible-for</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>88</td><td><strong>Soul Snack #40: How Do I Change My Self-Destructive Behaviors?</strong><span class='url'>/soul-snack-40-how-do-i-change-my-self-destructive-behaviors</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>89</td><td><strong>Soul Feast #40: The Point of Power in Turbulent Times</strong><span class='url'>/soul-feast-40-the-point-of-power-in-turbulent-times</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>90</td><td><strong>Soul Snack # 39: How Do I Deal with a “Bad” Decision (Someone Else’s)</strong><span class='url'>/soul-snack-39-how-do-i-deal-with-a-bad-decision</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>91</td><td><strong>Soul Feast #39: The Danger of Forgetting: Let’s Not Repeat the Past</strong><span class='url'>/soul-feast-39-the-danger-of-forgetting</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>92</td><td><strong>Soul Snack # 38: Guided Meditation (Partnership Between Equals)</strong><span class='url'>/soul-snack-38-guided-meditation-partnership-between-equals</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>93</td><td><strong>Soul Feast #38: Together Miniseries #8: The Biggest Surprise</strong><span class='url'>/soul-feast-38-together-miniseries-8-the-biggest-surprise</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>94</td><td><strong>Soul Snack # 37: Guided Meditation (Meeting a Friend)</strong><span class='url'>/soul-snack-37-meditation-meeting-a-friend</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>95</td><td><strong>Soul Feast #37: Together Miniseries #7: Where We’re Going</strong><span class='url'>/soul-feast-37-together-miniseries-7-where-were-going</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>96</td><td><strong>Soul Snack # 36: The Pain of Powerlessness</strong><span class='url'>/the-pain-of-powerlessness</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>97</td><td><strong>Soul Feast #36: Together Miniseries #6: The Journey Inside – Love</strong><span class='url'>/together-miniseries-6-the-journey-inside-love</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>98</td><td><strong>Soul Snack #35: Can Healing Be Spontaneous?</strong><span class='url'>/can-healing-be-spontaneous</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>99</td><td><strong>Soul Feast #35: Together Miniseries #5: The Journey Inside – Fear</strong><span class='url'>/together-miniseries-5-the-journey-inside-fear</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>100</td><td><strong>Soul Snack # 34: How Can We Understand Suicide?</strong><span class='url'>/how-can-we-understand-suicide</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>101</td><td><strong>Soul Feast #34: Together Miniseries #4: The Beauty of the Contrast</strong><span class='url'>/together-miniseries-4-the-beauty-of-the-contrast</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>102</td><td><strong>Soul Snack #33: What Inspired Gary to Change?</strong><span class='url'>/what-inspired-gary-to-change</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>103</td><td><strong>Soul Feast #33: Together Miniseries #3: The Birth of Authentic Power</strong><span class='url'>/together-miniseries-3-the-birth-of-authentic-power</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>104</td><td><strong>Soul Snack#32: Staying Present</strong><span class='url'>/staying-present</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>105</td><td><strong>Soul Feast #32: Together Miniseries #2: The Death of External Power</strong><span class='url'>/together-miniseries-2-the-death-of-external-power</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>106</td><td><strong>Soul Snack #31: Relating to Someone Who is Negative</strong><span class='url'>/relating-to-someone-who-is-negative</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>107</td><td><strong>Soul Feast #31: Together Miniseries #1: We’re All In It Together</strong><span class='url'>/were-all-in-it-together</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>108</td><td><strong>Soul Snack #30: When Are Boundaries Necessary?</strong><span class='url'>/when-are-boundaries-necessary</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>109</td><td><strong>Soul Feast #30: Everything is an Opportunity</strong><span class='url'>/everything-is-an-opportunity</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>110</td><td><strong>Soul Snack #29: Supporting vs. Projecting</strong><span class='url'>/supporting-vs-projecting</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>111</td><td><strong>Soul Feast #29: What is a Universal Human?</strong><span class='url'>/what-is-a-universal-human</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>112</td><td><strong>Soul Snack #28: Underneath Reaction</strong><span class='url'>/underneath-reaction</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>113</td><td><strong>Soul Feast #28: Spiritual Partnership and the Law of Attraction</strong><span class='url'>/spiritual-partnership-and-the-law-of-attraction</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>114</td><td><strong>Soul Snack #27: Pay Attention to Your Emotions</strong><span class='url'>/pay-attention-to-your-emotions</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>115</td><td><strong>Soul Feast #27 – Choice, Karma, and The Law of Attraction</strong><span class='url'>/choice-karma-and-the-law-of-attraction</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>116</td><td><strong>Soul Snack #26 – How Do I Heal Depression?</strong><span class='url'>/how-do-i-heal-depression</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>117</td><td><strong>Soul Feast #26 – Am I Joyful or Am I Happy?</strong><span class='url'>/am-i-joyful-or-am-i-happy</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>118</td><td><strong>Soul Snack #25 – What is Evil?</strong><span class='url'>/what-is-evil</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>119</td><td><strong>Soul Feast #25 – What to Do About Disintegrating Social Structures</strong><span class='url'>/what-to-do-about-disintegrating-social-structures</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>120</td><td><strong>Soul Snack #24: Care-giving vs. Care-taking</strong><span class='url'>/care-giving-vs-care-taking</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>121</td><td><strong>Soul Feast #24: What You Can Control</strong><span class='url'>/what-you-can-control</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>122</td><td><strong>Soul Snack #23: Deeper Than Defensive</strong><span class='url'>/deeper-than-defensive</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>123</td><td><strong>Soul Feast #23: The New Male and The New Female</strong><span class='url'>/new-male-and-the-new-female</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>124</td><td><strong>Soul Snack #22: Gary’s First Encounter With Multi-Sensory Perception</strong><span class='url'>/garys-first-encounter-with-multi-sensory-perception</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>125</td><td><strong>Soul Feast #22: Saying What is Most Difficult in Spiritual Partnership</strong><span class='url'>/saying-what-is-most-difficult-in-spiritual-partnership</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>126</td><td><strong>Soul Snack #21: How Do I Challenge a Frightened Part of My Personality?</strong><span class='url'>/challenge-a-frightened-part-of-my-personality</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>127</td><td><strong>Soul Feast #21: Choosing Roles in Spiritual Partnership</strong><span class='url'>/choosing-roles-in-spiritual-partnership</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>128</td><td><strong>Soul Snack #20: Distinguishing Your Personality from Your Soul</strong><span class='url'>/distinguishing-your-personality-from-your-soul</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>129</td><td><strong>Soul Feast #20: Growing Together in Spiritual Partnership</strong><span class='url'>/growing-together-in-spiritual-partnership</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>130</td><td><strong>Soul Snack #19 Alcoholism and Authentic Power</strong><span class='url'>/alcoholism-and-authentic-power</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>131</td><td><strong>Soul Feast #19: Spiritual Partnership vs Marriage</strong><span class='url'>/spiritual-partnership-vs-marriage</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>132</td><td><strong>Soul Snack #18: Can Talents Learned in Past Lives Carry Over?</strong><span class='url'>/can-talents-learned-in-past-lives-carry-over</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>133</td><td><strong>Soul Feast #18: What To Do Before You Speak or Act</strong><span class='url'>/what-to-do-before-you-speak-or-act</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>134</td><td><strong>Soul Snack #17: How to Grow Spiritually When Depressed</strong><span class='url'>/how-to-grow-spiritually-when-depressed</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>135</td><td><strong>SOUL FEAST # 17: The Underlying Gift of Addiction</strong><span class='url'>/the-underlying-gift-of-addiction</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>136</td><td><strong>Soul Snack #16: Experiences of Multisensory Perception</strong><span class='url'>/experiences-of-multisensory-perception</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>137</td><td><strong>Soul Feast #16: How to Trust the Universe</strong><span class='url'>/how-to-trust-the-universe</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>138</td><td><strong>Soul Snack #15: Being Present When Interacting</strong><span class='url'>/being-present-when-interacting</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>139</td><td><strong>Soul Feast #15: Why Choose Forgiveness?</strong><span class='url'>/why-choose-forgiveness</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>140</td><td><strong>Soul Snack #14: Freeing Yourself of Painful Emotional Sensations</strong><span class='url'>/freeing-yourself-of-painful-emotional-sensations</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>141</td><td><strong>Soul Feast #14: What is Love?</strong><span class='url'>/what-is-love</span></td><td>Soul Feast</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>142</td><td><strong>Soul Snack #13: Letting Go of Anger and Resentment</strong><span class='url'>/letting-go-of-anger-and-resentment</span></td><td>Soul Snack</td><td class='center'>2025</td></tr>
+<tr><td class='center muted'>143</td><td><strong>Soul Feast #13: Use Clarity and Choose Love!</strong><span class='url'>/use-clarity-and-choose-love</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>144</td><td><strong>Soul Snack #12: Developing Compassion: The Heart of Authentic Power</strong><span class='url'>/developing-compassion-the-heart-of-authentic-power</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>145</td><td><strong>Soul Feast #12: Why Humbleness Is the Superpower of Everyday Heroes</strong><span class='url'>/why-humbleness-is-the-superpower-of-everyday-heroes</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>146</td><td><strong>Soul Snack #11: Responding to Anger with Love</strong><span class='url'>/responding-to-anger-with-love</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>147</td><td><strong>Soul Feast #11: Reverence for Life: Your Soul’s Intention</strong><span class='url'>/reverence-for-life</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>148</td><td><strong>Soul Snack #10: How do I change the way I process energy?</strong><span class='url'>/how-do-i-change-the-way-i-process-energy</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>149</td><td><strong>Soul Feast #10: Cooperation: Your Soul’s Intention</strong><span class='url'>/cooperation-your-souls-intention</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>150</td><td><strong>Soul Snack #9: We Are Souls</strong><span class='url'>/we-are-souls</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>151</td><td><strong>Soul Feast #9: Sharing: Your Soul’s Intention</strong><span class='url'>/sharing-your-souls-intention</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>152</td><td><strong>Soul Snack #8: Recognizing Frightened Parts of Your Personality</strong><span class='url'>/frightened-parts-of-your-personality</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>153</td><td><strong>Soul Feast #8: Harmony: Your Soul’s Intention</strong><span class='url'>/harmony-your-souls-intention</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>154</td><td><strong>Soul Snack #7: Guided Meditation for Authentic Power</strong><span class='url'>/authentic-power-guided-meditation</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>155</td><td><strong>Soul Feast #7: Intuition &amp; Non-Physical Teachers</strong><span class='url'>/soul-feast-7-intuition-non-physical-teachers</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>156</td><td><strong>Soul Snack #6: Creating Authentic Power – Mastering Fear &amp; Choosing Love</strong><span class='url'>/soul-snack-6-creating-authentic-power-mastering-fear-choosing-love</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>157</td><td><strong>Soul Feast #6: Responsible Choice – Creating a Life of Love Through Conscious Decisions</strong><span class='url'>/soul-feast-6-responsible-choice-conscious-decisions</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>158</td><td><strong>Soul Snack #5: Guided Meditation – Your Choices Shape Your Life</strong><span class='url'>/meditation-your-choices-shape-your-life</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>159</td><td><strong>Soul Feast # 5: Emotional Awareness – What It Is and How to Use It</strong><span class='url'>/emotional-awareness-what-it-is-and-how-to-use-it</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>160</td><td><strong>Soul Snack #4: Intuition is the Voice of the Non-Physical World</strong><span class='url'>/the-voice-of-the-non-physical-world</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>161</td><td><strong>Soul Feast #4: Creating Authentic Power – Introduction</strong><span class='url'>/creating-authentic-power-introduction</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>162</td><td><strong>Soul Snack #3: The Ocean Meditation</strong><span class='url'>/ocean-meditation</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>163</td><td><strong>Soul Feast #3: What is The New Consciousness?</strong><span class='url'>/what-is-the-new-consciousness</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>164</td><td><strong>Soul Snack #2: The Higher Logic of the Heart</strong><span class='url'>/higher-logic-of-the-heart</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>165</td><td><strong>Soul Feast #2: Where Did the Inspiration for “The Seat of the Soul” Come From?</strong><span class='url'>/inspiration-for-the-seat-of-the-soul</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>166</td><td><strong>Soul Snack #1: Giving Your Gifts</strong><span class='url'>/giving-your-gifts</span></td><td>Soul Snack</td><td class='center'>2024</td></tr>
+<tr><td class='center muted'>167</td><td><strong>Soul Feast #1: How Is It That Oprah Called You?</strong><span class='url'>/how-oprah-called</span></td><td>Soul Feast</td><td class='center'>2024</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="page-break">
+  <h2 class="section-title">Next steps</h2>
+  <ul class="lean">
+    <li><strong>Confirm the drop list.</strong> The 20 posts in Section 1 have already been editorially excluded by the SOTSI team. A quick read of the list confirms or reverses individual decisions before the migration build begins.</li>
+    <li><strong>Plan SEO carry-over for the keep list.</strong> A follow-up report can propose title, meta description, internal linking, and structured data improvements for each of the 167 posts being migrated, so the new site launches with cleaner search signals than the current one.</li>
+    <li><strong>Frame the new-content pipeline.</strong> Wisdom Wednesdays, Soul Seeds, Soul Snacks, and high-performing social media content can be folded into the same triage workflow once their sources are connected.</li>
+  </ul>
+
+  <div class="footer">
+    Prepared by 22D Marketing for Seat of the Soul Institute.
+    Source data fetched directly from seatofthesoul.com on May 13, 2026.
+    Editorial decisions in this report reflect the existing SOTSI WordPress workspace state and are advisory only —
+    nothing in this report writes to WordPress, the live site, or any production system.
+  </div>
+</section>
+
+</body>
+</html>

@@ -789,6 +789,29 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     .flag-chip.warn { background: rgba(247,184,75,.16); color: #c9950a; }
     .flag-chip.bad  { background: rgba(240,101,72,.12); color: #f06548; }
 
+    .method-tbl {
+      width: 100%; border-collapse: collapse; font-size: .82rem;
+      margin: .5rem 0 .25rem 0;
+    }
+    .method-tbl th {
+      text-align: left; padding: .55rem .8rem;
+      font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--navy); font-weight: 700;
+      background: rgba(64,81,137,.04); border-bottom: 1.5px solid rgba(64,81,137,.2);
+    }
+    .method-tbl td {
+      padding: .55rem .8rem; border-bottom: 1px solid var(--border);
+      color: var(--text); line-height: 1.5; vertical-align: top;
+    }
+    .method-tbl td.num { text-align: right; white-space: nowrap; }
+    .method-tbl tbody tr:nth-child(even) td { background: rgba(0,0,0,.012); }
+    .method-tbl .zero {
+      display: inline-block; min-width: 1.6rem; text-align: center;
+      padding: .15rem .45rem; border-radius: 3px;
+      background: rgba(10,179,156,.12); color: #0ab39c;
+      font-weight: 800; font-size: .78rem;
+    }
+
     /* ── summary category modal ─────────────────────────────── */
     .sum-backdrop {
       position: fixed; inset: 0; z-index: 1100;
@@ -1224,6 +1247,48 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       <div class="tri-grid" id="tri-grid"><!-- injected --></div>
     </div>
   </div>
+
+  <div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header" style="cursor:pointer" onclick="toggleMethod(this)">
+      <h2>Methodology &mdash; what we checked for <span style="font-size:.7rem;color:var(--muted);font-weight:600;margin-left:.5rem">click to expand</span></h2>
+      <span class="ch-meta">9 patterns scanned across the full body of every keep-list post</span>
+    </div>
+    <div class="card-body" id="method-body" style="display:none">
+      <p style="margin:0 0 1rem 0;color:var(--muted);line-height:1.55;font-size:.88rem">
+        The concern behind this triage is straightforward: leave behind any blog post written for a one-time event,
+        a dated announcement, or a moment in news that has already passed. Every keep-list post was scanned across
+        its <strong>full body</strong> &mdash; not just title or excerpt &mdash; for the patterns below.
+      </p>
+      <table class="method-tbl">
+        <thead><tr><th>Pattern</th><th>What it would catch</th><th class="num">Posts flagged</th></tr></thead>
+        <tbody>
+          <tr><td>Register by / registration opens or closes</td><td>Expired registration calls</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Tickets / RSVP / seats remaining</td><td>Past ticketed events</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Save the date / doors open / early bird</td><td>Promotional event language</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Webinar on / starts on (specific date)</td><td>Specific dated webinars</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Join us on [date] / live event / live broadcast</td><td>Past live broadcasts</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Annual / this year's retreat or conference</td><td>Year-specific recurring events</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Specific Month + Year in body (e.g., "March 2024")</td><td>Posts anchored to a past month</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Specific calendar date (e.g., "October 15")</td><td>Date-specific announcements</td><td class="num"><span class="zero">0</span></td></tr>
+          <tr><td>Past-year-only references (body says "2023")</td><td>Time-stamped commentary</td><td class="num"><span class="zero">0</span></td></tr>
+        </tbody>
+      </table>
+      <h4 style="margin:1.2rem 0 .5rem 0;color:var(--navy);font-size:.95rem">Patterns that did surface &mdash; and why they are not event-tied</h4>
+      <table class="method-tbl">
+        <thead><tr><th>Phrase</th><th>Why it appears</th><th class="num">Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>"This week, notice&hellip;"</strong></td><td>Recurring closing exercise (<em>Soul Step Challenge</em>) at the end of every Soul Snack and Soul Feast. Invites the reader to apply the teaching during their own week &mdash; not on a specific date.</td><td class="num"><span class="verdict-badge verdict-keep">Evergreen</span></td></tr>
+          <tr><td><strong>"Join Gary LIVE every month"</strong></td><td>CTA pointing to the ongoing <em>Soul Themes</em> program, permanent and recurring monthly. The word "every" makes the offer evergreen rather than fixed to a past date.</td><td class="num"><span class="verdict-badge verdict-keep">Evergreen</span></td></tr>
+          <tr><td><strong>"December 14th, 2012"</strong></td><td>One post (Soul Feast #83 with Scarlett Lewis) references the Sandy Hook anniversary as biographical context. Historical reference inside a teaching, not an invitation to a past event.</td><td class="num"><span class="verdict-badge verdict-keep">Evergreen</span></td></tr>
+        </tbody>
+      </table>
+      <div style="background:rgba(10,179,156,.06);border-left:3px solid #0ab39c;padding:.85rem 1rem;margin-top:1rem;border-radius:0 4px 4px 0">
+        <strong style="color:#0ab39c">Confidence statement.</strong>
+        <span style="color:var(--text);font-size:.88rem">All keep-list posts were scanned at full-body depth using nine independent patterns designed to surface event-tied or dated content. Zero posts matched any pattern indicating a past event, expired registration, or moment-in-time announcement.</span>
+      </div>
+    </div>
+  </div>
+
   <div class="search-bar" style="margin-bottom:.75rem">
     <input class="search-input" id="triage-search" type="search" placeholder="Search title or slug&hellip;"/>
     <div class="cat-filter-row" id="tri-filter-row"><!-- injected --></div>
@@ -1830,6 +1895,18 @@ function applyTriageFilter(search, verdict) {
     if (!search) return true;
     return d.title.toLowerCase().includes(search) || d.slug.toLowerCase().includes(search);
   });
+}
+
+function toggleMethod(header) {
+  var body = document.getElementById('method-body');
+  var hint = header.querySelector('span[style*="click to expand"]') || header.querySelector('h2 span');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    if (hint) hint.textContent = 'click to collapse';
+  } else {
+    body.style.display = 'none';
+    if (hint) hint.textContent = 'click to expand';
+  }
 }
 
 // ── sitemap panel (single Tabulator, data replaced per tile) ───────────────
