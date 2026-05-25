@@ -18,7 +18,7 @@ CONTENT_CSV   = ROOT / "SOTSI_Migration_Content.csv"
 REDIRECTS_CSV = ROOT / "SOTSI_Migration_Redirects.csv"
 
 CONTENT_COLS = [
-    "slug", "title", "brand", "category", "verdict", "phase", "sprint", "status",
+    "slug", "title", "group", "brand", "category", "verdict", "phase", "sprint", "status",
     "url_old", "new_path",
     "copy", "hero_media", "images", "video", "seo_title", "seo_desc", "redirects",
     "hours_content", "hours_media", "assignee_role",
@@ -45,7 +45,7 @@ def build():
             continue
         ck = p["content_checklist"]
         content_rows.append([
-            p["slug"], p["title"], p["brand"], p["category"], p["verdict"],
+            p["slug"], p["title"], p.get("group", ""), p["brand"], p["category"], p["verdict"],
             p["phase"], p["sprint"], p["status"], p["url"], p["new_path"],
             "x" if ck["copy"] else "", "x" if ck["hero_media"] else "",
             "x" if ck["images"] else "", "x" if ck["video"] else "",
@@ -55,8 +55,9 @@ def build():
             p["assignee_role"], "; ".join(p["dependencies"]),
             p["consolidate_into"] or "", p["notes"],
         ])
+    gpri = {"principales": 0, "programas": 1, "contenido": 2, "sistema": 3}
     write_bom_csv(CONTENT_CSV, CONTENT_COLS,
-                  sorted(content_rows, key=lambda r: (r[6], r[0])))  # sprint, slug
+                  sorted(content_rows, key=lambda r: (gpri.get(r[2], 9), r[7], r[0])))  # group, sprint, slug
 
     # Redirects CSV — every drop + every consolidate-loser
     red_rows = []

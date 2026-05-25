@@ -38,6 +38,21 @@ El sitio actual en WordPress tiene **110 páginas activas** (+187 posts de blog 
 
 > Las horas son envolventes de planeación (caso típico), no compromisos. Excluyen los 30 DROP (solo redirect). El cuello de botella probable es **Video/Imagen** por la regla dura de "fotos reales, nunca IA".
 
+### Grupos de prioridad (cómo está separado el trabajo)
+
+Las páginas están separadas en 4 grupos para atacar primero lo core. En el tablero el board se agrupa así y hay filtro por grupo.
+
+| Grupo | Págs a construir | Horas | Qué incluye |
+|---|--:|--:|---|
+| **1 · Páginas principales** | 14 | 247.5 | Lo que sí o sí debe estar al lanzar: home, about, fundadores, books, get-started, events&programs, podcast, media, faqs, connect, newsletter, blog (índice) |
+| **2 · Programas y funnels** | 42 | 420.5 | Programas (APSP, SPT, SPP, Journey, Beyond 5 Senses, courses), registros canónicos, optins+TY, evaluaciones |
+| **3 · Contenido y evergreen** | 18 | 123.5 | Ensayos/teaching (Heart of the Soul, Universal Human, AI & Human Evolution…), tributo memorial Linda |
+| **4 · Sistema y legal** | 6 | 90.0 | Privacy, Terms, Refund, Opt-out + commerce/membership (RIESGO) |
+
+> **Nota sobre "fáciles":** dentro de Principales hay quick-wins (FAQs, Connect, Media ≈ 5–18h c/u) y piezas pesadas (Home ≈ 42h, About/fundadores ≈ 23h c/u). Son las **esenciales**, no todas triviales — pero son el orden correcto para arrancar.
+
+> **Blog (187 posts) = Fase 2, plan aparte.** Ya está triado (167 keep / 20 drop). Aquí es donde tienes dudas; lo trabajamos por separado cuando quieras.
+
 ---
 
 ## 2. Decisiones ya tomadas (Joel)

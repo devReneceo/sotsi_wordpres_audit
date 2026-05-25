@@ -33,6 +33,32 @@ ARCHETYPE_HOURS = {
     "redirect":    (0,  0, 0, 0,  0),   # drop / consolidate-loser: 301 only
 }
 
+# ── grouping (priority tiers) ──────────────────────────────────────────────────
+# CORE = paginas principales / must-have al lanzar (lo que el visitante espera).
+CORE = {
+    "home", "about", "about-gary-zukav", "about-linda-francis",
+    "seat-of-the-soul-institute", "books", "get-started", "events-and-programs",
+    "podcast", "media", "faqs", "connect", "blog", "blog-2",
+    "soul-connections-newsletter",
+}
+SYSTEM = {
+    "privacy-policy", "terms-of-use", "refund-cancellation", "opt-out",
+    "shop", "cart", "checkout", "my-account", "your-profile", "soul2soulcommunity",
+    "evening-welcome", "sg", "email-series-update", "style-sheet",
+}
+GROUP_PRIORITY = {"principales": 0, "programas": 1, "contenido": 2, "sistema": 3}
+
+
+def group_for(slug, category, archetype):
+    """Tier de prioridad de la pagina (separa core de lo demas)."""
+    if slug in CORE:   return "principales"
+    if slug in SYSTEM: return "sistema"
+    if archetype in ("funnel", "template", "program"):  return "programas"
+    if category in ("Program / Event", "Thank You"):     return "programas"
+    if category == "System":                             return "sistema"
+    return "contenido"
+
+
 # Pages that belong to UHF or shared/both. Everything else defaults to SOTSI.
 UHF = {"universalhuman", "universal-human-audiobook-excerpt-chapter-28",
        "universal-human-celebrates-one-year", "ai-and-human-evolution"}
@@ -215,6 +241,7 @@ def build():
                 "title": p["title"],
                 "brand": brand_for(slug),
                 "category": cat,
+                "group": group_for(slug, cat, arche),
                 "archetype": arche,
                 "verdict": verdict,
                 "phase": phase,
@@ -240,18 +267,22 @@ def build():
             "source_inventory": "data/site_inventory.json",
         },
         "sprints": SPRINTS,
-        "pages": sorted(pages, key=lambda x: (x["sprint"] if x["sprint"] else 99, x["slug"])),
+        "pages": sorted(pages, key=lambda x: (GROUP_PRIORITY.get(x["group"], 9),
+                                              x["sprint"] if x["sprint"] else 99,
+                                              x["slug"])),
     }
     json.dump(plan, open(OUT, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
 
     # quick console summary
     from collections import Counter
     vc = Counter(p["verdict"] for p in pages)
+    gc = Counter(p["group"] for p in pages)
     pc = Counter(p["phase"] for p in pages)
     th = {r: round(sum(p["role_hours"][r] for p in pages if p["verdict"] != "drop"), 1)
           for r in ["design", "content", "media", "build", "review"]}
     print(f"Wrote {OUT.name}: {len(pages)} pages")
     print("verdicts:", dict(vc))
+    print("by group:", dict(gc))
     print("by phase:", dict(pc))
     print("total build-able hours by role:", th)
     print("grand total hours (excl. drops):", round(sum(th.values()), 1))

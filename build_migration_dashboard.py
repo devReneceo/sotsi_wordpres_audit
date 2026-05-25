@@ -28,6 +28,9 @@ ROLE_ES = {"design": "Diseño", "content": "Contenido", "media": "Video/Imagen",
            "build": "Build Webflow", "review": "Revisión"}
 STATUSES = ["backlog", "design", "content", "build", "review", "done", "blocked"]
 VERDICTS = ["keep", "improve", "rebuild", "consolidate", "drop"]
+GROUP_ORDER = ["principales", "programas", "contenido", "sistema"]
+GROUP_LABELS = {"principales": "1 · Páginas principales", "programas": "2 · Programas y funnels",
+                "contenido": "3 · Contenido y evergreen", "sistema": "4 · Sistema y legal"}
 
 
 # ── data + rollups ─────────────────────────────────────────────────────────────
@@ -118,6 +121,27 @@ def sprint_tiles(pages, sprints, m):
             f'<div class="sprint-meta"><span>{len(sp)} págs</span><span>{hrs:g}h</span>'
             f'<span>{done}/{len(sp)} done</span></div>'
             f'<div class="bar-track sm"><div class="bar-fill" style="width:{pct}%"></div></div></div>')
+    return "\n".join(out)
+
+
+def group_summary(pages):
+    """One card per priority tier: page count, build-able, hours, % done."""
+    out = []
+    for g in GROUP_ORDER:
+        gp = [p for p in pages if p.get("group") == g]
+        if not gp:
+            continue
+        buildable = [p for p in gp if p["verdict"] != "drop"]
+        done = sum(1 for p in gp if p["status"] == "done")
+        hrs = round(sum(page_hours(p) for p in buildable), 1)
+        pct = round(done / len(gp) * 100) if gp else 0
+        drops = sum(1 for p in gp if p["verdict"] == "drop")
+        out.append(
+            f'<div class="grp-card grp-{g}"><div class="grp-title">{GROUP_LABELS[g]}</div>'
+            f'<div class="grp-big">{len(buildable)}<span> a construir</span></div>'
+            f'<div class="grp-meta">{hrs:g}h · {drops} drops · {len(gp)} en total</div>'
+            f'<div class="bar-track sm"><div class="bar-fill" style="width:{pct}%"></div></div>'
+            f'<div class="grp-pct">{done}/{len(gp)} done</div></div>')
     return "\n".join(out)
 
 
@@ -241,6 +265,17 @@ section.block{background:var(--surface);border:1px solid var(--border);border-ra
 .sprint-goal{font-size:12.5px;color:var(--muted);margin:6px 0 10px;min-height:34px}
 .sprint-meta{display:flex;gap:12px;font-size:12px;color:var(--text);font-weight:500}
 
+/* group (tier) cards */
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.grp-card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:#fff;border-top:4px solid var(--purple)}
+.grp-principales{border-top-color:var(--gold-yellow)}.grp-programas{border-top-color:var(--purple)}
+.grp-contenido{border-top-color:var(--periwinkle)}.grp-sistema{border-top-color:var(--navy)}
+.grp-title{font-weight:600;font-size:13.5px;color:var(--navy)}
+.grp-big{font-family:var(--hed);font-size:40px;font-weight:700;color:var(--navy);line-height:1;margin:8px 0 2px}
+.grp-big span{font-family:var(--font);font-size:13px;font-weight:500;color:var(--muted)}
+.grp-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+.grp-pct{font-size:11px;color:var(--muted);margin-top:4px;text-align:right}
+
 /* tabs */
 .tabs{display:flex;gap:4px;margin:22px 0 0;flex-wrap:wrap}
 .tab-btn{border:none;background:transparent;font-family:var(--font);font-size:14px;font-weight:600;color:var(--muted);padding:11px 18px;cursor:pointer;border-radius:10px 10px 0 0}
@@ -323,6 +358,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0 40px}
   </div>
 
   <div class="tab-panel active" id="tab-overview">
+    <section class="block"><h2>Grupos de prioridad</h2><div class="groups">__GROUP_SUMMARY__</div>
+      <p style="color:var(--muted);font-size:12.5px;margin-top:10px"><b>Principales</b> = páginas core que sí o sí deben estar al lanzar (home, about, nav). El blog (187 posts) es Fase 2 aparte.</p>
+    </section>
     <section class="block"><h2>Sprints</h2><div class="sprints">__SPRINT_TILES__</div></section>
     <section class="block"><h2>Horas por rol — avance</h2>__ROLE_BARS__
       <p style="color:var(--muted);font-size:12.5px;margin-top:10px">Barras = horas <b>done</b> sobre horas totales estimadas (excluye drops, que solo llevan 301 redirect).</p>
@@ -333,6 +371,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0 40px}
     <section class="block">
       <div class="filters">
         <input id="f-search" placeholder="Buscar título o slug…">
+        <select id="f-group"><option value="">Grupo: todos</option></select>
         <select id="f-status"><option value="">Estatus: todos</option></select>
         <select id="f-sprint"><option value="">Sprint: todos</option></select>
         <select id="f-verdict"><option value="">Veredicto: todos</option></select>
@@ -360,6 +399,8 @@ const PAGES = __PAGES_JSON__;
 const SPRINTS = __SPRINTS_JSON__;
 const ROLES = ["design","content","media","build","review"];
 const ROLE_ES = {design:"Diseño",content:"Contenido",media:"Video/Imagen",build:"Build Webflow",review:"Revisión"};
+const GROUP_LABELS = {principales:"1 · Páginas principales",programas:"2 · Programas y funnels",contenido:"3 · Contenido y evergreen",sistema:"4 · Sistema y legal"};
+const GROUP_ORDER = ["principales","programas","contenido","sistema"];
 const esc = s => (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
 const pageHours = p => ROLES.reduce((a,r)=>a+(p.role_hours[r]||0),0);
@@ -378,6 +419,7 @@ function opts(id, vals, labelFn){
   const sel=document.getElementById(id);
   vals.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=labelFn?labelFn(v):v;sel.appendChild(o);});
 }
+opts("f-group",GROUP_ORDER.filter(g=>PAGES.some(p=>p.group===g)),g=>GROUP_LABELS[g]);
 opts("f-status",[...new Set(PAGES.map(p=>p.status))].sort(),cap);
 opts("f-sprint",[...new Set(PAGES.map(p=>p.sprint))].sort((a,b)=>a-b),v=>"Sprint "+v);
 opts("f-verdict",[...new Set(PAGES.map(p=>p.verdict))].sort(),cap);
@@ -388,6 +430,13 @@ opts("f-cat",[...new Set(PAGES.map(p=>p.category))].sort());
 const badge=(cls,txt)=>`<span class="badge ${cls}">${esc(txt)}</span>`;
 const table=new Tabulator("#board",{
   data:PAGES, layout:"fitColumns", height:"calc(100vh - 300px)", reactiveData:false,
+  groupBy:"group",
+  groupValues:[GROUP_ORDER],
+  groupHeader:function(value,count,data){
+    const h=data.filter(d=>d.verdict!=="drop").reduce((a,d)=>a+pageHours(d),0);
+    return `<span style="font-family:var(--hed);font-size:16px;color:var(--navy)">${esc(GROUP_LABELS[value]||value)}</span>`+
+           `<span style="color:#7a748f;font-size:12px;margin-left:10px">${count} págs · ${Math.round(h)}h</span>`;
+  },
   columns:[
     {title:"Estatus",field:"status",width:108,formatter:c=>badge("st-"+c.getValue(),cap(c.getValue()))},
     {title:"Título",field:"title",minWidth:200,formatter:c=>`<b>${esc(c.getValue())}</b><br><span style="color:#7a748f;font-size:11px">/${esc(c.getData().slug)}</span>`},
@@ -407,7 +456,7 @@ table.on("rowClick",(e,row)=>openPanel(row.getData()));
 
 function applyFilters(){
   const q=document.getElementById("f-search").value.toLowerCase();
-  const f={status:"f-status",sprint:"f-sprint",verdict:"f-verdict",brand:"f-brand",category:"f-cat"};
+  const f={group:"f-group",status:"f-status",sprint:"f-sprint",verdict:"f-verdict",brand:"f-brand",category:"f-cat"};
   table.setFilter(d=>{
     if(q && !(d.title.toLowerCase().includes(q)||d.slug.toLowerCase().includes(q))) return false;
     for(const [field,id] of Object.entries(f)){
@@ -418,7 +467,7 @@ function applyFilters(){
   });
   setTimeout(()=>{document.getElementById("f-count").textContent="Mostrando "+table.getDataCount("active")+" de "+PAGES.length;},50);
 }
-["f-search","f-status","f-sprint","f-verdict","f-brand","f-cat"].forEach(id=>{
+["f-search","f-group","f-status","f-sprint","f-verdict","f-brand","f-cat"].forEach(id=>{
   const el=document.getElementById(id);el.addEventListener(id==="f-search"?"input":"change",applyFilters);});
 document.getElementById("f-clear").onclick=()=>{
   ["f-search","f-status","f-sprint","f-verdict","f-brand","f-cat"].forEach(id=>document.getElementById(id).value="");applyFilters();};
@@ -477,6 +526,7 @@ def main():
            .replace("__GENERATED_AT__", meta["generated_at"])
            .replace("__KPI_CARDS__", kpi_cards(meta))
            .replace("__ROLE_BARS__", role_bars(meta))
+           .replace("__GROUP_SUMMARY__", group_summary(pages))
            .replace("__SPRINT_TILES__", sprint_tiles(pages, sprints, meta))
            .replace("__TEAM_GUIDE__", team_guide())
            .replace("__PAGES_JSON__", json.dumps(pages, ensure_ascii=False))
