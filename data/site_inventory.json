@@ -1,0 +1,1017 @@
+{
+  "generated_at": "2026-05-25",
+  "source": "SOTSI_Audit_Report.html (WP REST API snapshot)",
+  "totals": {
+    "active_pages": 110,
+    "published_posts": 187,
+    "by_category": {
+      "Main Site": 22,
+      "Content": 21,
+      "Thank You": 11,
+      "Program / Event": 43,
+      "System": 13
+    }
+  },
+  "pages_by_category": {
+    "Main Site": [
+      {
+        "slug": "about",
+        "url": "https://seatofthesoul.com/about",
+        "title": "About",
+        "category": "Main Site",
+        "modified": "2021-07-27",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "about-gary-zukav",
+        "url": "https://seatofthesoul.com/about-gary-zukav",
+        "title": "About Gary Zukav",
+        "category": "Main Site",
+        "modified": "2023-01-03",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "about-linda-francis",
+        "url": "https://seatofthesoul.com/about-linda-francis",
+        "title": "About Linda Francis",
+        "category": "Main Site",
+        "modified": "2025-04-21",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "ai-and-human-evolution",
+        "url": "https://seatofthesoul.com/ai-and-human-evolution",
+        "title": "AI and Human Evolution",
+        "category": "Main Site",
+        "modified": "2024-03-26",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "blog",
+        "url": "https://seatofthesoul.com/blog",
+        "title": "Blog",
+        "category": "Main Site",
+        "modified": "2021-06-18",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "blog-2",
+        "url": "https://seatofthesoul.com/blog-2",
+        "title": "Blog",
+        "category": "Main Site",
+        "modified": "2024-06-19",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "books",
+        "url": "https://seatofthesoul.com/books",
+        "title": "Books",
+        "category": "Main Site",
+        "modified": "2022-06-03",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "connect",
+        "url": "https://seatofthesoul.com/connect",
+        "title": "Contact",
+        "category": "Main Site",
+        "modified": "2021-09-18",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "courses-lighten",
+        "url": "https://seatofthesoul.com/courses-lighten",
+        "title": "Courses – LightEn",
+        "category": "Main Site",
+        "modified": "2025-10-29",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "events-and-programs",
+        "url": "https://seatofthesoul.com/events-and-programs",
+        "title": "Events",
+        "category": "Main Site",
+        "modified": "2021-10-30",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "failing-government",
+        "url": "https://seatofthesoul.com/failing-government",
+        "title": "Failing Government",
+        "category": "Main Site",
+        "modified": "2024-03-26",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "faqs",
+        "url": "https://seatofthesoul.com/faqs",
+        "title": "FAQs",
+        "category": "Main Site",
+        "modified": "2024-05-26",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "get-started",
+        "url": "https://seatofthesoul.com/get-started",
+        "title": "Get Started",
+        "category": "Main Site",
+        "modified": "2025-04-22",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "home",
+        "url": "https://seatofthesoul.com/home",
+        "title": "Home",
+        "category": "Main Site",
+        "modified": "2025-09-02",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "journey-to-the-soul-retreat-faqs",
+        "url": "https://seatofthesoul.com/journey-to-the-soul-retreat-faqs",
+        "title": "Journey To The Soul Retreat FAQs",
+        "category": "Main Site",
+        "modified": "2021-10-07",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "media",
+        "url": "https://seatofthesoul.com/media",
+        "title": "Media",
+        "category": "Main Site",
+        "modified": "2023-06-15",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "podcast",
+        "url": "https://seatofthesoul.com/podcast",
+        "title": "Podcast",
+        "category": "Main Site",
+        "modified": "2025-11-21",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "remember-linda-homepage",
+        "url": "https://seatofthesoul.com/remember-linda-homepage",
+        "title": "Remember Linda Homepage",
+        "category": "Main Site",
+        "modified": "2023-11-30",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "seat-of-the-soul-institute",
+        "url": "https://seatofthesoul.com/seat-of-the-soul-institute",
+        "title": "Seat of The Soul Institute",
+        "category": "Main Site",
+        "modified": "2021-09-01",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "shop",
+        "url": "https://seatofthesoul.com/shop",
+        "title": "Shop",
+        "category": "Main Site",
+        "modified": "2025-01-07",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "soul-connections-newsletter",
+        "url": "https://seatofthesoul.com/soul-connections-newsletter",
+        "title": "Soul Connections Newsletter",
+        "category": "Main Site",
+        "modified": "2026-02-10",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "soul-connections-newsletter-archive",
+        "url": "https://seatofthesoul.com/soul-connections-newsletter-archive",
+        "title": "Soul Connections Newsletter Archive",
+        "category": "Main Site",
+        "modified": "2021-06-11",
+        "year": "2021",
+        "is_dup": false
+      }
+    ],
+    "Content": [
+      {
+        "slug": "addiction",
+        "url": "https://seatofthesoul.com/addiction",
+        "title": "Addiction",
+        "category": "Content",
+        "modified": "2024-07-24",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "for-linda",
+        "url": "https://seatofthesoul.com/for-linda",
+        "title": "Share and Read Messages for Linda",
+        "category": "Content",
+        "modified": "2022-10-04",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "free-tools",
+        "url": "https://seatofthesoul.com/free-tools",
+        "title": "Tools",
+        "category": "Content",
+        "modified": "2022-05-31",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "gifts-of-the-pandemic",
+        "url": "https://seatofthesoul.com/gifts-of-the-pandemic",
+        "title": "Gifts of the pandemic",
+        "category": "Content",
+        "modified": "2021-06-21",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "happy-birthday-gary",
+        "url": "https://seatofthesoul.com/happy-birthday-gary",
+        "title": "Happy Birthday Gary!",
+        "category": "Content",
+        "modified": "2022-10-17",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "heartofthesoul",
+        "url": "https://seatofthesoul.com/heartofthesoul",
+        "title": "Heart of the Soul",
+        "category": "Content",
+        "modified": "2021-09-09",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "judgment",
+        "url": "https://seatofthesoul.com/judgment",
+        "title": "Judgment",
+        "category": "Content",
+        "modified": "2024-07-24",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "linda-celebration",
+        "url": "https://seatofthesoul.com/linda-celebration",
+        "title": "Linda Celebration",
+        "category": "Content",
+        "modified": "2023-08-01",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "linda-francis-celebration-series",
+        "url": "https://seatofthesoul.com/linda-francis-celebration-series",
+        "title": "Linda Francis Celebration Series",
+        "category": "Content",
+        "modified": "2023-01-05",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "linda-francis-celebration-series-messages",
+        "url": "https://seatofthesoul.com/linda-francis-celebration-series-messages",
+        "title": "Linda Francis Celebration Series Messages",
+        "category": "Content",
+        "modified": "2023-04-19",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "lindas-mailbox",
+        "url": "https://seatofthesoul.com/lindas-mailbox",
+        "title": "Linda's Mailbox",
+        "category": "Content",
+        "modified": "2022-11-15",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "love-fear",
+        "url": "https://seatofthesoul.com/love-fear",
+        "title": "Love & Fear",
+        "category": "Content",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "messages-for-linda",
+        "url": "https://seatofthesoul.com/messages-for-linda",
+        "title": "Messages for Linda",
+        "category": "Content",
+        "modified": "2022-09-21",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "multi-sensory-vocabulary",
+        "url": "https://seatofthesoul.com/multi-sensory-vocabulary",
+        "title": "Multi-Sensory Vocabulary",
+        "category": "Content",
+        "modified": "2021-06-14",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "paulo-coelhos",
+        "url": "https://seatofthesoul.com/paulo-coelhos",
+        "title": "Paulo Coelho's Gift",
+        "category": "Content",
+        "modified": "2021-06-11",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "questions-and-answers",
+        "url": "https://seatofthesoul.com/questions-and-answers",
+        "title": "Questions and Answers",
+        "category": "Content",
+        "modified": "2021-07-02",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "responsible-choice",
+        "url": "https://seatofthesoul.com/responsible-choice",
+        "title": "Responsible Choice",
+        "category": "Content",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "share-your-favorite-quotes-the-seat-of-the-soul",
+        "url": "https://seatofthesoul.com/share-your-favorite-quotes-the-seat-of-the-soul",
+        "title": "Share Your Favorite Quotes-The Seat of the Soul",
+        "category": "Content",
+        "modified": "2022-07-20",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "subscribe-to-podcast",
+        "url": "https://seatofthesoul.com/subscribe-to-podcast",
+        "title": "Podcast – Subscribe",
+        "category": "Content",
+        "modified": "2024-10-04",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "universalhuman",
+        "url": "https://seatofthesoul.com/universalhuman",
+        "title": "Universal Human",
+        "category": "Content",
+        "modified": "2022-06-20",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "wishes-for-gary",
+        "url": "https://seatofthesoul.com/wishes-for-gary",
+        "title": "Wishes for Gary",
+        "category": "Content",
+        "modified": "2022-10-13",
+        "year": "2022",
+        "is_dup": false
+      }
+    ],
+    "Thank You": [
+      {
+        "slug": "addiction-thank-you",
+        "url": "https://seatofthesoul.com/addiction-thank-you",
+        "title": "Addiction Thank You",
+        "category": "Thank You",
+        "modified": "2024-09-05",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "apg-ty",
+        "url": "https://seatofthesoul.com/apg-ty",
+        "title": "Authentic Power Guidelines – TY",
+        "category": "Thank You",
+        "modified": "2025-04-23",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "daily-intuition-ty",
+        "url": "https://seatofthesoul.com/daily-intuition-ty",
+        "title": "Daily Intuition Practice – TY",
+        "category": "Thank You",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "judgement-thank-you",
+        "url": "https://seatofthesoul.com/judgement-thank-you",
+        "title": "Judgement Thank You",
+        "category": "Thank You",
+        "modified": "2024-07-16",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "linda-celebration-thank-you",
+        "url": "https://seatofthesoul.com/linda-celebration-thank-you",
+        "title": "Linda Celebration – Thank You",
+        "category": "Thank You",
+        "modified": "2023-08-02",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "love-fear-ty",
+        "url": "https://seatofthesoul.com/love-fear-ty",
+        "title": "Love & Fear – TY",
+        "category": "Thank You",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "message-to-linda-received",
+        "url": "https://seatofthesoul.com/message-to-linda-received",
+        "title": "Message to Linda Received",
+        "category": "Thank You",
+        "modified": "2023-08-08",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "multi-five-ty",
+        "url": "https://seatofthesoul.com/multi-five-ty",
+        "title": "Multisensory vs Five-Sensory – TY",
+        "category": "Thank You",
+        "modified": "2025-03-07",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "registration-received",
+        "url": "https://seatofthesoul.com/registration-received",
+        "title": "Registration Received",
+        "category": "Thank You",
+        "modified": "2021-12-03",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "responsible-choice-ty",
+        "url": "https://seatofthesoul.com/responsible-choice-ty",
+        "title": "Responsible Choice – TY",
+        "category": "Thank You",
+        "modified": "2025-03-12",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "soul-connections-newsletter-ty",
+        "url": "https://seatofthesoul.com/soul-connections-newsletter-ty",
+        "title": "Soul Connections Newsletter – TY",
+        "category": "Thank You",
+        "modified": "2026-02-12",
+        "year": "2024",
+        "is_dup": false
+      }
+    ],
+    "Program / Event": [
+      {
+        "slug": "apg-optin",
+        "url": "https://seatofthesoul.com/apg-optin",
+        "title": "Authentic Power Guidelines Opt-in",
+        "category": "Program / Event",
+        "modified": "2025-04-23",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "apsp-23-registration",
+        "url": "https://seatofthesoul.com/apsp-23-registration",
+        "title": "APSP 23 Registration",
+        "category": "Program / Event",
+        "modified": "2022-11-15",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "apsp-25-registration",
+        "url": "https://seatofthesoul.com/apsp-25-registration",
+        "title": "APSP 25 Registration",
+        "category": "Program / Event",
+        "modified": "2024-09-20",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "apsp-questionnaire",
+        "url": "https://seatofthesoul.com/apsp-questionnaire",
+        "title": "APSP Questionnaire",
+        "category": "Program / Event",
+        "modified": "2022-11-14",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "authentic-power-support-program-apsp-2025",
+        "url": "https://seatofthesoul.com/authentic-power-support-program-apsp-2025",
+        "title": "Authentic Power Support Program (APSP) 2025",
+        "category": "Program / Event",
+        "modified": "2024-09-20",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "beyond-the-five-senses-course",
+        "url": "https://seatofthesoul.com/beyond-the-five-senses-course",
+        "title": "Beyond The Five Senses Course",
+        "category": "Program / Event",
+        "modified": "2021-08-31",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "beyond-the-five-senses-waitlist",
+        "url": "https://seatofthesoul.com/beyond-the-five-senses-waitlist",
+        "title": "Beyond The Five Senses Waitlist",
+        "category": "Program / Event",
+        "modified": "2021-07-15",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "cultivating-love-optin",
+        "url": "https://seatofthesoul.com/cultivating-love-optin",
+        "title": "Cultivating Self Love – Optin",
+        "category": "Program / Event",
+        "modified": "2024-08-01",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "cultivating-love-self-assessment",
+        "url": "https://seatofthesoul.com/cultivating-love-self-assessment",
+        "title": "Cultivating Love Self-Assessment",
+        "category": "Program / Event",
+        "modified": "2021-06-21",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "cultivatingemotionalawareness",
+        "url": "https://seatofthesoul.com/cultivatingemotionalawareness",
+        "title": "Cultivating Emotional Awareness",
+        "category": "Program / Event",
+        "modified": "2021-11-09",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "daily-intuition-practice",
+        "url": "https://seatofthesoul.com/daily-intuition-practice",
+        "title": "Daily Intuition Practice",
+        "category": "Program / Event",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "event-waitlist-journey-to-the-soul",
+        "url": "https://seatofthesoul.com/event-waitlist-journey-to-the-soul",
+        "title": "Event Waitlist (Journey to the Soul)",
+        "category": "Program / Event",
+        "modified": "2024-09-17",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "fear-evaluation",
+        "url": "https://seatofthesoul.com/fear-evaluation",
+        "title": "Fear Evaluation",
+        "category": "Program / Event",
+        "modified": "2021-06-11",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "garys-welcome-video",
+        "url": "https://seatofthesoul.com/garys-welcome-video",
+        "title": "Gary's Welcome Video",
+        "category": "Program / Event",
+        "modified": "2021-08-12",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "garyzukavlive",
+        "url": "https://seatofthesoul.com/garyzukavlive",
+        "title": "Gary Zukav LIVE",
+        "category": "Program / Event",
+        "modified": "2021-10-13",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "intuitivemultisensorylife",
+        "url": "https://seatofthesoul.com/intuitivemultisensorylife",
+        "title": "Intuitive Multisensory Life",
+        "category": "Program / Event",
+        "modified": "2021-11-02",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "join-seat-of-the-soul-team",
+        "url": "https://seatofthesoul.com/join-seat-of-the-soul-team",
+        "title": "Join Seat of the soul team",
+        "category": "Program / Event",
+        "modified": "2021-10-07",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "join-the-waitlist-jou23",
+        "url": "https://seatofthesoul.com/join-the-waitlist-jou23",
+        "title": "Join the Waitlist JOU23",
+        "category": "Program / Event",
+        "modified": "2022-08-21",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "join-the-waitlist-sp-new-dimension-relationship",
+        "url": "https://seatofthesoul.com/join-the-waitlist-sp-new-dimension-relationship",
+        "title": "Join the Waitlist – SP – The New Dimension of Relationship",
+        "category": "Program / Event",
+        "modified": "2022-08-21",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "journey-questionnaire",
+        "url": "https://seatofthesoul.com/journey-questionnaire",
+        "title": "Journey Questionnaire",
+        "category": "Program / Event",
+        "modified": "2021-12-06",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "journey-to-the-soul-questionnaire",
+        "url": "https://seatofthesoul.com/journey-to-the-soul-questionnaire",
+        "title": "Journey to the Soul Questionnaire",
+        "category": "Program / Event",
+        "modified": "2024-01-19",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "journey-to-the-soul-registration-september-2024",
+        "url": "https://seatofthesoul.com/journey-to-the-soul-registration-september-2024",
+        "title": "Journey to the Soul – Registration September 2024",
+        "category": "Program / Event",
+        "modified": "2024-09-16",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "jtts-lav-agreement-form",
+        "url": "https://seatofthesoul.com/jtts-lav-agreement-form",
+        "title": "Authentic Power LAV Agreement Form",
+        "category": "Program / Event",
+        "modified": "2023-05-17",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "lav-terms-conditions-agreement",
+        "url": "https://seatofthesoul.com/lav-terms-conditions-agreement",
+        "title": "LAV / Terms & Conditions Agreement",
+        "category": "Program / Event",
+        "modified": "2021-12-15",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "listen-in",
+        "url": "https://seatofthesoul.com/listen-in",
+        "title": "Listen In",
+        "category": "Program / Event",
+        "modified": "2022-08-03",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "listen-with-gary-and-linda",
+        "url": "https://seatofthesoul.com/listen-with-gary-and-linda",
+        "title": "Listen with Gary and Linda",
+        "category": "Program / Event",
+        "modified": "2021-07-15",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "love-evaluation",
+        "url": "https://seatofthesoul.com/love-evaluation",
+        "title": "Love Evaluation",
+        "category": "Program / Event",
+        "modified": "2021-06-11",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "mutli-five-sensory",
+        "url": "https://seatofthesoul.com/mutli-five-sensory",
+        "title": "Multisensory vs Five-Sensory",
+        "category": "Program / Event",
+        "modified": "2025-03-06",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "seat-of-the-soul-33rd-anniversary-celebration-giveaway",
+        "url": "https://seatofthesoul.com/seat-of-the-soul-33rd-anniversary-celebration-giveaway",
+        "title": "Seat of the Soul  Celebrates 33 Years in Publication",
+        "category": "Program / Event",
+        "modified": "2022-03-07",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "seat-of-the-soul-career-opportunities",
+        "url": "https://seatofthesoul.com/seat-of-the-soul-career-opportunities",
+        "title": "Seat of the Soul Career Opportunities",
+        "category": "Program / Event",
+        "modified": "2024-01-15",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "spiritual-partnership-program-spp-registration-2025-eb",
+        "url": "https://seatofthesoul.com/spiritual-partnership-program-spp-registration-2025-eb",
+        "title": "Spiritual Partnership Program (SPP) Registration 2025 (EB)",
+        "category": "Program / Event",
+        "modified": "2024-09-20",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "spiritual-partnership-program-spp-registration-2025-fp",
+        "url": "https://seatofthesoul.com/spiritual-partnership-program-spp-registration-2025-fp",
+        "title": "Spiritual Partnership Program (SPP) Registration 2025 (FP)",
+        "category": "Program / Event",
+        "modified": "2025-10-16",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "spiritual-partnership-program-spt-registration-2026-fp",
+        "url": "https://seatofthesoul.com/spiritual-partnership-program-spt-registration-2026-fp",
+        "title": "Spiritual Partnership Training Program (SPT) Payment Page Registration 2026 (FP)",
+        "category": "Program / Event",
+        "modified": "2025-10-16",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "spiritual-partnership-training-program-spt-registration-2025-eb",
+        "url": "https://seatofthesoul.com/spiritual-partnership-training-program-spt-registration-2025-eb",
+        "title": "Spiritual Partnership Training Program (SPT) Registration 2025 (EB)",
+        "category": "Program / Event",
+        "modified": "2024-10-18",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "spiritual-partnership-training-program-spt-registration-2025-fp",
+        "url": "https://seatofthesoul.com/spiritual-partnership-training-program-spt-registration-2025-fp",
+        "title": "Spiritual Partnership Training Program (SPT) Registration 2025 (FP)",
+        "category": "Program / Event",
+        "modified": "2024-10-29",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "spp-25-registration-eb",
+        "url": "https://seatofthesoul.com/spp-25-registration-eb",
+        "title": "SPP 25 Registration – EB",
+        "category": "Program / Event",
+        "modified": "2024-09-22",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "spp-25-registration-fp",
+        "url": "https://seatofthesoul.com/spp-25-registration-fp",
+        "title": "SPP 25 Registration FP",
+        "category": "Program / Event",
+        "modified": "2024-09-20",
+        "year": "2023",
+        "is_dup": false
+      },
+      {
+        "slug": "spp-questionnaire",
+        "url": "https://seatofthesoul.com/spp-questionnaire",
+        "title": "SPP Questionnaire",
+        "category": "Program / Event",
+        "modified": "2025-12-20",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "spt-26-registration-fp-2",
+        "url": "https://seatofthesoul.com/spt-26-registration-fp-2",
+        "title": "SPT 26 Program Registration-FP",
+        "category": "Program / Event",
+        "modified": "2025-12-03",
+        "year": "2025",
+        "is_dup": false
+      },
+      {
+        "slug": "spt-ground-rules",
+        "url": "https://seatofthesoul.com/spt-ground-rules",
+        "title": "SPT Ground Rules",
+        "category": "Program / Event",
+        "modified": "2025-01-10",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "universal-human-audiobook-excerpt-chapter-28",
+        "url": "https://seatofthesoul.com/universal-human-audiobook-excerpt-chapter-28",
+        "title": "UNIVERSAL HUMAN Audiobook Excerpt – Chapter 28",
+        "category": "Program / Event",
+        "modified": "2022-05-23",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "universal-human-celebrates-one-year",
+        "url": "https://seatofthesoul.com/universal-human-celebrates-one-year",
+        "title": "Universal Human Celebrates One Year",
+        "category": "Program / Event",
+        "modified": "2022-06-20",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "video-april-2022-event",
+        "url": "https://seatofthesoul.com/video-april-2022-event",
+        "title": "Video – April 2022 Event",
+        "category": "Program / Event",
+        "modified": "2022-04-05",
+        "year": "2022",
+        "is_dup": false
+      }
+    ],
+    "System": [
+      {
+        "slug": "cart",
+        "url": "https://seatofthesoul.com/cart",
+        "title": "Cart",
+        "category": "System",
+        "modified": "2021-11-01",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "checkout",
+        "url": "https://seatofthesoul.com/checkout",
+        "title": "Checkout",
+        "category": "System",
+        "modified": "2021-11-01",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "email-series-update",
+        "url": "https://seatofthesoul.com/email-series-update",
+        "title": "Email Series Update",
+        "category": "System",
+        "modified": "2022-10-04",
+        "year": "2022",
+        "is_dup": false
+      },
+      {
+        "slug": "evening-welcome",
+        "url": "https://seatofthesoul.com/evening-welcome",
+        "title": "EWGZ Dashboard",
+        "category": "System",
+        "modified": "2024-09-19",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "my-account",
+        "url": "https://seatofthesoul.com/my-account",
+        "title": "My account",
+        "category": "System",
+        "modified": "2021-11-01",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "opt-out",
+        "url": "https://seatofthesoul.com/opt-out",
+        "title": "Opt out",
+        "category": "System",
+        "modified": "2024-04-10",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "privacy-policy",
+        "url": "https://seatofthesoul.com/privacy-policy",
+        "title": "Privacy Policy",
+        "category": "System",
+        "modified": "2025-08-22",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "refund-cancellation",
+        "url": "https://seatofthesoul.com/refund-cancellation",
+        "title": "Refund/Cancellation Policy",
+        "category": "System",
+        "modified": "2024-12-11",
+        "year": "2024",
+        "is_dup": false
+      },
+      {
+        "slug": "sg",
+        "url": "https://seatofthesoul.com/sg",
+        "title": "SG Welcome",
+        "category": "System",
+        "modified": "2023-02-01",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "soul2soulcommunity",
+        "url": "https://seatofthesoul.com/soul2soulcommunity",
+        "title": "Membership",
+        "category": "System",
+        "modified": "2021-09-16",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "style-sheet",
+        "url": "https://seatofthesoul.com/style-sheet",
+        "title": "Style Sheet",
+        "category": "System",
+        "modified": "2021-11-22",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "terms-of-use",
+        "url": "https://seatofthesoul.com/terms-of-use",
+        "title": "Terms Of Use",
+        "category": "System",
+        "modified": "2025-08-22",
+        "year": "2021",
+        "is_dup": false
+      },
+      {
+        "slug": "your-profile",
+        "url": "https://seatofthesoul.com/your-profile",
+        "title": "Your Profile",
+        "category": "System",
+        "modified": "2023-01-30",
+        "year": "2023",
+        "is_dup": false
+      }
+    ]
+  }
+}

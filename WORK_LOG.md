@@ -355,3 +355,69 @@ H1 check: only flags duplicates inside the body, since the WP theme renders the 
 | `SOTSI_Blog_Posts_Drops.csv` | new |
 | `SOTSI_Blog_SEO_QuickWins.csv` | new |
 | `WORK_LOG.md` | updated (step 4 added to regenerate block, scripts table extended, this session entry) |
+
+---
+
+## Session · 2026-05-25 — Plan de migración a Webflow + tablero del equipo
+
+### Tarea (Joel)
+
+22D compró un Webflow y el diseñador (Jose) ya está diseñando sobre una plantilla comprada.
+Existe un brandbook nuevo (`Sotsi and UHF Brand Guidelines.pdf`). Joel pidió un **plan de acción
+para todo el equipo** (diseño, video, copy, imágenes) para migrar WordPress → Webflow, con
+secciones a mantener/mejorar/quitar y **horas estimadas**, más un **tablero URL** que organice el
+trabajo de todos. Decisiones: Fase 1 = sitio principal (blog después), horas **por rol**, tablero
+estático **JSON-driven en GitHub Pages** (sin BD, sin backend).
+
+### Contexto absorbido
+
+- Leído el brandbook completo (48 págs) → destilado en `BRAND_REFERENCE.md` (dos marcas SOTSI
+  navy/naturaleza + UHF purple/humanos; tokens de color; Canela/Jost; regla foto-real-no-IA).
+- Inventario real extraído del reporte de auditoría → `data/site_inventory.json`:
+  **110 páginas activas** (Main Site 22, Program/Event 43, Content 21, System 13, Thank You 11).
+
+### Delegación a agentes (paralelo)
+
+- **architect** → framework del plan: rúbrica de clasificación, veredicto para las 110 páginas,
+  alcance Fase 1, benchmarks de horas por arquetipo, 5 sprints, Definition of Done, 8 riesgos.
+- **code-architect** → arquitectura del tablero: esquema JSON, diseño del generador, UX, tokens CSS.
+
+### Entregables producidos
+
+| Archivo | Tipo | Qué es |
+|---|---|---|
+| `BRAND_REFERENCE.md` | new | Destilado operativo del brandbook para el equipo |
+| `data/site_inventory.json` | new | Inventario real de 110 páginas por categoría |
+| `seed_migration_plan.py` | new | Genera el plan desde el inventario + overrides de veredicto |
+| `data/migration_plan.json` | new | **Fuente de verdad** editable: 110 págs con veredicto/sprint/horas/checklist |
+| `build_migration_dashboard.py` | new | Genera el tablero de marca (KPIs, board Tabulator, slide-panel, guía) |
+| `generate_migration_csv.py` | new | CSV de contenido + mapa de 301 redirects |
+| `migration_dashboard.html` / `team.html` | generated | Tablero (publicar en GitHub Pages `/team`) |
+| `SOTSI_Migration_Content.csv` | generated | 80 filas para el equipo de contenido |
+| `SOTSI_Migration_Redirects.csv` | generated | 51 redirects 301 (drops + consolidate-losers) |
+| `PLAN_MIGRACION_WEBFLOW.md` | new | **Documento guía maestro** (revisan Joel + Jose) |
+
+### Números
+
+- Veredictos: 13 REBUILD · 39 IMPROVE · 25 CONSOLIDATE · 3 KEEP · 30 DROP = 110.
+- ~55 páginas construibles → **≈ 881.5 h** (Build 237.5 · Contenido 214 · Diseño 205 · Media 144 · Revisión 81).
+
+### Cómo regenerar el tablero de migración
+
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/SOTSI-WordPress-Audit"
+# (opcional) re-seed desde el inventario si cambian los veredictos base:
+python3 seed_migration_plan.py
+# editar data/migration_plan.json (estatus, horas, checklist) y regenerar:
+python3 build_migration_dashboard.py      # -> migration_dashboard.html + team.html
+python3 generate_migration_csv.py         # -> CSVs de contenido + redirects
+git add -A && git commit -m "update: migration plan" && git push   # live en ~1 min
+```
+
+### Pendiente (próxima sesión)
+
+- [ ] Revisión Joel + Jose del plan y el board; confirmar veredictos sensibles (memorial Linda, DROPs).
+- [ ] Decisión de commerce + membership (bloquea Sprint 3).
+- [ ] Confirmar licencia de Canela; montar biblioteca de fotos reales (no IA).
+- [ ] Publicar `team.html` en GitHub Pages y compartir URL.
+- [ ] Fase 2: plan de migración del blog (187 posts, ya triados 167/20).
