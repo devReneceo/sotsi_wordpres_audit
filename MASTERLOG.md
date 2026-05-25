@@ -1,4 +1,7 @@
-# SOTSI WordPress Audit — Work Log
+# SOTSI WordPress Audit — Masterlog
+
+> Este es el **MASTERLOG** del proyecto SOTSI (renombrado de `WORK_LOG.md` el 2026-05-25).
+> Registro maestro de toda la auditoría + migración a Webflow.
 
 **Site:** seatofthesoul.com
 **Repo:** devReneceo/sotsi_wordpres_audit
@@ -354,7 +357,7 @@ H1 check: only flags duplicates inside the body, since the WP theme renders the 
 | `SOTSI_Blog_Posts_Triage.csv` | new |
 | `SOTSI_Blog_Posts_Drops.csv` | new |
 | `SOTSI_Blog_SEO_QuickWins.csv` | new |
-| `WORK_LOG.md` | updated (step 4 added to regenerate block, scripts table extended, this session entry) |
+| `WORK_LOG.md` → `MASTERLOG.md` | renamed 2026-05-25 (este archivo) |
 
 ---
 
@@ -419,5 +422,33 @@ git add -A && git commit -m "update: migration plan" && git push   # live en ~1 
 - [ ] Revisión Joel + Jose del plan y el board; confirmar veredictos sensibles (memorial Linda, DROPs).
 - [ ] Decisión de commerce + membership (bloquea Sprint 3).
 - [ ] Confirmar licencia de Canela; montar biblioteca de fotos reales (no IA).
-- [ ] Publicar `team.html` en GitHub Pages y compartir URL.
+- [ ] Publicar `team.html` en GitHub Pages y compartir URL. ✅ HECHO (live en `/team`).
 - [ ] Fase 2: plan de migración del blog (187 posts, ya triados 167/20).
+
+### Actualizaciones posteriores (mismo día)
+
+**Tablero publicado.** `team.html` live en https://devreneceo.github.io/sotsi_wordpres_audit/team (commit 7b83e3a).
+
+**Separación por grupos de prioridad** (commit 2922955). Se agregó el campo `group` a cada
+página (`seed_migration_plan.py`): `principales` (15 págs, 247.5h — core must-have: home, about,
+fundadores, books, get-started, events&programs, podcast, media, faqs, connect, newsletter, blog),
+`programas` (59, 420.5h), `contenido` (22, 123.5h), `sistema` (14, 90h). El tablero ahora tiene
+resumen por grupo, board agrupado y filtro de Grupo; el CSV de contenido incluye la columna `group`.
+
+**Webflow MCP conectado a esta carpeta.** Se agregó el MCP de Webflow en **scope local** con
+nombre propio **`webflow-sotsi`** (NO `webflow` genérico, que reusaba el OAuth de la carpeta UHF
+por estar llaveado por nombre de servidor). Así SOTSI tiene su **propia cuenta/OAuth**, separada de
+UHF. Pendiente: Joel hace `/mcp` → autoriza con la cuenta SOTSI (Chrome ya logueado) y reinicia
+Claude Code para cargar las tools `mcp__webflow-sotsi__*`.
+  - UHF/ → servidor `webflow` (cuenta A, intacta)
+  - SOTSI-WordPress-Audit/ → servidor `webflow-sotsi` (cuenta B)
+  - ⚠️ `/22D Marketing` (padre) tiene un Bearer token en texto plano — considerar migrar a OAuth / rotar.
+
+### Pendiente real (próxima sesión)
+
+- [ ] Completar OAuth de `webflow-sotsi` (`/mcp` + reinicio) y conectar el pipeline de contenido
+      `migration_plan.json` → Webflow vía MCP, empezando por las Páginas principales.
+- [ ] Revisión Joel + Jose del board; confirmar veredictos sensibles (memorial Linda, DROPs).
+- [ ] Decisión de commerce + membership (bloquea Sprint 3).
+- [ ] Confirmar licencia de Canela; montar biblioteca de fotos reales (no IA).
+- [ ] Fase 2: plan de migración del blog (187 posts, ya triados 167/20) — Joel tiene dudas aquí.
