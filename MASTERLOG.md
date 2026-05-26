@@ -452,3 +452,184 @@ Claude Code para cargar las tools `mcp__webflow-sotsi__*`.
 - [ ] Decisión de commerce + membership (bloquea Sprint 3).
 - [ ] Confirmar licencia de Canela; montar biblioteca de fotos reales (no IA).
 - [ ] Fase 2: plan de migración del blog (187 posts, ya triados 167/20) — Joel tiene dudas aquí.
+
+---
+
+## Session · 2026-05-25 (tarde) — Diagnóstico de la cuenta Webflow (MCP conectado)
+
+### Contexto
+
+Joel completó el OAuth de `webflow-sotsi` (`/mcp` → "Authentication successful. Connected to
+webflow-sotsi") y pidió un **diagnóstico de qué hay actualmente en la cuenta Webflow** vía MCP,
+para registrarlo aquí. Cuenta/workspace SOTSI: `workspaceId 69fb10a1d207c46d49542bb8`.
+
+### Hallazgo: hay 3 sitios en el workspace
+
+| # | Nombre | Site ID | Estado | Veredicto |
+|---|---|---|---|---|
+| 1 | Seat of the Soul Institute | `6a0421fefc0460de5474632a` | Creado 5/13, **nunca publicado**, 5 págs, 0 colecciones CMS | **Borrador IA — eliminar** |
+| 2 | The Seat of the Soul Institute | `6a04240570c532ff7c8c12f1` | Creado 5/13, **nunca publicado**, 6 págs, 0 colecciones CMS | **Borrador IA — eliminar** |
+| 3 | Seat of the Soul Institute | `6a0756563c0753689004ec7f` | Creado 5/15, **publicado 5/19**, 25 págs, 9 colecciones, screenshot | **EL REAL — sitio de trabajo de Jose** |
+
+**Sitios 1 y 2** son borradores generados con el **AI Site Builder de Webflow** (el copy SEO ya es
+real de SOTSI — Gary Zukav, "authentic power" — pero las páginas son genéricas: Home, Courses,
+Membership, Books, About, Style guide; sin CMS). Recomendación: **borrarlos** para que nadie del
+equipo abra la URL equivocada. Ambos siguen en subdominio webflow.io, sin dominio propio.
+
+### Sitio 3 — el sitio real (plantilla "Shimma")
+
+- Basado en **Shimma**, plantilla de Webflow e-commerce para estudios de **yoga / Pilates /
+  wellness**. Timezone `Asia/Dhaka` (autor de la plantilla / contratista).
+- **Publicado 5/19** solo a subdominio `webflow.io` — **sin dominio propio** (`customDomains: []`).
+- Locale primario English, **`enabled:false`** (localización apagada). Sin Google Tag, sin data
+  collection.
+- Screenshot del 5/19: `https://screenshots.webflow.com/sites/6a0756563c0753689004ec7f/20260519134458_e5019552e1e191841e5381d0b030ff24.png`
+
+**25 páginas:** Home · About · Classes · Events · Blog · Contact Us · Team · Products · Checkout ·
+Checkout (PayPal) · Order Confirmation · 404 · Password(401) · utility-pages (Style Guide, License,
+Changelog) · plantillas CMS (Blogs, Events, Classes, Teams, Products, Categories, SKUs, **Courses**,
+**Testimonials**).
+
+**9 colecciones CMS:** Classes · Events · **Blogs** · Teams · Categories · SKUs · Products ·
+**Courses** (nueva, 5/22) · **Testimonials** (nueva, 5/22).
+
+**Trabajo reciente de Jose (5/22):** creó las colecciones + páginas plantilla **Courses** y
+**Testimonials**, y editó About, Contact, Team, Blog, Events, Classes, Home. Está adaptando la
+plantilla, todavía no migrando contenido.
+
+**⚠️ Pendientes de plantilla (todo default Shimma):**
+- Todos los `<title>` SEO siguen diciendo **"… - Shimma - Webflow Ecommerce Website Template"** →
+  reemplazo global pendiente.
+- El **Blog tiene solo 4 posts demo** con texto lorem ("Robert Fox" como autor, cuerpo de
+  "task-management app", contenido falso de jardinería/yoga). Cero contenido real de SOTSI aún.
+
+### Esquema de la colección "Blogs" (clave para migrar los 187 posts)
+
+Collection ID `6a0756583c0753689004ee1a`. Campos actuales:
+
+| Campo (slug) | Tipo | Mapea desde WordPress |
+|---|---|---|
+| `name` (Blog Title, **req**) | PlainText (max 256) | título del post |
+| `slug` (**req**) | PlainText | slug del post |
+| `short-description` | PlainText 1-línea | excerpt |
+| `blog-image` | Image | thumbnail / featured image |
+| `blog-banner-image` | Image | hero del detalle |
+| `editor-name` | PlainText | autor |
+| `editor-image` | Image | avatar del autor |
+| `category-name` | PlainText | ⚠️ texto libre, **NO** referencia a Categories — serie (Soul Snack/Feast/Seed/Wisdom Wed) |
+| `blog-single-description` | PlainText | descripción secundaria del detalle |
+| `blog-rich-text` | RichText | **cuerpo del post** (`content.rendered`) |
+
+**Faltan campos que el contenido SOTSI necesita** (decisión para Jose antes de importar):
+1. **`published-on` (DateTime)** — no hay campo de fecha; el orden/archivo del blog por fecha no
+   funcionará sin esto. *Crítico para 187 posts ordenados por fecha.*
+2. **`seo-description` (PlainText)** — no hay meta description por item; los SEO quick-wins del CSV
+   (166/167 sin meta) no tienen dónde aterrizar todavía.
+3. (Opcional) **`source-url`** — para construir los 301 redirects WP→Webflow por post.
+4. (Opcional) Convertir `category-name` a **referencia** a una colección de Series/Categorías si se
+   quiere filtrado relacional; con texto libre basta para empezar.
+
+### Implicaciones para el plan de migración
+
+- El pipeline `data/posts_extracted.json` (187 posts triados: 167 keep / 20 drop) ya tiene
+  título, slug, excerpt, cuerpo, categoría, autor, fecha y stats SEO → mapea casi 1:1 a esta
+  colección **una vez se agreguen los 2 campos faltantes** (`published-on`, `seo-description`).
+- La importación se puede automatizar vía `data_cms_tool > create_collection_items` (lotes), pero
+  **primero** hay que: (a) decidir campos, (b) subir imágenes destacadas como assets Webflow,
+  (c) limpiar el RichText de WP (clases/IDs de Yoast) al formato RichText de Webflow.
+- Las imágenes de los posts hoy viven en `seatofthesoul.com` (WP). Webflow no las descarga solo;
+  hay que subirlas con `asset_tool > upload_image_by_url` y reescribir los `src` del RichText.
+
+### Acciones recomendadas (próxima sesión, en orden)
+
+1. **Limpieza:** borrar sitios 1 y 2 (borradores IA) — confirmar con Joel primero.
+2. **Jose:** reemplazar títulos SEO "Shimma…" y borrar los 4 posts demo del blog.
+3. **Decidir el esquema final de Blogs** (agregar `published-on` + `seo-description` mínimo).
+4. **Piloto de import:** migrar 3–5 posts reales vía MCP de extremo a extremo (assets + RichText +
+   campos) para validar el pipeline antes de los 187.
+5. Confirmar **dominio propio** (seatofthesoul.com) y plan de 301 redirects (`SOTSI_Migration_Redirects.csv`).
+
+---
+
+## Session · 2026-05-25 (noche) — Tablero v2: i18n, "ver vieja", Plan de Home
+
+### Tarea (Joel)
+
+Sobre el tablero `/team`: (1) botón por página para ver la URL vieja de WordPress; (2) toggle de
+idioma ES/EN; (3) **Plan de acción por página, empezando SOLO por Home** — mini-dashboard admin que
+mapea las secciones del Home original (WordPress) → Webflow con checkboxes, horas y notas; (4)
+análisis del template **Shimma** (estructura/componentes globales/tokens) y mapeo del Home contra
+el template; (5) bloque "Contexto de Home por IA" con recomendación estructural.
+
+### Investigación (2 agentes en paralelo)
+
+- **Home WordPress** (`seatofthesoul.com/`): 10 secciones reales + nav + footer. Hallazgos: `/home`
+  hace **301 → `/`** (raíz canónica, WP page 41); el hero es un **carrusel Swiper de 4 slides**;
+  hay **spam de casino inyectado** (señal de WP hackeado — limpiar, no migrar); el botón "ENROLL IN
+  A COURSE" no tiene destino; la comunidad se empuja **2 veces** (CTAs duplicados a Mighty Networks);
+  el "Final CTA" dice 'Start your journey' pero apunta al newsletter.
+- **Template Shimma** (`shimma.webflow.io`): 10 secciones + librería de ~17 bloques reusables
+  (video-hero, about-split, cards de oferta, team grid, testimonial slider, stats band, marquee CTA
+  global, etc.). Tokens del template: Playfair Display + Montserrat sobre crema/arena/espresso/cobre,
+  botones pill — **requiere re-skin** a navy/Canela. Nav con mega-menú + **carrito ecommerce** +
+  CTA "Get Template" + créditos Flowzai → reescribir/apagar.
+
+### Arquitectura del tablero (refactor)
+
+El builder pasó de fragmentos Python a **shell + datos + assets inyectados**, con el render
+dinámico e i18n movidos a JS (para que ES/EN sea uniforme). Archivos nuevos:
+
+| Archivo | Qué es |
+|---|---|
+| `dashboard_src/styles.css` | Todo el CSS (base + toggle idioma, botón "ver vieja", modal de plan, tabla de secciones, tarjeta IA) |
+| `dashboard_src/app.js` | Cliente: diccionario i18n ES/EN, `computeMeta`, render de KPIs/sprints/grupos/guía, board Tabulator, slide-panel, **modal de Plan de página** |
+| `data/page_plans.json` | **Plan por página, indexado por slug** (reutilizable). Hoy: `home` con 13 secciones + `ai_context` + `template_analysis`. Agregar una página nueva = añadir una key |
+| `build_migration_dashboard.py` | Reescrito: carga `migration_plan.json` + `page_plans.json`, inyecta CSS/JS/datos, escribe `migration_dashboard.html` + `team.html` |
+
+### Funcionalidades entregadas
+
+1. **Botón "Ver" por página** (columna en el board, abre la URL vieja de WP en pestaña nueva;
+   `stopPropagation` para no abrir el panel) + botón "Ver página vieja ↗" en el slide-panel.
+2. **Toggle ES/EN** (arriba-derecha, persiste en `localStorage`). Traduce toda la UI: header, tabs,
+   KPIs, filtros, columnas del board, panel, modal y guía. El contenido-dato (notas, labels de
+   sprint, veredicto del plan) queda en su idioma de autoría.
+3. **Plan de Home** (modal mini-dashboard admin): tira de horas (12·6·8·12·4 = **42h**), tabla de
+   13 secciones con columnas **Sección · Esqueleto viejo (WP) · Esqueleto nuevo (Webflow) · Acción
+   (reconstruir/mejorar/consolidar/agregar/quitar) · Mapeado a Webflow · Notas · Horas · check**.
+   Checkboxes con persistencia local (nota: para el equipo se edita el JSON y se regenera). Punto
+   dorado en el board marca las páginas que ya tienen plan; se abre desde el panel o desde la tarjeta
+   "Planes de página" del Resumen.
+4. **Análisis del template Shimma** dentro del modal: componentes globales, bloques reusables (chips),
+   qué quitar/arreglar, y nota de re-skin de tokens.
+5. **Contexto de Home por IA**: tarjeta con veredicto ("RECONSTRUIR sobre Shimma, 10→8 secciones +
+   limpieza de deuda") + resumen + 6 recomendaciones concretas.
+
+### Mapeo Home WordPress → Shimma (resumen del plan)
+
+Hero carrusel→**video-hero** (reconstruir, 1 mensaje ancla) · Value prop→about-split (mejorar) ·
+Tools promo→**consolidar** en el CTA del intro · 4 pilares→cards de oferta CMS (reconstruir, arreglar
+link roto) · Join Gary→evento (mejorar) · 2 bandas de comunidad→**1 sola** (consolidar) · Books→
+about-split (mejorar) · Founders→team-grid (reconstruir, fotos reales) · Final CTA→marquee global
+(mejorar) · +**agregar** testimonials / stats / latest-blog del template · **quitar** spam de casino.
+
+### Verificación
+
+`node --check` del JS OK. Render headless (Chrome) confirma: 5 KPIs, 5 sprints, grupos 14/42/18/6,
+guía, board con 110 filas + botón "Ver", toggle EN traduce todo, modal con 13 secciones + IA +
+Shimma, **sin `NaN`/`undefined`**. Tabla del plan con scroll horizontal en móvil.
+
+### Cómo regenerar
+
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/SOTSI-WordPress-Audit"
+# editar data/migration_plan.json (páginas) y/o data/page_plans.json (planes por sección)
+python3 build_migration_dashboard.py     # -> migration_dashboard.html + team.html
+git add -A && git commit -m "feat: dashboard v2" && git push   # live en /team ~1 min
+```
+
+### Pendiente
+
+- [ ] Revisión de Joel + Jose del Plan de Home (veredictos por sección, horas, mapeo a Shimma).
+- [ ] Publicar (push) para que `/team` muestre la v2.
+- [ ] Replicar el patrón de plan para la siguiente página principal (About / Fundadores).
+- [ ] Confirmar decisión de commerce/membership (afecta secciones 4 pilares, books, comunidad).

@@ -10,8 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/tabulator-tables@6.2.1/dist/css/tabulator.min.css" rel="stylesheet">
 <script src="https://unpkg.com/tabulator-tables@6.2.1/dist/js/tabulator.min.js"></script>
-<style>
-:root{
+<style>:root{
   --navy:#0E1631; --purple:#3C1951; --white:#FFFFFF;
   --periwinkle:#D2CCFD; --lilac:#E7D4F1; --lum-yellow:#FFEB45; --gold-yellow:#FED457;
   --bg:#f6f5fc; --surface:#fff; --text:#1a1730; --muted:#7a748f; --border:#e4e0f0;
@@ -34,6 +33,11 @@ header.top h1{font-size:clamp(28px,4vw,46px);color:#fff;margin:10px 0 4px}
 header.top h1 em{color:var(--lum-yellow);font-style:italic}
 .sub{opacity:.82;font-size:15px;max-width:680px}
 .gen{position:absolute;right:24px;bottom:14px;font-size:12px;opacity:.6}
+
+/* language toggle */
+.lang-toggle{position:absolute;top:22px;right:24px;display:flex;gap:0;border:1px solid rgba(255,255,255,.35);border-radius:20px;overflow:hidden;z-index:3}
+.lang-toggle button{background:transparent;border:none;color:#fff;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:1px;padding:6px 14px;cursor:pointer;opacity:.7;transition:.2s}
+.lang-toggle button.active{background:var(--lum-yellow);color:var(--navy);opacity:1}
 
 /* kpis */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(184px,1fr));gap:16px;margin:-26px 0 8px;position:relative;z-index:2}
@@ -100,6 +104,11 @@ section.block{background:var(--surface);border:1px solid var(--border);border-ra
 .br-sotsi{background:var(--navy);color:#fff}.br-uhf{background:var(--purple);color:#fff}
 .br-both{background:linear-gradient(90deg,var(--navy),var(--purple));color:#fff}
 
+/* action badges (page plan) */
+.ac-reconstruir{background:#fff2c9;color:#8a6a00}.ac-mejorar{background:#dbe9ff;color:#2f5aa8}
+.ac-consolidar{background:#eceaf4;color:#6d6788}.ac-mantener{background:#d2f5ee;color:#067a68}
+.ac-agregar{background:#d6f3e6;color:#0a7d52}.ac-quitar{background:#fde0da;color:#b8341c}
+
 /* slide panel */
 .overlay{position:fixed;inset:0;background:rgba(14,22,49,.4);opacity:0;pointer-events:none;transition:.25s;z-index:40}
 .overlay.open{opacity:1;pointer-events:auto}
@@ -122,7 +131,74 @@ section.block{background:var(--surface);border:1px solid var(--border);border-ra
 .hrs-tbl td{padding:5px 4px;border-bottom:1px solid var(--border)}
 .hrs-tbl tr:last-child td{border-top:2px solid var(--navy);border-bottom:none;font-weight:700}
 .notes{background:#fbfaff;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;white-space:pre-wrap}
-.lk-btn{display:inline-block;background:var(--gold-yellow);color:var(--navy);text-decoration:none;font-weight:600;font-size:13px;padding:8px 14px;border-radius:8px;margin-right:8px}
+.lk-btn{display:inline-block;background:var(--gold-yellow);color:var(--navy);text-decoration:none;font-weight:600;font-size:13px;padding:8px 14px;border-radius:8px;margin-right:8px;margin-bottom:6px;border:none;cursor:pointer;font-family:var(--font)}
+.lk-btn.ghost{background:#fff;border:1px solid var(--border);color:var(--navy)}
+.lk-btn.plan{background:var(--navy);color:#fff}
+
+/* "ver vieja" board button */
+.see-old{display:inline-flex;align-items:center;gap:4px;background:#f3f1fa;color:var(--purple);border:1px solid var(--border);border-radius:7px;padding:4px 9px;font-size:11.5px;font-weight:600;text-decoration:none;font-family:var(--font);white-space:nowrap}
+.see-old:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+.has-plan-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-yellow);margin-left:6px;vertical-align:middle}
+
+/* page-plan modal (full-screen mini admin dashboard) */
+.modal-ov{position:fixed;inset:0;background:rgba(14,22,49,.55);opacity:0;pointer-events:none;transition:.25s;z-index:60;backdrop-filter:blur(2px)}
+.modal-ov.open{opacity:1;pointer-events:auto}
+.modal{position:fixed;inset:3vh 50% auto auto;transform:translateX(50%) translateY(20px);width:min(1180px,94vw);max-height:94vh;background:var(--bg);border-radius:16px;box-shadow:var(--shadow-h);z-index:61;overflow-y:auto;opacity:0;pointer-events:none;transition:.28s cubic-bezier(.16,1,.3,1)}
+.modal.open{opacity:1;pointer-events:auto;transform:translateX(50%) translateY(0)}
+.modal-head{position:sticky;top:0;background:linear-gradient(135deg,var(--navy),var(--purple));color:#fff;padding:22px 28px;z-index:2}
+.modal-head .ey{font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.75}
+.modal-head h2{color:#fff;font-size:30px;margin:4px 0 2px}
+.modal-head .mh-sub{font-size:13px;opacity:.8;max-width:760px}
+.modal-close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer}
+.modal-body{padding:22px 28px 40px}
+
+/* plan hour strip */
+.hour-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px}
+.hour-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px 16px;box-shadow:var(--shadow)}
+.hour-card.total{border-top:4px solid var(--gold-yellow)}
+.hour-card .hc-val{font-family:var(--hed);font-size:30px;font-weight:700;color:var(--navy);line-height:1}
+.hour-card .hc-lab{font-size:12px;color:var(--muted);margin-top:5px;font-weight:600}
+
+/* ai context card */
+.ai-card{background:linear-gradient(135deg,#1a2444,#3C1951);color:#fff;border-radius:14px;padding:22px 24px;margin-bottom:20px;position:relative;overflow:hidden}
+.ai-card::after{content:"";position:absolute;top:-50px;right:-30px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,235,69,.18),transparent 70%)}
+.ai-card .ai-tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:2px;text-transform:uppercase;background:rgba(255,235,69,.18);color:var(--lum-yellow);padding:4px 11px;border-radius:20px;font-weight:700}
+.ai-card h3{color:#fff;font-size:22px;margin:12px 0 6px}
+.ai-card .ai-verdict{font-size:14px;font-weight:600;color:var(--lum-yellow);margin-bottom:8px}
+.ai-card p{font-size:13.5px;opacity:.92;max-width:880px}
+.ai-card ul{margin:12px 0 0 0;list-style:none;display:grid;gap:8px}
+.ai-card li{font-size:13px;padding-left:22px;position:relative;opacity:.95}
+.ai-card li::before{content:"→";position:absolute;left:0;color:var(--lum-yellow);font-weight:700}
+
+/* plan section table */
+.plan-tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:12px;overflow-x:auto;box-shadow:var(--shadow)}
+.plan-tbl{width:100%;min-width:880px;border-collapse:collapse;font-size:13px}
+.plan-tbl thead th{background:#f3f1fa;text-align:left;padding:11px 12px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);position:sticky;top:0}
+.plan-tbl td{padding:12px;border-bottom:1px solid var(--border);vertical-align:top}
+.plan-tbl tr:last-child td{border-bottom:none}
+.plan-tbl tr.is-done{background:#f3fbf8}
+.plan-tbl .sec-name{font-weight:600;color:var(--navy);font-size:13.5px}
+.plan-tbl .skel{color:var(--text);font-size:12.5px}
+.plan-tbl .skel.old{color:var(--muted)}
+.plan-tbl .wf{font-size:12px;font-weight:600;color:var(--purple)}
+.plan-tbl .pnote{font-size:11.5px;color:var(--muted)}
+.plan-tbl .phrs{font-weight:700;color:var(--navy);text-align:right;white-space:nowrap}
+.plan-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.plan-check.on{background:var(--success);border-color:var(--success)}
+.plan-progress{font-size:12px;color:var(--muted);margin:14px 0 8px}
+
+/* template analysis */
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media(max-width:820px){.tpl-grid{grid-template-columns:1fr}}
+.tpl-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.tpl-card h4{font-family:var(--hed);font-size:17px;color:var(--navy);margin-bottom:8px}
+.tpl-card ul{margin:0 0 0 18px;font-size:12.5px}
+.tpl-card li{margin:5px 0}
+.tpl-card .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tpl-card .chip{background:#f3f1fa;border:1px solid var(--border);border-radius:7px;padding:4px 9px;font-size:11.5px;color:var(--navy)}
+.tok-note{font-size:12.5px;color:var(--text);background:#fff7d6;border:1px solid #f3e3a0;border-radius:8px;padding:10px 12px;margin-top:8px}
+
+.section-h{font-family:var(--hed);font-size:21px;color:var(--navy);margin:26px 0 10px}
 
 /* guide */
 .guide{max-width:840px}
@@ -141,57 +217,49 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0 40px}
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <div class="brandline"><span class="dot"></span>Seat of the Soul · Universal Human · 22D Marketing</div>
-  <h1>Plan de Migración a <em>Webflow</em></h1>
-  <div class="sub">Tablero de trabajo del equipo — qué se mantiene, mejora, reconstruye o elimina, con horas por rol y avance por sprint.</div>
-  <div class="gen">Actualizado: 2026-05-25 15:36</div>
+  <div class="lang-toggle">
+    <button data-lang="es" class="active">ES</button><button data-lang="en">EN</button>
+  </div>
+  <div class="brandline"><span class="dot"></span><span data-i18n="h.brandline">Seat of the Soul · Universal Human · 22D Marketing</span></div>
+  <h1 data-i18n-html="h.title_html">Plan de Migración a <em>Webflow</em></h1>
+  <div class="sub" data-i18n="h.sub">Tablero de trabajo del equipo.</div>
+  <div class="gen"><span data-i18n="h.updated">Actualizado:</span> 2026-05-25 17:22</div>
 </div></header>
 
 <div class="wrap">
-  <div class="kpis"><div class="kpi kpi-done"><div class="kpi-val">0.0%</div><div class="kpi-label">Avance</div><div class="kpi-sub">0 de 110 páginas</div></div>
-<div class="kpi kpi-hours"><div class="kpi-val">881.5h</div><div class="kpi-label">Horas restantes</div><div class="kpi-sub">de 881.5h totales</div></div>
-<div class="kpi kpi-prog"><div class="kpi-val">0</div><div class="kpi-label">En progreso</div><div class="kpi-sub">design / content / build / review</div></div>
-<div class="kpi kpi-blocked"><div class="kpi-val">0</div><div class="kpi-label">Bloqueadas</div><div class="kpi-sub">necesitan decisión</div></div>
-<div class="kpi kpi-pages"><div class="kpi-val">80</div><div class="kpi-label">Páginas a construir</div><div class="kpi-sub">30 drops (solo redirect)</div></div></div>
+  <div class="kpis" id="kpis"></div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="overview">Resumen</button>
-    <button class="tab-btn" data-tab="board">Board (110)</button>
-    <button class="tab-btn" data-tab="guide">Guía del equipo</button>
+    <button class="tab-btn active" data-tab="overview" data-i18n="tab.overview">Resumen</button>
+    <button class="tab-btn" data-tab="board" data-i18n="tab.board">Board</button>
+    <button class="tab-btn" data-tab="guide" data-i18n="tab.guide">Guía del equipo</button>
   </div>
 
   <div class="tab-panel active" id="tab-overview">
-    <section class="block"><h2>Grupos de prioridad</h2><div class="groups"><div class="grp-card grp-principales"><div class="grp-title">1 · Páginas principales</div><div class="grp-big">14<span> a construir</span></div><div class="grp-meta">247.5h · 1 drops · 15 en total</div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div><div class="grp-pct">0/15 done</div></div>
-<div class="grp-card grp-programas"><div class="grp-title">2 · Programas y funnels</div><div class="grp-big">42<span> a construir</span></div><div class="grp-meta">420.5h · 17 drops · 59 en total</div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div><div class="grp-pct">0/59 done</div></div>
-<div class="grp-card grp-contenido"><div class="grp-title">3 · Contenido y evergreen</div><div class="grp-big">18<span> a construir</span></div><div class="grp-meta">123.5h · 4 drops · 22 en total</div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div><div class="grp-pct">0/22 done</div></div>
-<div class="grp-card grp-sistema"><div class="grp-title">4 · Sistema y legal</div><div class="grp-big">6<span> a construir</span></div><div class="grp-meta">90h · 8 drops · 14 en total</div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div><div class="grp-pct">0/14 done</div></div></div>
-      <p style="color:var(--muted);font-size:12.5px;margin-top:10px"><b>Principales</b> = páginas core que sí o sí deben estar al lanzar (home, about, nav). El blog (187 posts) es Fase 2 aparte.</p>
+    <section class="block"><h2 data-i18n="ov.plans_title">Planes de página</h2>
+      <p style="color:var(--muted);font-size:12.5px;margin-bottom:12px" data-i18n="ov.plans_note"></p>
+      <div class="groups" id="plans-list"></div>
     </section>
-    <section class="block"><h2>Sprints</h2><div class="sprints"><div class="sprint-tile"><div class="sprint-id">Sprint 1 — Cimientos &amp; Home</div><div class="sprint-goal">Sistema global (nav, footer, tokens), template TY generico y Home aprobado.</div><div class="sprint-meta"><span>2 págs</span><span>50h</span><span>0/2 done</span></div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="sprint-tile"><div class="sprint-id">Sprint 2 — Marca core &amp; Fundadores</div><div class="sprint-goal">About, Gary, Linda y tributo memorial consolidado (con sign-off del cliente).</div><div class="sprint-meta"><span>11 págs</span><span>101.5h</span><span>0/11 done</span></div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="sprint-tile"><div class="sprint-id">Sprint 3 — Oferta &amp; Programas</div><div class="sprint-goal">Hub de programas, landings, registros canonicos e intakes en el form backend elegido.</div><div class="sprint-meta"><span>18 págs</span><span>227h</span><span>0/18 done</span></div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="sprint-tile"><div class="sprint-id">Sprint 4 — Funnels &amp; Contenido</div><div class="sprint-goal">Unidades optin+TY, podcast/media, herramientas, newsletter y contenido evergreen.</div><div class="sprint-meta"><span>40 págs</span><span>388.5h</span><span>0/40 done</span></div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="sprint-tile"><div class="sprint-id">Sprint 5 — Sistema, Legal &amp; Lanzamiento</div><div class="sprint-goal">Legales, mapa de 301 redirects, QA full-site, decision de commerce/membership y go-live.</div><div class="sprint-meta"><span>39 págs</span><span>114.5h</span><span>0/39 done</span></div><div class="bar-track sm"><div class="bar-fill" style="width:0%"></div></div></div></div></section>
-    <section class="block"><h2>Horas por rol — avance</h2><div class="bar-row"><div class="bar-head"><span>Diseño</span><span class="bar-num">0 / 205h</span></div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="bar-row"><div class="bar-head"><span>Contenido</span><span class="bar-num">0 / 214h</span></div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="bar-row"><div class="bar-head"><span>Video/Imagen</span><span class="bar-num">0 / 144h</span></div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="bar-row"><div class="bar-head"><span>Build Webflow</span><span class="bar-num">0 / 237.5h</span></div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div></div>
-<div class="bar-row"><div class="bar-head"><span>Revisión</span><span class="bar-num">0 / 81h</span></div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div></div>
-      <p style="color:var(--muted);font-size:12.5px;margin-top:10px">Barras = horas <b>done</b> sobre horas totales estimadas (excluye drops, que solo llevan 301 redirect).</p>
+    <section class="block"><h2 data-i18n="ov.groups_title">Grupos de prioridad</h2><div class="groups" id="group-summary"></div>
+      <p style="color:var(--muted);font-size:12.5px;margin-top:10px" data-i18n="ov.groups_note"></p>
+    </section>
+    <section class="block"><h2 data-i18n="ov.sprints_title">Sprints</h2><div class="sprints" id="sprint-tiles"></div></section>
+    <section class="block"><h2 data-i18n="ov.roles_title">Horas por rol</h2><div id="role-bars"></div>
+      <p style="color:var(--muted);font-size:12.5px;margin-top:10px" data-i18n="ov.roles_note"></p>
     </section>
   </div>
 
   <div class="tab-panel" id="tab-board">
     <section class="block">
       <div class="filters">
-        <input id="f-search" placeholder="Buscar título o slug…">
-        <select id="f-group"><option value="">Grupo: todos</option></select>
-        <select id="f-status"><option value="">Estatus: todos</option></select>
-        <select id="f-sprint"><option value="">Sprint: todos</option></select>
-        <select id="f-verdict"><option value="">Veredicto: todos</option></select>
-        <select id="f-brand"><option value="">Marca: todas</option></select>
-        <select id="f-cat"><option value="">Categoría: todas</option></select>
-        <button class="f-clear" id="f-clear">Limpiar</button>
+        <input id="f-search" data-i18n-ph="f.search_ph" placeholder="Buscar…">
+        <select id="f-group"></select>
+        <select id="f-status"></select>
+        <select id="f-sprint"></select>
+        <select id="f-verdict"></select>
+        <select id="f-brand"></select>
+        <select id="f-cat"></select>
+        <button class="f-clear" id="f-clear" data-i18n="f.clear">Limpiar</button>
         <span class="f-count" id="f-count"></span>
       </div>
       <div id="board"></div>
@@ -199,168 +267,503 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 0 40px}
   </div>
 
   <div class="tab-panel" id="tab-guide">
-    <section class="block"><h2>Guía del equipo</h2>
-<div class="guide">
-  <details open class="g-card"><summary>1 · Reglas de marca</summary>
-    <div class="g-body">
-      <p><b>Dos marcas, un sistema.</b> SOTSI = Midnight Navy + naturaleza (montañas/agua,
-      <u>nunca</u> arena). UHF = Cosmic Purple + rostros humanos, close-ups diversos.</p>
-      <div class="sw-grid"><div class="sw"><span class="sw-box" style="background:#0E1631"></span><span class="sw-name">Midnight Navy</span><span class="sw-hex">#0E1631</span></div><div class="sw"><span class="sw-box" style="background:#3C1951"></span><span class="sw-name">Cosmic Purple</span><span class="sw-hex">#3C1951</span></div><div class="sw"><span class="sw-box" style="background:#FFFFFF"></span><span class="sw-name">Pure White</span><span class="sw-hex">#FFFFFF</span></div><div class="sw"><span class="sw-box" style="background:#D2CCFD"></span><span class="sw-name">Soft Periwinkle</span><span class="sw-hex">#D2CCFD</span></div><div class="sw"><span class="sw-box" style="background:#E7D4F1"></span><span class="sw-name">Light Lilac</span><span class="sw-hex">#E7D4F1</span></div><div class="sw"><span class="sw-box" style="background:#FFEB45"></span><span class="sw-name">Luminous Yellow</span><span class="sw-hex">#FFEB45</span></div><div class="sw"><span class="sw-box" style="background:#FED457"></span><span class="sw-name">Golden Yellow</span><span class="sw-hex">#FED457</span></div></div>
-      <p><b>Tipografía:</b> Títulos = <i>Canela</i> (serif) · Cuerpo = <i>Jost</i> (sans) ·
-      Acento = <i>WorldDiscovery One</i> (script, solo frases emotivas, sin números).</p>
-      <p><b>Regla dura:</b> fotos/video <b>reales, NUNCA IA</b>; alta resolución; crop intencional;
-      esquinas redondeadas; whitespace generoso; tono calmado y claro, sin urgencia.</p>
-      <p class="g-ref">Detalle completo en <code>BRAND_REFERENCE.md</code>.</p>
-    </div>
-  </details>
-  <details class="g-card"><summary>2 · Flujo de producción de contenido (por página)</summary>
-    <div class="g-body"><ol>
-      <li><b>Leer la página vieja</b> en WordPress (columna URL del board).</li>
-      <li><b>Escribir el copy nuevo</b> con la voz de marca (claro, profundo, sin urgencia).</li>
-      <li><b>Conseguir/solicitar media real</b> — foto o video (no IA), regla de marca correcta.</li>
-      <li><b>Construir en Webflow</b> sobre los componentes globales (nav/footer/tokens).</li>
-      <li><b>SEO:</b> title 30–65 car., meta description 120–160, 1 H1, alt text, 3+ links internos.</li>
-      <li><b>Mapear el 301 redirect</b> de la URL vieja a la nueva (o al survivor si se consolida).</li>
-    </ol>
-    <p>El contenido se exporta a CSV (<code>SOTSI_Migration_Plan.csv</code>) y se edita vía
-    Claude Code + MCP sobre <code>data/migration_plan.json</code>.</p></div>
-  </details>
-  <details class="g-card"><summary>3 · Definition of Done (checklist por página)</summary>
-    <div class="g-body"><ul>
-      <li><b>copy</b> — texto nuevo escrito y revisado, sin fechas muertas/cohortes cerradas.</li>
-      <li><b>hero_media</b> — imagen/video hero real (no IA), ≥ alta resolución, crop intencional.</li>
-      <li><b>images</b> — imágenes de cuerpo colocadas, con alt text.</li>
-      <li><b>video</b> — video embebido donde aplique (video &gt; foto cuando sea posible).</li>
-      <li><b>seo_title</b> / <b>seo_desc</b> — meta dentro de rango.</li>
-      <li><b>redirects</b> — 301 de URL vieja registrado en el mapa.</li>
-      <li>Responsive 320/375/768/1024/1440 · links/forms OK · sign-off Joel+Jose.</li>
-    </ul></div>
-  </details>
-</div></section>
+    <section class="block"><h2 data-i18n="g.title">Guía del equipo</h2><div class="guide" id="guide"></div></section>
   </div>
 </div>
 
 <div class="overlay" id="overlay"></div>
-<aside class="panel" id="panel"><div id="panel-content"></div></aside>
+<aside class="panel" id="panel"></aside>
 
-<footer>SOTSI + UHF · generado por <code>build_migration_dashboard.py</code> · data en <code>data/migration_plan.json</code></footer>
+<div class="modal-ov" id="modal-ov"></div>
+<div class="modal" id="modal">
+  <div class="modal-head">
+    <button class="modal-close" onclick="closePlan()">×</button>
+    <div class="ey" id="modal-ey"></div>
+    <h2 id="modal-title"></h2>
+    <div class="mh-sub" id="modal-sub"></div>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div>
+
+<footer>SOTSI + UHF · generado por <code>build_migration_dashboard.py</code> · data en <code>data/migration_plan.json</code> + <code>data/page_plans.json</code></footer>
 
 <script>
 const PAGES = [{"slug": "home", "url": "https://seatofthesoul.com/home", "new_path": "/home", "title": "Home", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "hub", "verdict": "rebuild", "phase": 1, "sprint": 1, "status": "backlog", "role_hours": {"design": 12, "content": 6, "media": 8, "build": 12, "review": 4}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Hub de marca; ancla IA y componentes globales.", "links": {"figma": "", "webflow": ""}}, {"slug": "about", "url": "https://seatofthesoul.com/about", "new_path": "/about", "title": "About", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "program", "verdict": "rebuild", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Pagina core, vieja (2021), rehacer en marca 2026.", "links": {"figma": "", "webflow": ""}}, {"slug": "about-gary-zukav", "url": "https://seatofthesoul.com/about-gary-zukav", "new_path": "/about-gary-zukav", "title": "About Gary Zukav", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "bio", "verdict": "rebuild", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 5, "content": 6, "media": 5, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Fundador, critica de marca.", "links": {"figma": "", "webflow": ""}}, {"slug": "about-linda-francis", "url": "https://seatofthesoul.com/about-linda-francis", "new_path": "/about-linda-francis", "title": "About Linda Francis", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "bio", "verdict": "rebuild", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 5, "content": 6, "media": 5, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Co-fundadora; liga al tributo memorial.", "links": {"figma": "", "webflow": ""}}, {"slug": "seat-of-the-soul-institute", "url": "https://seatofthesoul.com/seat-of-the-soul-institute", "new_path": "/seat-of-the-soul-institute", "title": "Seat of The Soul Institute", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "about", "notes": "Solapa con about/home; fundir en About.", "links": {"figma": "", "webflow": ""}}, {"slug": "books", "url": "https://seatofthesoul.com/books", "new_path": "/books", "title": "Books", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "program", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Ancla comercial; foto real + links de compra.", "links": {"figma": "", "webflow": ""}}, {"slug": "events-and-programs", "url": "https://seatofthesoul.com/events-and-programs", "new_path": "/events-and-programs", "title": "Events", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "index", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 5, "content": 3, "media": 3, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Hub indice de programas; secuencia las demas.", "links": {"figma": "", "webflow": ""}}, {"slug": "get-started", "url": "https://seatofthesoul.com/get-started", "new_path": "/get-started", "title": "Get Started", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "index", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 5, "content": 3, "media": 3, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Pagina de orientacion/conversion primaria.", "links": {"figma": "", "webflow": ""}}, {"slug": "connect", "url": "https://seatofthesoul.com/connect", "new_path": "/connect", "title": "Contact", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Contacto; rehacer form en Webflow.", "links": {"figma": "", "webflow": ""}}, {"slug": "faqs", "url": "https://seatofthesoul.com/faqs", "new_path": "/faqs", "title": "FAQs", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "FAQ actual; migrar + marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "media", "url": "https://seatofthesoul.com/media", "new_path": "/media", "title": "Media", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "index", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 5, "content": 3, "media": 3, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Pagina de prensa; refrescar assets.", "links": {"figma": "", "webflow": ""}}, {"slug": "podcast", "url": "https://seatofthesoul.com/podcast", "new_path": "/podcast", "title": "Podcast", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Activo (2025-11); refresh marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "soul-connections-newsletter", "url": "https://seatofthesoul.com/soul-connections-newsletter", "new_path": "/soul-connections-newsletter", "title": "Soul Connections Newsletter", "brand": "sotsi", "category": "Main Site", "group": "principales", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Mas reciente (2026-02); signup + form.", "links": {"figma": "", "webflow": ""}}, {"slug": "blog", "url": "https://seatofthesoul.com/blog", "new_path": "/blog", "title": "Blog", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "index", "verdict": "consolidate", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 5, "content": 3, "media": 3, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Indice canonico del blog; fusiona con blog-2.", "links": {"figma": "", "webflow": ""}}, {"slug": "blog-2", "url": "https://seatofthesoul.com/blog-2", "new_path": "/blog-2", "title": "Blog", "brand": "both", "category": "Main Site", "group": "principales", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "blog", "notes": "Duplicado de blog (2024); 301 al indice.", "links": {"figma": "", "webflow": ""}}, {"slug": "registration-received", "url": "https://seatofthesoul.com/registration-received", "new_path": "/registration-received", "title": "Registration Received", "brand": "both", "category": "Thank You", "group": "programas", "archetype": "template", "verdict": "consolidate", "phase": 1, "sprint": 1, "status": "backlog", "role_hours": {"design": 2, "content": 1, "media": 1, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "TY generico reusable; otros redirigen aqui.", "links": {"figma": "", "webflow": ""}}, {"slug": "authentic-power-support-program-apsp-2025", "url": "https://seatofthesoul.com/authentic-power-support-program-apsp-2025", "new_path": "/authentic-power-support-program-apsp-2025", "title": "Authentic Power Support Program (APSP) 2025", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "program", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Landing APSP; survivor canonico del cluster APSP.", "links": {"figma": "", "webflow": ""}}, {"slug": "beyond-the-five-senses-course", "url": "https://seatofthesoul.com/beyond-the-five-senses-course", "new_path": "/beyond-the-five-senses-course", "title": "Beyond The Five Senses Course", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "program", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Curso; rediseno en marca, confirmar si activo.", "links": {"figma": "", "webflow": ""}}, {"slug": "beyond-the-five-senses-waitlist", "url": "https://seatofthesoul.com/beyond-the-five-senses-waitlist", "new_path": "/beyond-the-five-senses-waitlist", "title": "Beyond The Five Senses Waitlist", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "beyond-the-five-senses-course", "notes": "Waitlist; estado de la pagina del curso.", "links": {"figma": "", "webflow": ""}}, {"slug": "courses-lighten", "url": "https://seatofthesoul.com/courses-lighten", "new_path": "/courses-lighten", "title": "Courses – LightEn", "brand": "sotsi", "category": "Main Site", "group": "programas", "archetype": "program", "verdict": "rebuild", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Curso activo (2025); rediseno en marca.", "links": {"figma": "", "webflow": ""}}, {"slug": "event-waitlist-journey-to-the-soul", "url": "https://seatofthesoul.com/event-waitlist-journey-to-the-soul", "new_path": "/event-waitlist-journey-to-the-soul", "title": "Event Waitlist (Journey to the Soul)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "events-and-programs", "notes": "Waitlist Journey generico; fundir en programa.", "links": {"figma": "", "webflow": ""}}, {"slug": "garyzukavlive", "url": "https://seatofthesoul.com/garyzukavlive", "new_path": "/garyzukavlive", "title": "Gary Zukav LIVE", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "program", "verdict": "improve", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Programa recurrente Gary Zukav LIVE; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "join-seat-of-the-soul-team", "url": "https://seatofthesoul.com/join-seat-of-the-soul-team", "new_path": "/join-seat-of-the-soul-team", "title": "Join Seat of the soul team", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "seat-of-the-soul-career-opportunities", "notes": "Reclutamiento (2021); fundir con careers.", "links": {"figma": "", "webflow": ""}}, {"slug": "journey-questionnaire", "url": "https://seatofthesoul.com/journey-questionnaire", "new_path": "/journey-questionnaire", "title": "Journey Questionnaire", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "journey-to-the-soul-questionnaire", "notes": "Duplicado viejo (2021).", "links": {"figma": "", "webflow": ""}}, {"slug": "journey-to-the-soul-questionnaire", "url": "https://seatofthesoul.com/journey-to-the-soul-questionnaire", "new_path": "/journey-to-the-soul-questionnaire", "title": "Journey to the Soul Questionnaire", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Intake Journey (2024) recurrente.", "links": {"figma": "", "webflow": ""}}, {"slug": "seat-of-the-soul-career-opportunities", "url": "https://seatofthesoul.com/seat-of-the-soul-career-opportunities", "new_path": "/seat-of-the-soul-career-opportunities", "title": "Seat of the Soul Career Opportunities", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Careers (2024); survivor de reclutamiento.", "links": {"figma": "", "webflow": ""}}, {"slug": "spiritual-partnership-program-spt-registration-2026-fp", "url": "https://seatofthesoul.com/spiritual-partnership-program-spt-registration-2026-fp", "new_path": "/spiritual-partnership-program-spt-registration-2026-fp", "title": "Spiritual Partnership Training Program (SPT) Payment Page Registration 2026 (FP)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "spt-26-registration-fp-2", "notes": "Variante 2026; fundir en SPT canonico.", "links": {"figma": "", "webflow": ""}}, {"slug": "spp-questionnaire", "url": "https://seatofthesoul.com/spp-questionnaire", "new_path": "/spp-questionnaire", "title": "SPP Questionnaire", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Intake SPP activo (2025-12).", "links": {"figma": "", "webflow": ""}}, {"slug": "spt-26-registration-fp-2", "url": "https://seatofthesoul.com/spt-26-registration-fp-2", "new_path": "/spt-26-registration-fp-2", "title": "SPT 26 Program Registration-FP", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "program", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 6, "content": 5, "media": 4, "build": 6, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Registro SPT 2026 mas nuevo (2025-12); canonico SPT.", "links": {"figma": "", "webflow": ""}}, {"slug": "spt-ground-rules", "url": "https://seatofthesoul.com/spt-ground-rules", "new_path": "/spt-ground-rules", "title": "SPT Ground Rules", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Politica del programa (2025) en uso.", "links": {"figma": "", "webflow": ""}}, {"slug": "addiction", "url": "https://seatofthesoul.com/addiction", "new_path": "/addiction", "title": "Addiction", "brand": "sotsi", "category": "Content", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Topic (2024); unidad con addiction-thank-you.", "links": {"figma": "", "webflow": ""}}, {"slug": "addiction-thank-you", "url": "https://seatofthesoul.com/addiction-thank-you", "new_path": "/addiction-thank-you", "title": "Addiction Thank You", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "addiction", "notes": "Par de addiction.", "links": {"figma": "", "webflow": ""}}, {"slug": "apg-optin", "url": "https://seatofthesoul.com/apg-optin", "new_path": "/apg-optin", "title": "Authentic Power Guidelines Opt-in", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Lead magnet activo (2025); unidad con apg-ty.", "links": {"figma": "", "webflow": ""}}, {"slug": "apg-ty", "url": "https://seatofthesoul.com/apg-ty", "new_path": "/apg-ty", "title": "Authentic Power Guidelines – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "apg-optin", "notes": "Par de apg-optin.", "links": {"figma": "", "webflow": ""}}, {"slug": "cultivating-love-optin", "url": "https://seatofthesoul.com/cultivating-love-optin", "new_path": "/cultivating-love-optin", "title": "Cultivating Self Love – Optin", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Lead magnet activo (2024).", "links": {"figma": "", "webflow": ""}}, {"slug": "cultivating-love-self-assessment", "url": "https://seatofthesoul.com/cultivating-love-self-assessment", "new_path": "/cultivating-love-self-assessment", "title": "Cultivating Love Self-Assessment", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "cultivating-love-optin", "notes": "Variante vieja (2021); fundir en el optin.", "links": {"figma": "", "webflow": ""}}, {"slug": "cultivatingemotionalawareness", "url": "https://seatofthesoul.com/cultivatingemotionalawareness", "new_path": "/cultivatingemotionalawareness", "title": "Cultivating Emotional Awareness", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Programa evergreen (2021); marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "daily-intuition-practice", "url": "https://seatofthesoul.com/daily-intuition-practice", "new_path": "/daily-intuition-practice", "title": "Daily Intuition Practice", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Activo (2025); unidad con daily-intuition-ty.", "links": {"figma": "", "webflow": ""}}, {"slug": "daily-intuition-ty", "url": "https://seatofthesoul.com/daily-intuition-ty", "new_path": "/daily-intuition-ty", "title": "Daily Intuition Practice – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "daily-intuition-practice", "notes": "Par de daily-intuition-practice.", "links": {"figma": "", "webflow": ""}}, {"slug": "fear-evaluation", "url": "https://seatofthesoul.com/fear-evaluation", "new_path": "/fear-evaluation", "title": "Fear Evaluation", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "love-fear", "notes": "Assessment (2021); fundir en funnel love-fear.", "links": {"figma": "", "webflow": ""}}, {"slug": "garys-welcome-video", "url": "https://seatofthesoul.com/garys-welcome-video", "new_path": "/garys-welcome-video", "title": "Gary's Welcome Video", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Video bienvenida evergreen; asset real.", "links": {"figma": "", "webflow": ""}}, {"slug": "intuitivemultisensorylife", "url": "https://seatofthesoul.com/intuitivemultisensorylife", "new_path": "/intuitivemultisensorylife", "title": "Intuitive Multisensory Life", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Programa evergreen (2021); marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "judgement-thank-you", "url": "https://seatofthesoul.com/judgement-thank-you", "new_path": "/judgement-thank-you", "title": "Judgement Thank You", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "judgment", "notes": "Par de judgment (arreglar spelling de slug).", "links": {"figma": "", "webflow": ""}}, {"slug": "judgment", "url": "https://seatofthesoul.com/judgment", "new_path": "/judgment", "title": "Judgment", "brand": "sotsi", "category": "Content", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Topic (2024); unidad con judgement-thank-you (arreglar slug).", "links": {"figma": "", "webflow": ""}}, {"slug": "listen-in", "url": "https://seatofthesoul.com/listen-in", "new_path": "/listen-in", "title": "Listen In", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "media", "notes": "Pagina audio (2022); fundir con podcast/media.", "links": {"figma": "", "webflow": ""}}, {"slug": "listen-with-gary-and-linda", "url": "https://seatofthesoul.com/listen-with-gary-and-linda", "new_path": "/listen-with-gary-and-linda", "title": "Listen with Gary and Linda", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "media", "notes": "Pagina audio (2021); fundir con podcast/media.", "links": {"figma": "", "webflow": ""}}, {"slug": "love-evaluation", "url": "https://seatofthesoul.com/love-evaluation", "new_path": "/love-evaluation", "title": "Love Evaluation", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "love-fear", "notes": "Assessment (2021); fundir en funnel love-fear.", "links": {"figma": "", "webflow": ""}}, {"slug": "love-fear", "url": "https://seatofthesoul.com/love-fear", "new_path": "/love-fear", "title": "Love & Fear", "brand": "sotsi", "category": "Content", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Teaching reciente (2025); par con love-fear-ty.", "links": {"figma": "", "webflow": ""}}, {"slug": "love-fear-ty", "url": "https://seatofthesoul.com/love-fear-ty", "new_path": "/love-fear-ty", "title": "Love & Fear – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "love-fear", "notes": "Par de love-fear.", "links": {"figma": "", "webflow": ""}}, {"slug": "multi-five-ty", "url": "https://seatofthesoul.com/multi-five-ty", "new_path": "/multi-five-ty", "title": "Multisensory vs Five-Sensory – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "mutli-five-sensory", "notes": "Par de multisensory.", "links": {"figma": "", "webflow": ""}}, {"slug": "mutli-five-sensory", "url": "https://seatofthesoul.com/mutli-five-sensory", "new_path": "/mutli-five-sensory", "title": "Multisensory vs Five-Sensory", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Activo (2025); arreglar typo de slug; unidad con multi-five-ty.", "links": {"figma": "", "webflow": ""}}, {"slug": "responsible-choice", "url": "https://seatofthesoul.com/responsible-choice", "new_path": "/responsible-choice", "title": "Responsible Choice", "brand": "sotsi", "category": "Content", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Teaching reciente (2025); par con responsible-choice-ty.", "links": {"figma": "", "webflow": ""}}, {"slug": "responsible-choice-ty", "url": "https://seatofthesoul.com/responsible-choice-ty", "new_path": "/responsible-choice-ty", "title": "Responsible Choice – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "responsible-choice", "notes": "Par de responsible-choice.", "links": {"figma": "", "webflow": ""}}, {"slug": "soul-connections-newsletter-ty", "url": "https://seatofthesoul.com/soul-connections-newsletter-ty", "new_path": "/soul-connections-newsletter-ty", "title": "Soul Connections Newsletter – TY", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "funnel", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 3, "content": 3, "media": 2, "build": 3, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "soul-connections-newsletter", "notes": "Par de newsletter.", "links": {"figma": "", "webflow": ""}}, {"slug": "universal-human-audiobook-excerpt-chapter-28", "url": "https://seatofthesoul.com/universal-human-audiobook-excerpt-chapter-28", "new_path": "/universal-human-audiobook-excerpt-chapter-28", "title": "UNIVERSAL HUMAN Audiobook Excerpt – Chapter 28", "brand": "uhf", "category": "Program / Event", "group": "programas", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Excerpt audiolibro evergreen; marca UHF.", "links": {"figma": "", "webflow": ""}}, {"slug": "apsp-23-registration", "url": "https://seatofthesoul.com/apsp-23-registration", "new_path": "/apsp-23-registration", "title": "APSP 23 Registration", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "authentic-power-support-program-apsp-2025", "notes": "Cohorte 2023 cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "apsp-25-registration", "url": "https://seatofthesoul.com/apsp-25-registration", "new_path": "/apsp-25-registration", "title": "APSP 25 Registration", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "authentic-power-support-program-apsp-2025", "notes": "Cohorte 2025 cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "apsp-questionnaire", "url": "https://seatofthesoul.com/apsp-questionnaire", "new_path": "/apsp-questionnaire", "title": "APSP Questionnaire", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "authentic-power-support-program-apsp-2025", "notes": "Intake de cohorte APSP cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "join-the-waitlist-jou23", "url": "https://seatofthesoul.com/join-the-waitlist-jou23", "new_path": "/join-the-waitlist-jou23", "title": "Join the Waitlist JOU23", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Waitlist JOU 2023 cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "join-the-waitlist-sp-new-dimension-relationship", "url": "https://seatofthesoul.com/join-the-waitlist-sp-new-dimension-relationship", "new_path": "/join-the-waitlist-sp-new-dimension-relationship", "title": "Join the Waitlist – SP – The New Dimension of Relationship", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Waitlist programa 2022 cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "journey-to-the-soul-registration-september-2024", "url": "https://seatofthesoul.com/journey-to-the-soul-registration-september-2024", "new_path": "/journey-to-the-soul-registration-september-2024", "title": "Journey to the Soul – Registration September 2024", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "events-and-programs", "notes": "Cohorte Sept-2024 cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "jtts-lav-agreement-form", "url": "https://seatofthesoul.com/jtts-lav-agreement-form", "new_path": "/jtts-lav-agreement-form", "title": "Authentic Power LAV Agreement Form", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "legal", "verdict": "improve", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 1, "content": 1, "media": 0, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Acuerdo legal de programa (2023); rehacer form.", "links": {"figma": "", "webflow": ""}}, {"slug": "lav-terms-conditions-agreement", "url": "https://seatofthesoul.com/lav-terms-conditions-agreement", "new_path": "/lav-terms-conditions-agreement", "title": "LAV / Terms & Conditions Agreement", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "jtts-lav-agreement-form", "notes": "Terminos LAV viejos (2021); fundir con legal.", "links": {"figma": "", "webflow": ""}}, {"slug": "linda-celebration-thank-you", "url": "https://seatofthesoul.com/linda-celebration-thank-you", "new_path": "/linda-celebration-thank-you", "title": "Linda Celebration – Thank You", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster Linda consolidado/dropeado.", "links": {"figma": "", "webflow": ""}}, {"slug": "message-to-linda-received", "url": "https://seatofthesoul.com/message-to-linda-received", "new_path": "/message-to-linda-received", "title": "Message to Linda Received", "brand": "sotsi", "category": "Thank You", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "seat-of-the-soul-33rd-anniversary-celebration-giveaway", "url": "https://seatofthesoul.com/seat-of-the-soul-33rd-anniversary-celebration-giveaway", "new_path": "/seat-of-the-soul-33rd-anniversary-celebration-giveaway", "title": "Seat of the Soul  Celebrates 33 Years in Publication", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Giveaway aniversario dated (2022) expirado.", "links": {"figma": "", "webflow": ""}}, {"slug": "spiritual-partnership-program-spp-registration-2025-eb", "url": "https://seatofthesoul.com/spiritual-partnership-program-spp-registration-2025-eb", "new_path": "/spiritual-partnership-program-spp-registration-2025-eb", "title": "Spiritual Partnership Program (SPP) Registration 2025 (EB)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "SPP 2025 early-bird cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "spiritual-partnership-program-spp-registration-2025-fp", "url": "https://seatofthesoul.com/spiritual-partnership-program-spp-registration-2025-fp", "new_path": "/spiritual-partnership-program-spp-registration-2025-fp", "title": "Spiritual Partnership Program (SPP) Registration 2025 (FP)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "SPP 2025 full-price cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "spiritual-partnership-training-program-spt-registration-2025-eb", "url": "https://seatofthesoul.com/spiritual-partnership-training-program-spt-registration-2025-eb", "new_path": "/spiritual-partnership-training-program-spt-registration-2025-eb", "title": "Spiritual Partnership Training Program (SPT) Registration 2025 (EB)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "spt-26-registration-fp-2", "notes": "SPT 2025 EB cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "spiritual-partnership-training-program-spt-registration-2025-fp", "url": "https://seatofthesoul.com/spiritual-partnership-training-program-spt-registration-2025-fp", "new_path": "/spiritual-partnership-training-program-spt-registration-2025-fp", "title": "Spiritual Partnership Training Program (SPT) Registration 2025 (FP)", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "spt-26-registration-fp-2", "notes": "SPT 2025 FP cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "spp-25-registration-eb", "url": "https://seatofthesoul.com/spp-25-registration-eb", "new_path": "/spp-25-registration-eb", "title": "SPP 25 Registration – EB", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Duplicado SPP 2025 EB cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "spp-25-registration-fp", "url": "https://seatofthesoul.com/spp-25-registration-fp", "new_path": "/spp-25-registration-fp", "title": "SPP 25 Registration FP", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Duplicado SPP 2025 FP cerrada.", "links": {"figma": "", "webflow": ""}}, {"slug": "universal-human-celebrates-one-year", "url": "https://seatofthesoul.com/universal-human-celebrates-one-year", "new_path": "/universal-human-celebrates-one-year", "title": "Universal Human Celebrates One Year", "brand": "uhf", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Aniversario dated (2022).", "links": {"figma": "", "webflow": ""}}, {"slug": "video-april-2022-event", "url": "https://seatofthesoul.com/video-april-2022-event", "new_path": "/video-april-2022-event", "title": "Video – April 2022 Event", "brand": "sotsi", "category": "Program / Event", "group": "programas", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Grabacion de evento April-2022.", "links": {"figma": "", "webflow": ""}}, {"slug": "for-linda", "url": "https://seatofthesoul.com/for-linda", "new_path": "/for-linda", "title": "Share and Read Messages for Linda", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda -> tributo unico.", "links": {"figma": "", "webflow": ""}}, {"slug": "linda-celebration", "url": "https://seatofthesoul.com/linda-celebration", "new_path": "/linda-celebration", "title": "Linda Celebration", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "linda-francis-celebration-series", "url": "https://seatofthesoul.com/linda-francis-celebration-series", "new_path": "/linda-francis-celebration-series", "title": "Linda Francis Celebration Series", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "linda-francis-celebration-series-messages", "url": "https://seatofthesoul.com/linda-francis-celebration-series-messages", "new_path": "/linda-francis-celebration-series-messages", "title": "Linda Francis Celebration Series Messages", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "lindas-mailbox", "url": "https://seatofthesoul.com/lindas-mailbox", "new_path": "/lindas-mailbox", "title": "Linda's Mailbox", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "messages-for-linda", "url": "https://seatofthesoul.com/messages-for-linda", "new_path": "/messages-for-linda", "title": "Messages for Linda", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "remember-linda-homepage", "notes": "Cluster memorial Linda.", "links": {"figma": "", "webflow": ""}}, {"slug": "remember-linda-homepage", "url": "https://seatofthesoul.com/remember-linda-homepage", "new_path": "/remember-linda-homepage", "title": "Remember Linda Homepage", "brand": "sotsi", "category": "Main Site", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 2, "status": "backlog", "role_hours": {"design": 5, "content": 6, "media": 4, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Hub del cluster memorial Linda; survivor del tributo.", "links": {"figma": "", "webflow": ""}}, {"slug": "journey-to-the-soul-retreat-faqs", "url": "https://seatofthesoul.com/journey-to-the-soul-retreat-faqs", "new_path": "/journey-to-the-soul-retreat-faqs", "title": "Journey To The Soul Retreat FAQs", "brand": "sotsi", "category": "Main Site", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 3, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "events-and-programs", "notes": "Fundir en FAQ del programa Journey.", "links": {"figma": "", "webflow": ""}}, {"slug": "ai-and-human-evolution", "url": "https://seatofthesoul.com/ai-and-human-evolution", "new_path": "/ai-and-human-evolution", "title": "AI and Human Evolution", "brand": "uhf", "category": "Main Site", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Contenido UHF (2024) relevante; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "failing-government", "url": "https://seatofthesoul.com/failing-government", "new_path": "/failing-government", "title": "Failing Government", "brand": "sotsi", "category": "Main Site", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Ensayo (2024); marca + SEO, confirmar mensaje.", "links": {"figma": "", "webflow": ""}}, {"slug": "free-tools", "url": "https://seatofthesoul.com/free-tools", "new_path": "/free-tools", "title": "Tools", "brand": "both", "category": "Content", "group": "contenido", "archetype": "index", "verdict": "rebuild", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 5, "content": 3, "media": 3, "build": 5, "review": 2}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Hub de herramientas; rediseno + marca.", "links": {"figma": "", "webflow": ""}}, {"slug": "heartofthesoul", "url": "https://seatofthesoul.com/heartofthesoul", "new_path": "/heartofthesoul", "title": "Heart of the Soul", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Contenido evergreen; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "multi-sensory-vocabulary", "url": "https://seatofthesoul.com/multi-sensory-vocabulary", "new_path": "/multi-sensory-vocabulary", "title": "Multi-Sensory Vocabulary", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Referencia evergreen; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "paulo-coelhos", "url": "https://seatofthesoul.com/paulo-coelhos", "new_path": "/paulo-coelhos", "title": "Paulo Coelho's Gift", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Tributo/ensayo evergreen; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "questions-and-answers", "url": "https://seatofthesoul.com/questions-and-answers", "new_path": "/questions-and-answers", "title": "Questions and Answers", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Q&A evergreen; marca + SEO.", "links": {"figma": "", "webflow": ""}}, {"slug": "soul-connections-newsletter-archive", "url": "https://seatofthesoul.com/soul-connections-newsletter-archive", "new_path": "/soul-connections-newsletter-archive", "title": "Soul Connections Newsletter Archive", "brand": "sotsi", "category": "Main Site", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "soul-connections-newsletter", "notes": "Fundir en newsletter; viejo (2021).", "links": {"figma": "", "webflow": ""}}, {"slug": "subscribe-to-podcast", "url": "https://seatofthesoul.com/subscribe-to-podcast", "new_path": "/subscribe-to-podcast", "title": "Podcast – Subscribe", "brand": "both", "category": "Content", "group": "contenido", "archetype": "consolidate", "verdict": "consolidate", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 0, "content": 1, "media": 0, "build": 0.5, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": "podcast", "notes": "Fundir en podcast; intento duplicado.", "links": {"figma": "", "webflow": ""}}, {"slug": "universalhuman", "url": "https://seatofthesoul.com/universalhuman", "new_path": "/universalhuman", "title": "Universal Human", "brand": "uhf", "category": "Content", "group": "contenido", "archetype": "content", "verdict": "improve", "phase": 1, "sprint": 4, "status": "backlog", "role_hours": {"design": 2, "content": 3, "media": 2, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Contenido de marca UHF (purple/humanos).", "links": {"figma": "", "webflow": ""}}, {"slug": "gifts-of-the-pandemic", "url": "https://seatofthesoul.com/gifts-of-the-pandemic", "new_path": "/gifts-of-the-pandemic", "title": "Gifts of the pandemic", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Contenido de momento pandemia (2021).", "links": {"figma": "", "webflow": ""}}, {"slug": "happy-birthday-gary", "url": "https://seatofthesoul.com/happy-birthday-gary", "new_path": "/happy-birthday-gary", "title": "Happy Birthday Gary!", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Saludo dated unico (2022).", "links": {"figma": "", "webflow": ""}}, {"slug": "share-your-favorite-quotes-the-seat-of-the-soul", "url": "https://seatofthesoul.com/share-your-favorite-quotes-the-seat-of-the-soul", "new_path": "/share-your-favorite-quotes-the-seat-of-the-soul", "title": "Share Your Favorite Quotes-The Seat of the Soul", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Campana UGC unica (2022) expirada.", "links": {"figma": "", "webflow": ""}}, {"slug": "wishes-for-gary", "url": "https://seatofthesoul.com/wishes-for-gary", "new_path": "/wishes-for-gary", "title": "Wishes for Gary", "brand": "sotsi", "category": "Content", "group": "contenido", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Saludo dated unico (2022).", "links": {"figma": "", "webflow": ""}}, {"slug": "cart", "url": "https://seatofthesoul.com/cart", "new_path": "/cart", "title": "Cart", "brand": "both", "category": "System", "group": "sistema", "archetype": "commerce", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: carrito WooCommerce; sin equivalente nativo Webflow.", "links": {"figma": "", "webflow": ""}}, {"slug": "checkout", "url": "https://seatofthesoul.com/checkout", "new_path": "/checkout", "title": "Checkout", "brand": "both", "category": "System", "group": "sistema", "archetype": "commerce", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: checkout WooCommerce; gap de plataforma.", "links": {"figma": "", "webflow": ""}}, {"slug": "email-series-update", "url": "https://seatofthesoul.com/email-series-update", "new_path": "/email-series-update", "title": "Email Series Update", "brand": "sotsi", "category": "System", "group": "sistema", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Utilidad interna de flujo de email (2022).", "links": {"figma": "", "webflow": ""}}, {"slug": "evening-welcome", "url": "https://seatofthesoul.com/evening-welcome", "new_path": "/evening-welcome", "title": "EWGZ Dashboard", "brand": "sotsi", "category": "System", "group": "sistema", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "EWGZ Dashboard interno/evento (2024); no es pagina publica.", "links": {"figma": "", "webflow": ""}}, {"slug": "my-account", "url": "https://seatofthesoul.com/my-account", "new_path": "/my-account", "title": "My account", "brand": "both", "category": "System", "group": "sistema", "archetype": "commerce", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: cuenta de membresia WP; sin equivalente nativo.", "links": {"figma": "", "webflow": ""}}, {"slug": "opt-out", "url": "https://seatofthesoul.com/opt-out", "new_path": "/opt-out", "title": "Opt out", "brand": "both", "category": "System", "group": "sistema", "archetype": "legal", "verdict": "improve", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 1, "content": 1, "media": 0, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Opt-out email (2024); rehacer integracion de form.", "links": {"figma": "", "webflow": ""}}, {"slug": "privacy-policy", "url": "https://seatofthesoul.com/privacy-policy", "new_path": "/privacy-policy", "title": "Privacy Policy", "brand": "both", "category": "System", "group": "sistema", "archetype": "legal", "verdict": "keep", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 1, "content": 1, "media": 0, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Texto legal actual (2025); portar + shell de marca.", "links": {"figma": "", "webflow": ""}}, {"slug": "refund-cancellation", "url": "https://seatofthesoul.com/refund-cancellation", "new_path": "/refund-cancellation", "title": "Refund/Cancellation Policy", "brand": "both", "category": "System", "group": "sistema", "archetype": "legal", "verdict": "keep", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 1, "content": 1, "media": 0, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Politica actual (2024); portar + shell.", "links": {"figma": "", "webflow": ""}}, {"slug": "sg", "url": "https://seatofthesoul.com/sg", "new_path": "/sg", "title": "SG Welcome", "brand": "sotsi", "category": "System", "group": "sistema", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "SG Welcome interno/legacy (2023).", "links": {"figma": "", "webflow": ""}}, {"slug": "shop", "url": "https://seatofthesoul.com/shop", "new_path": "/shop", "title": "Shop", "brand": "sotsi", "category": "Main Site", "group": "sistema", "archetype": "commerce", "verdict": "rebuild", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 8, "content": 4, "media": 4, "build": 16, "review": 3}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: e-commerce; decidir plataforma (ver riesgos).", "links": {"figma": "", "webflow": ""}}, {"slug": "soul2soulcommunity", "url": "https://seatofthesoul.com/soul2soulcommunity", "new_path": "/soul2soulcommunity", "title": "Membership", "brand": "both", "category": "System", "group": "sistema", "archetype": "commerce", "verdict": "rebuild", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 8, "content": 4, "media": 4, "build": 16, "review": 3}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: membresia/comunidad; Memberstack/Outseta o externo.", "links": {"figma": "", "webflow": ""}}, {"slug": "style-sheet", "url": "https://seatofthesoul.com/style-sheet", "new_path": "/style-sheet", "title": "Style Sheet", "brand": "sotsi", "category": "System", "group": "sistema", "archetype": "redirect", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Style reference WP interno; reemplazado por style guide Webflow.", "links": {"figma": "", "webflow": ""}}, {"slug": "terms-of-use", "url": "https://seatofthesoul.com/terms-of-use", "new_path": "/terms-of-use", "title": "Terms Of Use", "brand": "both", "category": "System", "group": "sistema", "archetype": "legal", "verdict": "keep", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 1, "content": 1, "media": 0, "build": 2, "review": 1}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "Texto legal actual (2025); portar + shell.", "links": {"figma": "", "webflow": ""}}, {"slug": "your-profile", "url": "https://seatofthesoul.com/your-profile", "new_path": "/your-profile", "title": "Your Profile", "brand": "both", "category": "System", "group": "sistema", "archetype": "commerce", "verdict": "drop", "phase": 1, "sprint": 5, "status": "backlog", "role_hours": {"design": 0, "content": 0, "media": 0, "build": 0.25, "review": 0}, "content_checklist": {"copy": false, "hero_media": false, "images": false, "video": false, "seo_title": false, "seo_desc": false, "redirects": false}, "assignee_role": "", "dependencies": [], "consolidate_into": null, "notes": "RIESGO: perfil de membresia WP; depende de decision.", "links": {"figma": "", "webflow": ""}}];
 const SPRINTS = [{"id": 1, "label": "Sprint 1 — Cimientos & Home", "goal": "Sistema global (nav, footer, tokens), template TY generico y Home aprobado."}, {"id": 2, "label": "Sprint 2 — Marca core & Fundadores", "goal": "About, Gary, Linda y tributo memorial consolidado (con sign-off del cliente)."}, {"id": 3, "label": "Sprint 3 — Oferta & Programas", "goal": "Hub de programas, landings, registros canonicos e intakes en el form backend elegido."}, {"id": 4, "label": "Sprint 4 — Funnels & Contenido", "goal": "Unidades optin+TY, podcast/media, herramientas, newsletter y contenido evergreen."}, {"id": 5, "label": "Sprint 5 — Sistema, Legal & Lanzamiento", "goal": "Legales, mapa de 301 redirects, QA full-site, decision de commerce/membership y go-live."}];
-const ROLES = ["design","content","media","build","review"];
-const ROLE_ES = {design:"Diseño",content:"Contenido",media:"Video/Imagen",build:"Build Webflow",review:"Revisión"};
-const GROUP_LABELS = {principales:"1 · Páginas principales",programas:"2 · Programas y funnels",contenido:"3 · Contenido y evergreen",sistema:"4 · Sistema y legal"};
-const GROUP_ORDER = ["principales","programas","contenido","sistema"];
-const esc = s => (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const cap = s => s ? s[0].toUpperCase()+s.slice(1) : s;
-const pageHours = p => ROLES.reduce((a,r)=>a+(p.role_hours[r]||0),0);
+const PLANS = {"_comment": "Plan de acción por página, indexado por slug. El builder (build_migration_dashboard.py) lo carga y lo adjunta a la página correspondiente como page.plan. Para agregar el plan de una página nueva: añade una key con su slug. Cada plan: { hours_note, ai_context, template_analysis, sections[] }. Las horas por sección son indicativas y suman el total de role_hours de la página en migration_plan.json.", "home": {"base": "WordPress — seatofthesoul.com/ (el /home viejo hace 301 a /; raíz es la canónica, WP page id 41).", "template": "Shimma (shimma.webflow.io) — template de Webflow para wellness, CMS + ecommerce.", "hours_note": "Horas por sección indicativas; suman las 42h totales del Home (Diseño 12 · Contenido 6 · Media 8 · Build 12 · Revisión 4). Nav/Footer globales se cuentan en 'Componentes globales', no aquí.", "ai_context": {"verdict": "RECONSTRUIR sobre Shimma, consolidando de 10 → 8 secciones y limpiando deuda técnica.", "summary": "El Home actual es un carrusel-hero saturado (4 ofertas rotando) seguido de 10 bandas de texto con CTAs repetidos: la comunidad se empuja 2 veces y el 'Final CTA' dice 'Start your journey' pero apunta al newsletter, no a get-started. Shimma aporta exactamente los bloques que el Home necesita (video-hero, about-split, cards de oferta, team grid, testimonios, banda CTA global), pero viene con identidad wellness café/crema + carrito ecommerce que hay que re-skinnear a la marca SOTSI (navy/Canela) y, en su mayoría, apagar el ecommerce.", "recommendations": ["Hero: cambiar el carrusel de 4 slides por UN hero de video (montaña/agua, regla SOTSI — nunca IA) con un solo mensaje ancla 'Create Authentic Power' y un CTA primario a Get Started. Las 3 ofertas rotativas (Evening with Gary, Failing Governments, AI & Human Evolution) bajan a una tira de 'destacados' editable.", "Consolidar comunidad: las 2 bandas de comunidad (mid + closing, ambas a Mighty Networks) se funden en UNA sola banda. El 'Tools Promo' se absorbe en el CTA del intro Authentic Power.", "Reutilizar de Shimma sin rediseñar: about-split (intro), cards de oferta (4 pilares), team-grid (fundadores), testimonial-slider (nuevo), stats-band (nuevo '25+ años'), marquee CTA global (newsletter).", "Re-skin global obligatorio: variables --_color--- y --_font-family--- de Shimma → tokens SOTSI (Midnight Navy #0E1631, Cosmic Purple, Canela títulos, Jost cuerpo). Botones pill OK; quitar paleta café/crema.", "Limpieza de deuda: el HTML vivo trae spam de casino inyectado (sitio WP hackeado) — NO migrar; el botón 'ENROLL IN A COURSE' no tiene destino — arreglar; '/home' debe quedar como 301 → '/' en Webflow.", "Apagar lo ecommerce de Shimma en el Home (carrito, 'Get Template', créditos Flowzai). Decisión de commerce/membership sigue siendo bloqueante para los botones de compra (ver riesgos del plan)."]}, "template_analysis": {"title": "Shimma — qué aprovechar y qué cambiar", "global_components": ["Navbar con mega-menú 'Pages' + carrito ecommerce + CTA 'Get Template' → reusar la estructura, reescribir links al IA de SOTSI, apagar carrito si no hay commerce, cambiar CTA a 'Get Started'.", "Banda CTA global 'Start Your Journey' (marquee) repetida sobre el footer en todas las páginas → reusar como cierre/newsletter.", "Footer multi-columna (Quick Links + Utilities) + newsletter + social + copyright → reusar; quitar crédito 'Designed by Flowzai / Powered by Webflow' y URLs sociales placeholder."], "tokens": "Shimma: Playfair Display + Libre Caslon + Montserrat sobre crema #fff9f2 / arena #e5d6c7 / espresso #302316 / cobre #9f764e, botones pill 500px. → Re-skin a SOTSI: navy/purple + Canela/Jost. Se cambia central en variables, no por componente.", "reusable_blocks": ["Video Hero (fondo video + overlay + CTA pill)", "About / Intro split (eyebrow + serif heading + copy + imagen)", "Cards de oferta / clases (título + blurb + imagen, 'ver todas')", "Banda CTA centrada (sin media)", "Cards de beneficio con video en loop", "Stats / métricas con contadores animados", "Team / instructores (grid de perfiles, CMS)", "Eventos con badges de fecha (slider, CMS)", "Testimonial slider (cita + nombre + rol)", "Blog / artículos 3-up (CMS)", "Formulario de contacto", "Newsletter band"], "strip_or_fix": ["Carrito ecommerce + páginas Checkout/PayPal/SKU si no se decide commerce.", "CTA 'Get Template', mega-menú promo del autor, crédito Flowzai, social URLs demo.", "4 posts demo lorem del blog + autor 'Robert Fox'.", "Títulos SEO 'Shimma - Webflow Ecommerce Website Template' en todas las páginas."]}, "sections": [{"id": "hero", "section": "Hero", "old": "Carrusel Swiper de 4 slides (Evening with Gary · Failing Governments · AI & Human Evolution · Start Your Journey), cada slide tarjeta clickeable.", "new": "Video-hero único: mensaje ancla 'Create Authentic Power' + sub + 1 CTA primario → Get Started. Tira de 'destacados' editable debajo para las 3 ofertas rotativas.", "webflow": "Video Hero (+ class-cards para destacados)", "action": "reconstruir", "notes": "Media regla SOTSI: montaña/agua, video > foto, NUNCA IA. Quitar la sobrecarga del carrusel; un solo mensaje.", "hours": 9, "done": false}, {"id": "authentic-power-intro", "section": "Value Proposition 'Do you want…'", "old": "Banda de texto con gráfico decorativo: 'meaning & purpose / creativity & health / joy & love' + definición de Authentic Power + CTA Start Your Journey.", "new": "About/intro split: heading serif 'Authentic Power' + copy de marca + 1 CTA. Absorbe el 'Tools Promo'.", "webflow": "About / Intro split", "action": "mejorar", "notes": "Conservar el copy núcleo de marca (alineación personalidad+alma). Tono calmado, sin urgencia.", "hours": 4, "done": false}, {"id": "tools-promo", "section": "Tools Promo 'Explore powerful tools'", "old": "Banda de texto 'Explore powerful tools' + CTA GET THE TOOLS → /get-started/.", "new": "Se absorbe en el CTA del intro Authentic Power (mismo destino get-started).", "webflow": "— (consolidado)", "action": "consolidar", "notes": "Redundante con el CTA de la sección intro; mismo destino. No es banda propia.", "hours": 0, "done": false}, {"id": "four-pillars", "section": "Courses Grid (4 pilares)", "old": "Grid 4-up: Authentic Power · Emotional Awareness · Responsible Choice · Spiritual Partnership. Botón 'ENROLL IN A COURSE' SIN destino (roto).", "new": "Cards de oferta 4-up (CMS Courses, ya creada por Jose) con iconos de línea de marca; cada card linkea a su curso. Arreglar el CTA roto.", "webflow": "Cards de oferta / clases (CMS Courses)", "action": "reconstruir", "notes": "Iconos de marca: Authentic Power (rayo), Spiritual Partnership (peces), Beyond 5 Senses (ojo), Emotional Awareness (mariposa). Destinos a experience.seatofthesoul.com o páginas de curso.", "hours": 5, "done": false}, {"id": "evening-with-gary", "section": "Event Promo 'Join Gary'", "old": "Bloque 'Join Gary / Are you ready?' + CTA Register Today → event-waitlist-journey-to-the-soul.", "new": "Banda de evento destacado 'An Evening with Gary Zukav' (CMS Events o feature) → experience.seatofthesoul.com/evening-with-gary.", "webflow": "Eventos con badge de fecha / banda CTA", "action": "mejorar", "notes": "Foto/video real del evento. Confirmar destino vivo (waitlist vs evening-with-gary).", "hours": 3, "done": false}, {"id": "books", "section": "Books Promo", "old": "Imagen+texto: 'Read the Legendary Books…' + portada + CTA get the books → /books/.", "new": "About-split imagen+texto con portada real de los libros + CTA a /books. Sin gráfico decorativo IA.", "webflow": "About / Intro split (imagen + texto)", "action": "mejorar", "notes": "Bloquea decisión de commerce si el botón es de compra directa.", "hours": 3, "done": false}, {"id": "founders", "section": "Founders 'Gary & Linda'", "old": "Dos columnas con gráfico decorativo: 'Gary & Linda', 25+ años, links More about Gary / linda.", "new": "Bloque de fundadores con 2 retratos reales → About Gary / About Linda. Sensible: tributo memorial Linda (sign-off cliente).", "webflow": "Team / instructores (grid de perfiles)", "action": "reconstruir", "notes": "Fotos reales de fundadores (no IA). Linda = contenido sensible, requiere aprobación del cliente (gate Sprint 2).", "hours": 5, "done": false}, {"id": "community", "section": "Community (Invitation + Closing)", "old": "DOS bandas de comunidad separadas (mid 'Begin your transformational journey' + closing 'WE INVITE YOU TO JOIN OUR COMMUNITY'), ambas → Mighty Networks.", "new": "UNA sola banda de comunidad consolidada → Soul School community. Una conversión, no dos.", "webflow": "Banda CTA centrada", "action": "consolidar", "notes": "2 CTAs idénticos al mismo destino externo. Membership/comunidad es riesgo abierto (Memberstack/Outseta/Mighty).", "hours": 3, "done": false}, {"id": "testimonials", "section": "Testimonios / Historias de la comunidad", "old": "(no existe en el Home actual)", "new": "NUEVO: testimonial slider con historias reales de la comunidad (cita + nombre + rol).", "webflow": "Testimonial slider", "action": "agregar", "notes": "Sujeto a tener testimonios reales aprobados. Refuerza credibilidad antes del CTA final.", "hours": 3, "done": false}, {"id": "stats", "section": "Stats band '25+ años'", "old": "(no existe como banda; el dato '25+ años' vive dentro de Founders)", "new": "NUEVO (opcional): banda de métricas con contadores ('25+ años', alcance, miembros).", "webflow": "Stats / métricas (contadores)", "action": "agregar", "notes": "Solo con números verificables. Si no hay datos sólidos, omitir.", "hours": 2, "done": false}, {"id": "latest-blog", "section": "Latest from the blog", "old": "(no existe en el Home actual)", "new": "NUEVO (Fase 2): 3-up de últimos posts del blog (CMS Blogs).", "webflow": "Blog / artículos 3-up (CMS)", "action": "agregar", "notes": "Depende de la migración del blog (Fase 2, 167 keep). Reservar el slot ahora, poblar después.", "hours": 2, "done": false}, {"id": "final-cta-newsletter", "section": "Final CTA / Newsletter", "old": "Banda 'ARE YOU READY TO CREATE AUTHENTIC POWER?' con botón 'Start your journey' que en realidad va al newsletter.", "new": "Banda CTA global de Shimma ('Start Your Journey') reusada como captura de newsletter (Soul Connections). Texto del botón coherente con el destino.", "webflow": "Marquee CTA band (global)", "action": "mejorar", "notes": "Arreglar la incoherencia label/destino. Reusa el componente global, no banda nueva.", "hours": 3, "done": false}, {"id": "cleanup-spam", "section": "Spam de casino inyectado", "old": "Link de casino (aussielowdepositcasino.com) inyectado en el HTML vivo — señal de WP hackeado.", "new": "NO migrar. Limpiar en WP antes del cutover.", "webflow": "— (eliminar)", "action": "quitar", "notes": "Riesgo de seguridad/SEO. Revisar plugins/instalación WP comprometida.", "hours": 0, "done": false}]}};
+</script>
+<script>/* SOTSI/UHF migration dashboard — client app.
+   Data (PAGES, SPRINTS, PLANS) is injected by build_migration_dashboard.py.
+   Everything user-facing is bilingual ES/EN via the I18N dict + applyI18n(). */
 
-/* tabs */
-document.querySelectorAll(".tab-btn").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
-  document.querySelectorAll(".tab-panel").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  document.getElementById("tab-"+b.dataset.tab).classList.add("active");
-  if(b.dataset.tab==="board" && window.table){ setTimeout(()=>window.table.redraw(true),30); }
-});
+const ROLES = ["design", "content", "media", "build", "review"];
+const GROUP_ORDER = ["principales", "programas", "contenido", "sistema"];
+const STATUSES = ["backlog", "design", "content", "build", "review", "done", "blocked"];
 
-/* filters: populate selects */
-function opts(id, vals, labelFn){
-  const sel=document.getElementById(id);
-  vals.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=labelFn?labelFn(v):v;sel.appendChild(o);});
-}
-opts("f-group",GROUP_ORDER.filter(g=>PAGES.some(p=>p.group===g)),g=>GROUP_LABELS[g]);
-opts("f-status",[...new Set(PAGES.map(p=>p.status))].sort(),cap);
-opts("f-sprint",[...new Set(PAGES.map(p=>p.sprint))].sort((a,b)=>a-b),v=>"Sprint "+v);
-opts("f-verdict",[...new Set(PAGES.map(p=>p.verdict))].sort(),cap);
-opts("f-brand",[...new Set(PAGES.map(p=>p.brand))].sort(),v=>v.toUpperCase());
-opts("f-cat",[...new Set(PAGES.map(p=>p.category))].sort());
+const ROLE_LABELS = {
+  es: { design: "Diseño", content: "Contenido", media: "Video/Imagen", build: "Build Webflow", review: "Revisión" },
+  en: { design: "Design", content: "Content", media: "Video/Image", build: "Webflow Build", review: "Review" },
+};
+const GROUP_LABELS = {
+  es: { principales: "1 · Páginas principales", programas: "2 · Programas y funnels", contenido: "3 · Contenido y evergreen", sistema: "4 · Sistema y legal" },
+  en: { principales: "1 · Main pages", programas: "2 · Programs & funnels", contenido: "3 · Content & evergreen", sistema: "4 · System & legal" },
+};
+const STATUS_LABELS = {
+  es: { backlog: "Backlog", design: "Diseño", content: "Contenido", build: "Build", review: "Revisión", done: "Done", blocked: "Bloqueada" },
+  en: { backlog: "Backlog", design: "Design", content: "Content", build: "Build", review: "Review", done: "Done", blocked: "Blocked" },
+};
+const VERDICT_LABELS = {
+  es: { keep: "Keep", improve: "Improve", rebuild: "Rebuild", consolidate: "Consolidate", drop: "Drop" },
+  en: { keep: "Keep", improve: "Improve", rebuild: "Rebuild", consolidate: "Consolidate", drop: "Drop" },
+};
+const ACTION_LABELS = {
+  es: { reconstruir: "Reconstruir", mejorar: "Mejorar", consolidar: "Consolidar", mantener: "Mantener", agregar: "Agregar", quitar: "Quitar" },
+  en: { reconstruir: "Rebuild", mejorar: "Improve", consolidar: "Consolidate", mantener: "Keep", agregar: "Add", quitar: "Remove" },
+};
 
-/* tabulator board */
-const badge=(cls,txt)=>`<span class="badge ${cls}">${esc(txt)}</span>`;
-const table=new Tabulator("#board",{
-  data:PAGES, layout:"fitColumns", height:"calc(100vh - 300px)", reactiveData:false,
-  groupBy:"group",
-  groupValues:[GROUP_ORDER],
-  groupHeader:function(value,count,data){
-    const h=data.filter(d=>d.verdict!=="drop").reduce((a,d)=>a+pageHours(d),0);
-    return `<span style="font-family:var(--hed);font-size:16px;color:var(--navy)">${esc(GROUP_LABELS[value]||value)}</span>`+
-           `<span style="color:#7a748f;font-size:12px;margin-left:10px">${count} págs · ${Math.round(h)}h</span>`;
+const I18N = {
+  es: {
+    "h.title_html": 'Plan de Migración a <em>Webflow</em>',
+    "h.brandline": "Seat of the Soul · Universal Human · 22D Marketing",
+    "h.sub": "Tablero de trabajo del equipo — qué se mantiene, mejora, reconstruye o elimina, con horas por rol y avance por sprint.",
+    "h.updated": "Actualizado:",
+    "tab.overview": "Resumen", "tab.board": "Board", "tab.guide": "Guía del equipo",
+    "kpi.done": "Avance", "kpi.hours": "Horas restantes", "kpi.prog": "En progreso", "kpi.blocked": "Bloqueadas", "kpi.pages": "Páginas a construir",
+    "kpi.done_sub": "{a} de {b} páginas", "kpi.hours_sub": "de {a}h totales", "kpi.prog_sub": "design / content / build / review",
+    "kpi.blocked_sub": "necesitan decisión", "kpi.pages_sub": "{a} drops (solo redirect)",
+    "ov.plans_title": "Planes de página", "ov.plans_note": "Plan de acción detallado por página. Empezamos por Home; al dar click se abre su mini-dashboard de secciones.",
+    "ov.open_plan": "Abrir plan →",
+    "ov.groups_title": "Grupos de prioridad",
+    "ov.groups_note": "Principales = páginas core que sí o sí deben estar al lanzar (home, about, nav). El blog (187 posts) es Fase 2 aparte.",
+    "ov.sprints_title": "Sprints", "ov.roles_title": "Horas por rol — avance",
+    "ov.roles_note": "Barras = horas done sobre horas totales estimadas (excluye drops, que solo llevan 301 redirect).",
+    "grp.build": "a construir", "grp.drops": "drops", "grp.total": "en total", "grp.done": "done", "spr.pages": "págs", "spr.done": "done",
+    "f.group": "Grupo: todos", "f.status": "Estatus: todos", "f.sprint": "Sprint: todos", "f.verdict": "Veredicto: todos",
+    "f.brand": "Marca: todas", "f.cat": "Categoría: todas", "f.search_ph": "Buscar título o slug…", "f.clear": "Limpiar", "f.showing": "Mostrando {a} de {b}",
+    "f.sprint_n": "Sprint {a}",
+    "col.status": "Estatus", "col.title": "Título", "col.brand": "Marca", "col.cat": "Categoría", "col.verdict": "Veredicto",
+    "col.sprint": "Sprint", "col.checklist": "Checklist", "col.hours": "Horas", "col.see": "Vieja",
+    "see.old": "Ver ↗",
+    "p.see_old": "Ver página vieja ↗", "p.open_plan": "Abrir plan de la página →",
+    "p.urls": "URL vieja → nueva", "p.meta": "Categoría / Sprint / Arquetipo", "p.cons": "Se consolida en",
+    "p.checklist": "Content checklist", "p.hours": "Horas estimadas por rol", "p.total": "Total", "p.notes": "Notas", "p.links": "Enlaces", "p.slug": "Slug",
+    "pm.eyebrow": "Plan de la página", "pm.base": "Base", "pm.ai_tag": "Contexto por IA", "pm.verdict": "Veredicto",
+    "pm.sections": "Mapa de secciones · Home original (WordPress) → Webflow",
+    "pm.note_local": "Los checks se guardan solo en este navegador. Para persistir en el equipo, edita data/page_plans.json y regenera.",
+    "pm.done_count": "{a}/{b} secciones listas",
+    "pm.col_section": "Sección", "pm.col_old": "Esqueleto viejo (WordPress)", "pm.col_new": "Esqueleto nuevo (Webflow)",
+    "pm.col_action": "Acción", "pm.col_wf": "Mapeado a Webflow", "pm.col_notes": "Notas", "pm.col_hrs": "Horas", "pm.col_done": "OK",
+    "pm.tpl_global": "Componentes globales", "pm.tpl_blocks": "Bloques reutilizables", "pm.tpl_strip": "Quitar / arreglar", "pm.tpl_tokens": "Tokens & re-skin",
+    "g.title": "Guía del equipo",
   },
-  columns:[
-    {title:"Estatus",field:"status",width:108,formatter:c=>badge("st-"+c.getValue(),cap(c.getValue()))},
-    {title:"Título",field:"title",minWidth:200,formatter:c=>`<b>${esc(c.getValue())}</b><br><span style="color:#7a748f;font-size:11px">/${esc(c.getData().slug)}</span>`},
-    {title:"Marca",field:"brand",width:78,hozAlign:"center",formatter:c=>badge("br-"+c.getValue(),c.getValue().toUpperCase())},
-    {title:"Categoría",field:"category",width:130},
-    {title:"Veredicto",field:"verdict",width:118,formatter:c=>badge("vd-"+c.getValue(),cap(c.getValue()))},
-    {title:"Sprint",field:"sprint",width:74,hozAlign:"center"},
-    {title:"Checklist",field:"slug",width:96,hozAlign:"center",formatter:c=>{
-       const ck=c.getData().content_checklist;const keys=Object.keys(ck);const n=keys.filter(k=>ck[k]).length;
-       const pct=Math.round(n/keys.length*100);
-       return `<div style="font-size:11px">${n}/${keys.length}</div><div class="bar-track sm" style="margin-top:3px"><div class="bar-fill" style="width:${pct}%"></div></div>`;}},
-    {title:"Horas",field:"slug",width:72,hozAlign:"right",formatter:c=>pageHours(c.getData())+"h"},
-  ],
-});
-window.table=table;
-table.on("rowClick",(e,row)=>openPanel(row.getData()));
+  en: {
+    "h.title_html": '<em>Webflow</em> Migration Plan',
+    "h.brandline": "Seat of the Soul · Universal Human · 22D Marketing",
+    "h.sub": "Team work board — what we keep, improve, rebuild or drop, with hours by role and progress by sprint.",
+    "h.updated": "Updated:",
+    "tab.overview": "Overview", "tab.board": "Board", "tab.guide": "Team guide",
+    "kpi.done": "Progress", "kpi.hours": "Hours remaining", "kpi.prog": "In progress", "kpi.blocked": "Blocked", "kpi.pages": "Pages to build",
+    "kpi.done_sub": "{a} of {b} pages", "kpi.hours_sub": "of {a}h total", "kpi.prog_sub": "design / content / build / review",
+    "kpi.blocked_sub": "need a decision", "kpi.pages_sub": "{a} drops (redirect only)",
+    "ov.plans_title": "Page plans", "ov.plans_note": "Detailed per-page action plan. We start with Home; click to open its section mini-dashboard.",
+    "ov.open_plan": "Open plan →",
+    "ov.groups_title": "Priority groups",
+    "ov.groups_note": "Main pages = core pages that must ship at launch (home, about, nav). The blog (187 posts) is a separate Phase 2.",
+    "ov.sprints_title": "Sprints", "ov.roles_title": "Hours by role — progress",
+    "ov.roles_note": "Bars = done hours over total estimated hours (excludes drops, which only get a 301 redirect).",
+    "grp.build": "to build", "grp.drops": "drops", "grp.total": "total", "grp.done": "done", "spr.pages": "pages", "spr.done": "done",
+    "f.group": "Group: all", "f.status": "Status: all", "f.sprint": "Sprint: all", "f.verdict": "Verdict: all",
+    "f.brand": "Brand: all", "f.cat": "Category: all", "f.search_ph": "Search title or slug…", "f.clear": "Clear", "f.showing": "Showing {a} of {b}",
+    "f.sprint_n": "Sprint {a}",
+    "col.status": "Status", "col.title": "Title", "col.brand": "Brand", "col.cat": "Category", "col.verdict": "Verdict",
+    "col.sprint": "Sprint", "col.checklist": "Checklist", "col.hours": "Hours", "col.see": "Old",
+    "see.old": "View ↗",
+    "p.see_old": "View old page ↗", "p.open_plan": "Open page plan →",
+    "p.urls": "Old → new URL", "p.meta": "Category / Sprint / Archetype", "p.cons": "Consolidates into",
+    "p.checklist": "Content checklist", "p.hours": "Estimated hours by role", "p.total": "Total", "p.notes": "Notes", "p.links": "Links", "p.slug": "Slug",
+    "pm.eyebrow": "Page plan", "pm.base": "Base", "pm.ai_tag": "AI context", "pm.verdict": "Verdict",
+    "pm.sections": "Section map · Original Home (WordPress) → Webflow",
+    "pm.note_local": "Checks are saved in this browser only. To persist for the team, edit data/page_plans.json and rebuild.",
+    "pm.done_count": "{a}/{b} sections done",
+    "pm.col_section": "Section", "pm.col_old": "Old skeleton (WordPress)", "pm.col_new": "New skeleton (Webflow)",
+    "pm.col_action": "Action", "pm.col_wf": "Mapped to Webflow", "pm.col_notes": "Notes", "pm.col_hrs": "Hours", "pm.col_done": "OK",
+    "pm.tpl_global": "Global components", "pm.tpl_blocks": "Reusable blocks", "pm.tpl_strip": "Strip / fix", "pm.tpl_tokens": "Tokens & re-skin",
+    "g.title": "Team guide",
+  },
+};
 
-function applyFilters(){
-  const q=document.getElementById("f-search").value.toLowerCase();
-  const f={group:"f-group",status:"f-status",sprint:"f-sprint",verdict:"f-verdict",brand:"f-brand",category:"f-cat"};
-  table.setFilter(d=>{
-    if(q && !(d.title.toLowerCase().includes(q)||d.slug.toLowerCase().includes(q))) return false;
-    for(const [field,id] of Object.entries(f)){
-      const v=document.getElementById(id).value;
-      if(v!=="" && String(d[field])!==String(v)) return false;
-    }
+let LANG = localStorage.getItem("sotsi_lang") || "es";
+
+const esc = (s) => (s == null ? "" : String(s)).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const t = (k) => (I18N[LANG][k] != null ? I18N[LANG][k] : (I18N.es[k] != null ? I18N.es[k] : k));
+const tf = (k, vals) => { let s = t(k); for (const [kk, vv] of Object.entries(vals)) s = s.replace("{" + kk + "}", vv); return s; };
+const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
+const pageHours = (p) => ROLES.reduce((a, r) => a + (p.role_hours[r] || 0), 0);
+const statusL = (s) => STATUS_LABELS[LANG][s] || cap(s);
+const verdictL = (v) => VERDICT_LABELS[LANG][v] || cap(v);
+const actionL = (a) => ACTION_LABELS[LANG][a] || cap(a);
+const roleL = (r) => ROLE_LABELS[LANG][r] || r;
+const groupL = (g) => GROUP_LABELS[LANG][g] || g;
+
+/* ── meta rollups (ported from compute_meta) ─────────────────────────────── */
+function computeMeta() {
+  const buildable = PAGES.filter((p) => p.verdict !== "drop");
+  const done = PAGES.filter((p) => p.status === "done");
+  const roleTotal = {}, roleDone = {};
+  ROLES.forEach((r) => {
+    roleTotal[r] = Math.round(buildable.reduce((a, p) => a + (p.role_hours[r] || 0), 0) * 10) / 10;
+    roleDone[r] = Math.round(done.reduce((a, p) => a + (p.role_hours[r] || 0), 0) * 10) / 10;
+  });
+  const totalH = Math.round(Object.values(roleTotal).reduce((a, b) => a + b, 0) * 10) / 10;
+  const doneH = Math.round(Object.values(roleDone).reduce((a, b) => a + b, 0) * 10) / 10;
+  const byStatus = {}; STATUSES.forEach((s) => (byStatus[s] = PAGES.filter((p) => p.status === s).length));
+  const drops = PAGES.filter((p) => p.verdict === "drop").length;
+  return {
+    total: PAGES.length, buildable: buildable.length, byStatus, drops,
+    roleTotal, roleDone, totalH, doneH, remaining: Math.round((totalH - doneH) * 10) / 10,
+    pctDone: PAGES.length ? Math.round((done.length / PAGES.length) * 1000) / 10 : 0,
+  };
+}
+
+/* ── dynamic renderers (re-run on language change) ───────────────────────── */
+function renderKpis(m) {
+  const inProg = ["design", "content", "build", "review"].reduce((a, s) => a + (m.byStatus[s] || 0), 0);
+  const cards = [
+    ["done", m.pctDone + "%", t("kpi.done"), tf("kpi.done_sub", { a: m.byStatus.done, b: m.total })],
+    ["hours", (+m.remaining) + "h", t("kpi.hours"), tf("kpi.hours_sub", { a: +m.totalH })],
+    ["prog", String(inProg), t("kpi.prog"), t("kpi.prog_sub")],
+    ["blocked", String(m.byStatus.blocked), t("kpi.blocked"), t("kpi.blocked_sub")],
+    ["pages", String(m.buildable), t("kpi.pages"), tf("kpi.pages_sub", { a: m.drops })],
+  ];
+  document.getElementById("kpis").innerHTML = cards.map(([k, v, l, s]) =>
+    `<div class="kpi kpi-${k}"><div class="kpi-val">${v}</div><div class="kpi-label">${esc(l)}</div><div class="kpi-sub">${esc(s)}</div></div>`).join("");
+}
+
+function renderBars(m) {
+  document.getElementById("role-bars").innerHTML = ROLES.map((r) => {
+    const tot = m.roleTotal[r] || 0, dn = m.roleDone[r] || 0, pct = tot ? Math.round((dn / tot) * 100) : 0;
+    return `<div class="bar-row"><div class="bar-head"><span>${esc(roleL(r))}</span><span class="bar-num">${dn} / ${tot}h</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
+  }).join("");
+}
+
+function renderSprints() {
+  document.getElementById("sprint-tiles").innerHTML = SPRINTS.map((s) => {
+    const sp = PAGES.filter((p) => p.sprint === s.id);
+    const done = sp.filter((p) => p.status === "done").length;
+    const hrs = Math.round(sp.filter((p) => p.verdict !== "drop").reduce((a, p) => a + pageHours(p), 0) * 10) / 10;
+    const pct = sp.length ? Math.round((done / sp.length) * 100) : 0;
+    return `<div class="sprint-tile"><div class="sprint-id">${esc(s.label)}</div><div class="sprint-goal">${esc(s.goal)}</div>
+      <div class="sprint-meta"><span>${sp.length} ${t("spr.pages")}</span><span>${hrs}h</span><span>${done}/${sp.length} ${t("spr.done")}</span></div>
+      <div class="bar-track sm"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;
+  }).join("");
+}
+
+function renderGroups() {
+  document.getElementById("group-summary").innerHTML = GROUP_ORDER.map((g) => {
+    const gp = PAGES.filter((p) => p.group === g); if (!gp.length) return "";
+    const buildable = gp.filter((p) => p.verdict !== "drop");
+    const done = gp.filter((p) => p.status === "done").length;
+    const hrs = Math.round(buildable.reduce((a, p) => a + pageHours(p), 0) * 10) / 10;
+    const pct = gp.length ? Math.round((done / gp.length) * 100) : 0;
+    const drops = gp.filter((p) => p.verdict === "drop").length;
+    return `<div class="grp-card grp-${g}"><div class="grp-title">${esc(groupL(g))}</div>
+      <div class="grp-big">${buildable.length}<span> ${t("grp.build")}</span></div>
+      <div class="grp-meta">${hrs}h · ${drops} ${t("grp.drops")} · ${gp.length} ${t("grp.total")}</div>
+      <div class="bar-track sm"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="grp-pct">${done}/${gp.length} ${t("grp.done")}</div></div>`;
+  }).join("");
+}
+
+function renderPlansList() {
+  const slugs = Object.keys(PLANS || {}).filter((k) => k !== "_comment");
+  const el = document.getElementById("plans-list");
+  if (!slugs.length) { el.innerHTML = ""; return; }
+  el.innerHTML = slugs.map((slug) => {
+    const p = PAGES.find((x) => x.slug === slug); if (!p) return "";
+    const secs = (PLANS[slug].sections || []).length;
+    return `<button class="grp-card" style="text-align:left;cursor:pointer;border-top-color:var(--gold-yellow)" onclick="openPlanBySlug('${esc(slug)}')">
+      <div class="grp-title">${esc(p.title)}</div>
+      <div class="grp-big">${secs}<span> ${LANG === "es" ? "secciones" : "sections"}</span></div>
+      <div class="grp-meta">${pageHours(p)}h · ${esc(verdictL(p.verdict))}</div>
+      <div class="lk-btn plan" style="margin-top:6px">${esc(t("ov.open_plan"))}</div></button>`;
+  }).join("");
+}
+
+/* ── guide (bilingual, rendered in JS) ───────────────────────────────────── */
+function renderGuide() {
+  const sw = [["Midnight Navy", "#0E1631"], ["Cosmic Purple", "#3C1951"], ["Pure White", "#FFFFFF"],
+    ["Soft Periwinkle", "#D2CCFD"], ["Light Lilac", "#E7D4F1"], ["Luminous Yellow", "#FFEB45"], ["Golden Yellow", "#FED457"]];
+  const chips = sw.map(([n, h]) => `<div class="sw"><span class="sw-box" style="background:${h}"></span><span class="sw-name">${n}</span><span class="sw-hex">${h}</span></div>`).join("");
+  const G = {
+    es: {
+      c1: "1 · Reglas de marca", c2: "2 · Flujo de producción de contenido (por página)", c3: "3 · Definition of Done (checklist por página)",
+      b1: `<p><b>Dos marcas, un sistema.</b> SOTSI = Midnight Navy + naturaleza (montañas/agua, <u>nunca</u> arena). UHF = Cosmic Purple + rostros humanos, close-ups diversos.</p><div class="sw-grid">${chips}</div>
+        <p><b>Tipografía:</b> Títulos = <i>Canela</i> (serif) · Cuerpo = <i>Jost</i> (sans) · Acento = <i>WorldDiscovery One</i> (script, solo frases emotivas, sin números).</p>
+        <p><b>Regla dura:</b> fotos/video <b>reales, NUNCA IA</b>; alta resolución; crop intencional; esquinas redondeadas; whitespace generoso; tono calmado y claro, sin urgencia.</p>
+        <p class="g-ref">Detalle completo en <code>BRAND_REFERENCE.md</code>.</p>`,
+      b2: `<ol><li><b>Leer la página vieja</b> en WordPress (botón "Ver" del board).</li><li><b>Escribir el copy nuevo</b> con la voz de marca (claro, profundo, sin urgencia).</li>
+        <li><b>Conseguir/solicitar media real</b> — foto o video (no IA), regla de marca correcta.</li><li><b>Construir en Webflow</b> sobre los componentes globales (nav/footer/tokens).</li>
+        <li><b>SEO:</b> title 30–65 car., meta description 120–160, 1 H1, alt text, 3+ links internos.</li><li><b>Mapear el 301 redirect</b> de la URL vieja a la nueva.</li></ol>`,
+      b3: `<ul><li><b>copy</b> — texto nuevo escrito y revisado, sin fechas muertas.</li><li><b>hero_media</b> — imagen/video hero real (no IA), alta resolución.</li>
+        <li><b>images</b> — imágenes de cuerpo con alt text.</li><li><b>video</b> — video embebido donde aplique.</li><li><b>seo_title / seo_desc</b> — meta dentro de rango.</li>
+        <li><b>redirects</b> — 301 de URL vieja registrado.</li><li>Responsive 320/375/768/1024/1440 · links/forms OK · sign-off Joel+Jose.</li></ul>`,
+    },
+    en: {
+      c1: "1 · Brand rules", c2: "2 · Content production flow (per page)", c3: "3 · Definition of Done (per-page checklist)",
+      b1: `<p><b>Two brands, one system.</b> SOTSI = Midnight Navy + nature (mountains/water, <u>never</u> sand). UHF = Cosmic Purple + human faces, diverse close-ups.</p><div class="sw-grid">${chips}</div>
+        <p><b>Typography:</b> Headings = <i>Canela</i> (serif) · Body = <i>Jost</i> (sans) · Accent = <i>WorldDiscovery One</i> (script, emotive phrases only, no numbers).</p>
+        <p><b>Hard rule:</b> <b>real photos/video, NEVER AI</b>; high resolution; intentional crop; rounded corners; generous whitespace; calm, clear tone, no urgency.</p>
+        <p class="g-ref">Full detail in <code>BRAND_REFERENCE.md</code>.</p>`,
+      b2: `<ol><li><b>Read the old page</b> on WordPress (board "View" button).</li><li><b>Write the new copy</b> in brand voice (clear, deep, no urgency).</li>
+        <li><b>Source/request real media</b> — photo or video (no AI), correct brand rule.</li><li><b>Build in Webflow</b> on the global components (nav/footer/tokens).</li>
+        <li><b>SEO:</b> title 30–65 chars, meta description 120–160, 1 H1, alt text, 3+ internal links.</li><li><b>Map the 301 redirect</b> from old URL to new.</li></ol>`,
+      b3: `<ul><li><b>copy</b> — new text written and reviewed, no dead dates.</li><li><b>hero_media</b> — real hero image/video (no AI), high resolution.</li>
+        <li><b>images</b> — body images with alt text.</li><li><b>video</b> — embedded video where it applies.</li><li><b>seo_title / seo_desc</b> — meta in range.</li>
+        <li><b>redirects</b> — old URL 301 registered.</li><li>Responsive 320/375/768/1024/1440 · links/forms OK · Joel+Jose sign-off.</li></ul>`,
+    },
+  }[LANG];
+  document.getElementById("guide").innerHTML = `
+    <details open class="g-card"><summary>${G.c1}</summary><div class="g-body">${G.b1}</div></details>
+    <details class="g-card"><summary>${G.c2}</summary><div class="g-body">${G.b2}</div></details>
+    <details class="g-card"><summary>${G.c3}</summary><div class="g-body">${G.b3}</div></details>`;
+}
+
+/* ── static-chrome i18n + filter selects ─────────────────────────────────── */
+function applyI18n() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+  document.querySelectorAll(".lang-toggle button").forEach((b) => b.classList.toggle("active", b.dataset.lang === LANG));
+}
+
+function populateFilters() {
+  const defs = { "f-group": "f.group", "f-status": "f.status", "f-sprint": "f.sprint", "f-verdict": "f.verdict", "f-brand": "f.brand", "f-cat": "f.cat" };
+  const fill = (id, vals, labelFn) => {
+    const sel = document.getElementById(id), cur = sel.value;
+    sel.innerHTML = `<option value="">${esc(t(defs[id]))}</option>`;
+    vals.forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = labelFn ? labelFn(v) : v; sel.appendChild(o); });
+    sel.value = cur;
+  };
+  fill("f-group", GROUP_ORDER.filter((g) => PAGES.some((p) => p.group === g)), groupL);
+  fill("f-status", [...new Set(PAGES.map((p) => p.status))].sort(), statusL);
+  fill("f-sprint", [...new Set(PAGES.map((p) => p.sprint))].sort((a, b) => a - b), (v) => tf("f.sprint_n", { a: v }));
+  fill("f-verdict", [...new Set(PAGES.map((p) => p.verdict))].sort(), verdictL);
+  fill("f-brand", [...new Set(PAGES.map((p) => p.brand))].sort(), (v) => v.toUpperCase());
+  fill("f-cat", [...new Set(PAGES.map((p) => p.category))].sort());
+}
+
+/* ── board (Tabulator) ───────────────────────────────────────────────────── */
+const badge = (cls, txt) => `<span class="badge ${cls}">${esc(txt)}</span>`;
+
+function makeColumns() {
+  return [
+    { title: t("col.status"), field: "status", width: 104, formatter: (c) => badge("st-" + c.getValue(), statusL(c.getValue())) },
+    { title: t("col.title"), field: "title", minWidth: 190, formatter: (c) => {
+        const d = c.getData(); const dot = pagePlan(d) ? `<span class="has-plan-dot" title="Tiene plan"></span>` : "";
+        return `<b>${esc(c.getValue())}</b>${dot}<br><span style="color:#7a748f;font-size:11px">/${esc(d.slug)}</span>`; } },
+    { title: t("col.see"), field: "url", width: 78, hozAlign: "center", headerSort: false, formatter: () => `<span class="see-old">${esc(t("see.old"))}</span>`,
+      cellClick: (e, cell) => { e.stopPropagation(); const u = cell.getData().url; if (u) window.open(u, "_blank", "noopener"); } },
+    { title: t("col.brand"), field: "brand", width: 74, hozAlign: "center", formatter: (c) => badge("br-" + c.getValue(), c.getValue().toUpperCase()) },
+    { title: t("col.cat"), field: "category", width: 128 },
+    { title: t("col.verdict"), field: "verdict", width: 116, formatter: (c) => badge("vd-" + c.getValue(), verdictL(c.getValue())) },
+    { title: t("col.sprint"), field: "sprint", width: 72, hozAlign: "center" },
+    { title: t("col.checklist"), field: "slug", width: 92, hozAlign: "center", headerSort: false, formatter: (c) => {
+        const ck = c.getData().content_checklist, keys = Object.keys(ck), n = keys.filter((k) => ck[k]).length, pct = Math.round((n / keys.length) * 100);
+        return `<div style="font-size:11px">${n}/${keys.length}</div><div class="bar-track sm" style="margin-top:3px"><div class="bar-fill" style="width:${pct}%"></div></div>`; } },
+    { title: t("col.hours"), field: "slug", width: 70, hozAlign: "right", headerSort: false, formatter: (c) => pageHours(c.getData()) + "h" },
+  ];
+}
+
+function buildTable() {
+  if (window.table) { window.table.destroy(); }
+  const table = new Tabulator("#board", {
+    data: PAGES, layout: "fitColumns", height: "calc(100vh - 300px)", reactiveData: false,
+    groupBy: "group", groupValues: [GROUP_ORDER],
+    groupHeader: (value, count, data) => {
+      const h = data.filter((d) => d.verdict !== "drop").reduce((a, d) => a + pageHours(d), 0);
+      return `<span style="font-family:var(--hed);font-size:16px;color:var(--navy)">${esc(groupL(value))}</span>` +
+        `<span style="color:#7a748f;font-size:12px;margin-left:10px">${count} ${t("spr.pages")} · ${Math.round(h)}h</span>`;
+    },
+    columns: makeColumns(),
+  });
+  table.on("rowClick", (e, row) => openPanel(row.getData()));
+  window.table = table;
+  setTimeout(applyFilters, 60);
+}
+
+function applyFilters() {
+  if (!window.table) return;
+  const q = document.getElementById("f-search").value.toLowerCase();
+  const f = { group: "f-group", status: "f-status", sprint: "f-sprint", verdict: "f-verdict", brand: "f-brand", category: "f-cat" };
+  window.table.setFilter((d) => {
+    if (q && !(d.title.toLowerCase().includes(q) || d.slug.toLowerCase().includes(q))) return false;
+    for (const [field, id] of Object.entries(f)) { const v = document.getElementById(id).value; if (v !== "" && String(d[field]) !== String(v)) return false; }
     return true;
   });
-  setTimeout(()=>{document.getElementById("f-count").textContent="Mostrando "+table.getDataCount("active")+" de "+PAGES.length;},50);
+  setTimeout(() => { document.getElementById("f-count").textContent = tf("f.showing", { a: window.table.getDataCount("active"), b: PAGES.length }); }, 50);
 }
-["f-search","f-group","f-status","f-sprint","f-verdict","f-brand","f-cat"].forEach(id=>{
-  const el=document.getElementById(id);el.addEventListener(id==="f-search"?"input":"change",applyFilters);});
-document.getElementById("f-clear").onclick=()=>{
-  ["f-search","f-status","f-sprint","f-verdict","f-brand","f-cat"].forEach(id=>document.getElementById(id).value="");applyFilters();};
-applyFilters();
 
-/* slide panel */
-const overlay=document.getElementById("overlay"),panel=document.getElementById("panel");
-function closePanel(){overlay.classList.remove("open");panel.classList.remove("open");}
-overlay.onclick=closePanel;
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
+/* ── slide panel ─────────────────────────────────────────────────────────── */
+const pagePlan = (d) => (PLANS && PLANS[d.slug]) ? PLANS[d.slug] : null;
+let openPanelData = null;
+const overlay = () => document.getElementById("overlay");
+const panel = () => document.getElementById("panel");
+function closePanel() { overlay().classList.remove("open"); panel().classList.remove("open"); openPanelData = null; }
 
-function openPanel(d){
-  const ck=d.content_checklist;
-  const ckHtml=Object.keys(ck).map(k=>`<div class="ck ${ck[k]?"on":""}"><span class="box"></span>${k}</div>`).join("");
-  const hrsRows=ROLES.map(r=>`<tr><td>${ROLE_ES[r]}</td><td style="text-align:right">${d.role_hours[r]||0}h</td></tr>`).join("");
-  const links=[];
-  if(d.links.figma)links.push(`<a class="lk-btn" href="${esc(d.links.figma)}" target="_blank">Figma ↗</a>`);
-  if(d.links.webflow)links.push(`<a class="lk-btn" href="${esc(d.links.webflow)}" target="_blank">Webflow ↗</a>`);
-  const cons=d.consolidate_into?`<div class="pb-sec"><h4>Se consolida en</h4><code>/${esc(d.consolidate_into)}</code></div>`:"";
-  panel.innerHTML=`
+function openPanel(d) {
+  openPanelData = d;
+  const ck = d.content_checklist;
+  const ckHtml = Object.keys(ck).map((k) => `<div class="ck ${ck[k] ? "on" : ""}"><span class="box"></span>${k}</div>`).join("");
+  const hrsRows = ROLES.map((r) => `<tr><td>${esc(roleL(r))}</td><td style="text-align:right">${d.role_hours[r] || 0}h</td></tr>`).join("");
+  const plan = pagePlan(d);
+  const buttons = [];
+  if (d.url) buttons.push(`<a class="lk-btn" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(t("p.see_old"))}</a>`);
+  if (plan) buttons.push(`<button class="lk-btn plan" onclick="openPlanBySlug('${esc(d.slug)}')">${esc(t("p.open_plan"))}</button>`);
+  const links = [];
+  if (d.links && d.links.figma) links.push(`<a class="lk-btn ghost" href="${esc(d.links.figma)}" target="_blank" rel="noopener">Figma ↗</a>`);
+  if (d.links && d.links.webflow) links.push(`<a class="lk-btn ghost" href="${esc(d.links.webflow)}" target="_blank" rel="noopener">Webflow ↗</a>`);
+  const cons = d.consolidate_into ? `<div class="pb-sec"><h4>${esc(t("p.cons"))}</h4><code>/${esc(d.consolidate_into)}</code></div>` : "";
+  panel().innerHTML = `
    <div class="panel-head">
      <button class="panel-close" onclick="closePanel()">×</button>
-     <div style="display:flex;gap:6px;margin-bottom:8px">
-       ${badge("br-"+d.brand,d.brand.toUpperCase())} ${badge("vd-"+d.verdict,cap(d.verdict))} ${badge("st-"+d.status,cap(d.status))}
-     </div>
+     <div style="display:flex;gap:6px;margin-bottom:8px">${badge("br-" + d.brand, d.brand.toUpperCase())} ${badge("vd-" + d.verdict, verdictL(d.verdict))} ${badge("st-" + d.status, statusL(d.status))}</div>
      <h3>${esc(d.title)}</h3>
    </div>
    <div class="panel-body">
-     <div class="pb-sec"><h4>URL  vieja → nueva</h4>
-       <div class="url-row"><code>${esc(d.url.replace("https://",""))}</code><span class="arrow">→</span><code>${esc(d.new_path)}</code></div></div>
-     <div class="pb-sec"><h4>Categoría / Sprint / Arquetipo</h4>
-       <div style="font-size:13px">${esc(d.category)} · Sprint ${d.sprint} · ${esc(d.archetype)}</div></div>
+     <div class="pb-sec">${buttons.join(" ")}</div>
+     <div class="pb-sec"><h4>${esc(t("p.urls"))}</h4><div class="url-row"><code>${esc(d.url.replace("https://", ""))}</code><span class="arrow">→</span><code>${esc(d.new_path)}</code></div></div>
+     <div class="pb-sec"><h4>${esc(t("p.meta"))}</h4><div style="font-size:13px">${esc(d.category)} · Sprint ${d.sprint} · ${esc(d.archetype)}</div></div>
      ${cons}
-     <div class="pb-sec"><h4>Content checklist</h4><div class="ck-grid">${ckHtml}</div></div>
-     <div class="pb-sec"><h4>Horas estimadas por rol</h4>
-       <table class="hrs-tbl">${hrsRows}<tr><td>Total</td><td style="text-align:right">${pageHours(d)}h</td></tr></table></div>
-     ${d.notes?`<div class="pb-sec"><h4>Notas</h4><div class="notes">${esc(d.notes)}</div></div>`:""}
-     ${links.length?`<div class="pb-sec"><h4>Enlaces</h4>${links.join("")}</div>`:""}
-     <div class="pb-sec"><h4>Slug</h4><code>${esc(d.slug)}</code></div>
+     <div class="pb-sec"><h4>${esc(t("p.checklist"))}</h4><div class="ck-grid">${ckHtml}</div></div>
+     <div class="pb-sec"><h4>${esc(t("p.hours"))}</h4><table class="hrs-tbl">${hrsRows}<tr><td>${esc(t("p.total"))}</td><td style="text-align:right">${pageHours(d)}h</td></tr></table></div>
+     ${d.notes ? `<div class="pb-sec"><h4>${esc(t("p.notes"))}</h4><div class="notes">${esc(d.notes)}</div></div>` : ""}
+     ${links.length ? `<div class="pb-sec"><h4>${esc(t("p.links"))}</h4>${links.join("")}</div>` : ""}
+     <div class="pb-sec"><h4>${esc(t("p.slug"))}</h4><code>${esc(d.slug)}</code></div>
    </div>`;
-  overlay.classList.add("open");panel.classList.add("open");
+  overlay().classList.add("open"); panel().classList.add("open");
 }
+
+/* ── page-plan modal (mini admin dashboard) ──────────────────────────────── */
+let openPlanData = null;
+const modalOv = () => document.getElementById("modal-ov");
+const modal = () => document.getElementById("modal");
+function closePlan() { modalOv().classList.remove("open"); modal().classList.remove("open"); openPlanData = null; }
+function openPlanBySlug(slug) { const p = PAGES.find((x) => x.slug === slug); if (p && pagePlan(p)) openPlan(p); }
+
+const lsKey = (slug, id) => `sotsi_plan:${slug}:${id}`;
+function secDone(slug, sec) { const v = localStorage.getItem(lsKey(slug, sec.id)); return v == null ? !!sec.done : v === "1"; }
+function toggleSec(slug, id) {
+  const p = PAGES.find((x) => x.slug === slug); const sec = pagePlan(p).sections.find((s) => s.id === id);
+  const next = !secDone(slug, sec); localStorage.setItem(lsKey(slug, id), next ? "1" : "0");
+  renderPlanBody(p); // re-render to refresh row + progress
+}
+
+function planProgress(slug, plan) {
+  const secs = plan.sections.filter((s) => s.action !== "consolidar" && s.action !== "quitar");
+  const done = secs.filter((s) => secDone(slug, s)).length;
+  return { done, total: secs.length };
+}
+
+function openPlan(d) { openPlanData = d; renderPlanBody(d); modalOv().classList.add("open"); modal().classList.add("open"); }
+
+function renderPlanBody(d) {
+  const plan = pagePlan(d); const slug = d.slug;
+  // header
+  document.getElementById("modal-ey").textContent = t("pm.eyebrow");
+  document.getElementById("modal-title").textContent = d.title;
+  document.getElementById("modal-sub").textContent = (plan.base || "");
+  // hour strip (role totals from the page object + grand total)
+  const hours = ROLES.map((r) => `<div class="hour-card"><div class="hc-val">${d.role_hours[r] || 0}h</div><div class="hc-lab">${esc(roleL(r))}</div></div>`).join("");
+  const total = `<div class="hour-card total"><div class="hc-val">${pageHours(d)}h</div><div class="hc-lab">${esc(t("p.total"))}</div></div>`;
+  // ai context
+  const ai = plan.ai_context;
+  const aiHtml = ai ? `<div class="ai-card">
+      <span class="ai-tag">✦ ${esc(t("pm.ai_tag"))}</span>
+      <h3>${esc(t("pm.verdict"))}: <span class="ai-verdict">${esc(ai.verdict)}</span></h3>
+      <p>${esc(ai.summary)}</p>
+      <ul>${(ai.recommendations || []).map((r) => `<li>${esc(r)}</li>`).join("")}</ul>
+    </div>` : "";
+  // section table
+  const prog = planProgress(slug, plan);
+  const rows = plan.sections.map((s) => {
+    const on = secDone(slug, s);
+    return `<tr class="${on ? "is-done" : ""}">
+      <td><div class="sec-name">${esc(s.section)}</div></td>
+      <td class="skel old">${esc(s.old)}</td>
+      <td class="skel">${esc(s.new)}</td>
+      <td>${badge("ac-" + s.action, actionL(s.action))}</td>
+      <td class="wf">${esc(s.webflow)}</td>
+      <td class="pnote">${esc(s.notes || "")}</td>
+      <td class="phrs">${s.hours ? s.hours + "h" : "—"}</td>
+      <td style="text-align:center"><span class="plan-check ${on ? "on" : ""}" onclick="toggleSec('${esc(slug)}','${esc(s.id)}')">${on ? "✓" : ""}</span></td>
+    </tr>`;
+  }).join("");
+  const table = `<div class="section-h">${esc(t("pm.sections"))}</div>
+    <div class="plan-progress">${tf("pm.done_count", { a: prog.done, b: prog.total })} · <span style="color:var(--muted)">${esc(t("pm.note_local"))}</span></div>
+    <div class="plan-tbl-wrap"><table class="plan-tbl"><thead><tr>
+      <th>${esc(t("pm.col_section"))}</th><th>${esc(t("pm.col_old"))}</th><th>${esc(t("pm.col_new"))}</th>
+      <th>${esc(t("pm.col_action"))}</th><th>${esc(t("pm.col_wf"))}</th><th>${esc(t("pm.col_notes"))}</th>
+      <th style="text-align:right">${esc(t("pm.col_hrs"))}</th><th style="text-align:center">${esc(t("pm.col_done"))}</th>
+    </tr></thead><tbody>${rows}</tbody></table></div>`;
+  // template analysis
+  const ta = plan.template_analysis;
+  let taHtml = "";
+  if (ta) {
+    const gl = (ta.global_components || []).map((x) => `<li>${esc(x)}</li>`).join("");
+    const bl = (ta.reusable_blocks || []).map((x) => `<span class="chip">${esc(x)}</span>`).join("");
+    const st = (ta.strip_or_fix || []).map((x) => `<li>${esc(x)}</li>`).join("");
+    taHtml = `<div class="section-h">${esc(ta.title || "Shimma")}</div>
+      <div class="tpl-grid">
+        <div class="tpl-card"><h4>${esc(t("pm.tpl_global"))}</h4><ul>${gl}</ul></div>
+        <div class="tpl-card"><h4>${esc(t("pm.tpl_strip"))}</h4><ul>${st}</ul></div>
+        <div class="tpl-card" style="grid-column:1/-1"><h4>${esc(t("pm.tpl_blocks"))}</h4><div class="chips">${bl}</div>
+          <div class="tok-note"><b>${esc(t("pm.tpl_tokens"))}:</b> ${esc(ta.tokens || "")}</div></div>
+      </div>`;
+  }
+  document.getElementById("modal-body").innerHTML =
+    `<div class="hour-strip">${hours}${total}</div>${aiHtml}${table}${taHtml}`;
+}
+
+/* ── tabs + language toggle + boot ───────────────────────────────────────── */
+function setLang(l) {
+  LANG = l; localStorage.setItem("sotsi_lang", l);
+  const m = computeMeta();
+  applyI18n(); renderKpis(m); renderBars(m); renderSprints(); renderGroups(); renderPlansList(); renderGuide(); populateFilters();
+  if (window.table) buildTable();
+  if (openPanelData) openPanel(openPanelData);
+  if (openPlanData) renderPlanBody(openPlanData);
+}
+
+function initTabs() {
+  document.querySelectorAll(".tab-btn").forEach((b) => b.onclick = () => {
+    document.querySelectorAll(".tab-btn").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    document.getElementById("tab-" + b.dataset.tab).classList.add("active");
+    if (b.dataset.tab === "board") { if (!window.table) buildTable(); else setTimeout(() => window.table.redraw(true), 30); }
+  });
+}
+
+function boot() {
+  const m = computeMeta();
+  applyI18n();
+  renderKpis(m); renderBars(m); renderSprints(); renderGroups(); renderPlansList(); renderGuide(); populateFilters();
+  initTabs();
+  document.querySelectorAll(".lang-toggle button").forEach((b) => b.onclick = () => setLang(b.dataset.lang));
+  ["f-search", "f-group", "f-status", "f-sprint", "f-verdict", "f-brand", "f-cat"].forEach((id) => {
+    document.getElementById(id).addEventListener(id === "f-search" ? "input" : "change", applyFilters);
+  });
+  document.getElementById("f-clear").onclick = () => {
+    ["f-search", "f-status", "f-sprint", "f-verdict", "f-brand", "f-cat", "f-group"].forEach((id) => document.getElementById(id).value = "");
+    applyFilters();
+  };
+  overlay().onclick = closePanel;
+  modalOv().onclick = closePlan;
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (openPlanData) closePlan(); else closePanel(); } });
+}
+document.addEventListener("DOMContentLoaded", boot);
 </script>
 </body>
 </html>
