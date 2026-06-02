@@ -9,6 +9,179 @@
 
 ---
 
+## Session · 2026-06-01 (noche) — App `22d-trello`: **AI Project Memory System** (memory / journal / reports + context MD)
+
+> App hermana (`/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`). Servicio Cloud Run `trello-22d`, proyecto `profound-yew-489203-b5`, `us-central1`. BD = Supabase PROD (local escribe a prod). Deploy `./deploy.sh`.
+
+### Tarea (Joel)
+Convertir el CRM en **AI-Native**: sobre el MCP existente (19 tools de KPIs/tareas/blogs), agregar **memoria persistente** para que Claude/ChatGPT recuerden contexto histórico entre conversaciones. Spec de 4 capas (Current State / Project Memory / Project Journal / AI Reports) + context endpoints en **Markdown** (no JSON).
+
+### Decisiones (preguntadas a Joel)
+- **project_id forward-compatible**: tabla `projects` con 1 fila (SOTSI id 1); las 3 tablas nuevas llevan `project_id` default a SOTSI. La app mono-proyecto queda intacta (no se tocó pages/tasks/blogs).
+- **Summaries "ambas"**: `summarize_project_journal` devuelve digest determinístico (conteos por autor) **+** entradas crudas → el agente sintetiza (cero API, regla del proyecto).
+- **Author del journal = user_id** (resuelto por nombre como el resto del MCP) con fallback a texto libre para gente fuera del equipo.
+
+### Entregado
+- **1 migración** `2026_06_01_000010_create_ai_memory_layers`: `projects` (+seed SOTSI), `project_memories` (title/memory/importance/tags json/created_by), `project_journal` (entry_date/author_id/author_name/content), `ai_reports` (report_type/title/content/generated_by).
+- **4 modelos**: `Project` (DEFAULT_ID=1), `ProjectMemory`, `JournalEntry` (tabla `project_journal`), `AiReport`.
+- **`Support/ProjectContext`** — renderer Markdown compartido (current-state brief, memory, journal raw, journal digest, latest report, brief combinado, search). DRY entre MCP y HTTP.
+- **`Concerns/HandlesMemoryLayers`** (trait) — **11 MCP tools nuevas** (19 → **30**): `get_project_context`, `get_project_brief`, `get/save/search_project_memory`, `add/get/summarize_project_journal`, `save/get/get_latest` report. Mantiene `McpController` delgado (merge en `tools()` + fall-through en `callTool()`). Todas con `dry_run` donde escriben.
+- **`ContextController`** + rutas `/ctx/{token}`, `/ctx/{token}/memory|journal|brief` (Markdown `text/plain`, token en path, para ChatGPT/Gemini que leen URLs).
+- **MCP `instructions`** reescritas: brief-first para "¿cómo va?"; nota de avance → journal + update task + save memory.
+- **`ProjectMemorySeeder`**: 9 memorias reales precargadas del masterlog (Canela Trial 🚨, foto-real-nunca-IA, DEV≠PROD, local=prod, secuencias PG, commerce abierto, triage 167/20, cero-API).
+- **14 tests** nuevos (`MemoryLayersTest`) → **62/62 PHPUnit verdes**.
+
+### Aplicado en PROD
+- `migrate --force` + `db:seed --class=ProjectMemorySeeder` corridos contra **Supabase PROD** (tablas nuevas, aditivo). Verificado: 1 project, 9 memorias (4 high), insert/delete en journal OK → **secuencias Postgres sanas** (tablas nuevas, NO sufren el bug del port SQLite). `ProjectContext::briefMarkdown()` renderiza contra datos reales.
+- **2 commits**: `feat: add-task loading feedback + inline card edit styling` (pendiente viejo) + `feat: AI Project Memory System …`. Push a `github.com/devReneceo/22d-trello` main. **Deploy a Cloud Run** ejecutado (el código nuevo de las tools entra en vivo con el deploy; la BD ya tenía las tablas por local=prod).
+
+### Workflow nuevo para el agente
+- *"¿Cómo va SOTSI?"* → `get_project_brief` (estado + memoria high + último reporte).
+- *"Hoy terminé Contact Form y resolví ActiveCampaign"* → `add_journal_entry` + `update_task` + `save_project_memory` si hay decisión durable.
+
+### Cómo regenerar / correr
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello"
+php artisan test --testsuite=Feature            # 62/62
+php artisan migrate --force                       # crea las 4 tablas (Supabase prod)
+php artisan db:seed --class=ProjectMemorySeeder --force
+./deploy.sh                                       # publica el código nuevo de tools
+# MCP en claude.ai: el conector /mcp/<token> ahora lista 30 tools tras el deploy.
+# Context MD: https://trello-22d-…run.app/ctx/<SNAPSHOT_TOKEN>[/memory|/journal|/brief]
+```
+
+### Pendiente
+- [ ] Tras deploy, **re-cargar el conector MCP en claude.ai** para que aparezcan las 11 tools nuevas (hoy mostraba 19).
+- [ ] (Opcional) `save_ai_report` desde el botón "Resume project" del dashboard (persistir el reporte determinístico que hoy se calcula y se descarta).
+- [ ] (Opcional) Si se re-portan datos de SQLite, recordar resetear secuencias también de las 4 tablas nuevas.
+- [ ] Decidir BD de pruebas vs local=prod (sigue abierto del día).
+
+---
+
+## 2026-06-01 — Webflow DEV: disección del Home + auditoría de tokens (vía MCP solo-lectura)
+
+Joel creó un sitio **DEV** (clon de PROD) para iterar sin tocar el de Jose. Se diagnosticó vía MCP `webflow-sotsi` en **solo-lectura** (Claude nunca ha creado ni editado ningún sitio Webflow).
+
+**Sitios actuales en el workspace SOTSI** (`69fb10a1d207c46d49542bb8`):
+| Sitio | Site ID | Nota |
+|---|---|---|
+| **DEV - Seat of the Soul Institute** | `6a1d0762d6ddc2456edd8403` | ⭐ sitio de trabajo (creado 6/01, clon de PROD) |
+| **PRODUCTION - Seat of the Soul Institute** | `6a182f372e1313bdfbeeee21` | build real de Jose — NO tocar |
+| **BACKUP INITIAL STATE** | `6a180e375d2eb885171037d3` | respaldo |
+| 2 borradores viejos del AI Site Builder | `6a0421…632a`, `6a0424…12f1` | ignorar |
+
+Template confirmado = **Shimma** (e-commerce yoga/wellness). Licencia single-use = OK duplicar para mismo cliente/proyecto (SOTSI). Todos en subdominio webflow.io, sin dominio propio, locale English `enabled:false`.
+
+### Estructura del Home (DEV) — 12 bloques arriba→abajo
+Hecho casi todo con **componentes** (no secciones nativas). Orden real:
+`Navbar` (comp, con carrito ecommerce) · **Hero Section** (nativa — H1 "**Authentic Power**" + H2 "Spiritual Growth & Emotional Awareness with **Gary Zukav**"; animación de scroll de 5 frames "Hero Scroll Tigger", **NO el carrusel Swiper del WP viejo**) · **About Section** (nativa — "A Space to Reconnect with Your Soul") · **Tricker Text Section** (nativa, marquee) · `Member Animation Section` (comp) · `Why Choose Us Section` (comp — H3 "Learn, Reflect & Grow at Your Own Pace" + cards CMS) · `Expert Section` (comp — instructores → **rebuild a Gary & Linda**) · `Coming Events Section` (comp, CMS Events) · `Testimonials Section` (comp, CMS) · `Articles` (comp — últimos blogs CMS) · `Ticker` (comp — CTA marquee global) · `Footer` (comp).
+- **Copy del hero YA es SOTSI** (Jose ya empezó). Cards salen vacías porque están **bindeadas al CMS**.
+- 17 componentes en la librería: Button Fill/Outline, Footer, Navbar, Breadcrumb, Ticker, + las *Section* de arriba, Template Button/Info Bar (demo), About/Courses Hero.
+
+### Tokens de diseño (5 colecciones de variables) — **re-skin de marca YA ~80% hecho**
+Corrige el masterlog (que asumía crema/espresso del demo público). El DEV/PROD real ya tiene la paleta de marca:
+- **Color:** Primary/Body BG/Section BG/Heading = navy `#0e1631` · BG Secondary/Stroke/Cosmic Purple = `#3c1951` · Luminous Yellow/Cursor = `#ffeb45` · White · Charcoal `#131313`.
+- **Font Family:** **Jost** (sans/body) · **Canela Trial** (serif display/títulos) · Libre Caslon Condensed · FontAwesome (iconos).
+- **Font Weight:** 300–700 (typos "Blod"/"Semi-Blod", cosméticos).
+- **Typography + Spacing:** colecciones con **modos responsivos por breakpoint** (tipografía fluida) — el `body` los aplica. Template bien hecho.
+
+### Auditoría de uso de tokens — sano, con deuda chica
+Mayoría de estilos enlazan a variables (`body`, `About Title`, `Classes Heading` [usa Canela Trial], `Body Text 03`, `Blog/Event Post Hero`). Hardcodes encontrados: `About Section` bg `white` fijo · `Body Text Light 1` color `#121212` fijo · `Hero Title` `rgba(51,51,51,0)` + `font-size:20.42vw` (efecto display gigante intencional).
+
+### Pendientes técnicos reales del template (orden)
+1. **🚨 Licenciar Canela** — "Canela **Trial**" está aplicada a los títulos (`Classes Heading`); sale en vivo al publicar PROD. Comprar Canela o serif alternativa licenciada (Cormorant/Fraunces). Para DEV ok seguir.
+2. **Consolidar ~6 tokens navy duplicados** (Heading Text Dark, Body Text 2, Section BG, BG colour, Body BG, Primary todos = `#0e1631`).
+3. **Limpiar 3 hardcodes** de color (arriba).
+4. **Decidir commerce + membership** — afecta carrito del Navbar y `Member Animation Section` (bloqueo abierto del masterlog).
+5. Reemplazo global de títulos SEO "Shimma - Webflow Ecommerce Website Template" (heredado en las 25 páginas).
+
+### Cómo retomar el MCP del Designer
+Designer tools necesitan el sitio abierto en el Webflow Designer con la app MCP activa (pestaña en primer plano). Enlace DEV: `https://seat-of-the-soul-institut-71acdf22a9cd2.design.webflow.com?app=...`. Data API tools (pages/cms/sites) funcionan headless sin abrir el Designer.
+
+### Ejecución (misma sesión, 2026-06-01) — plan + 3 frentes arrancados
+Joel pidió: usar el brandbook para generar **variantes de color (themes)** en DEV con el motor de variables de Webflow, **migrar** el sitio viejo, **copy/SEO/CTA** adaptado al template, **imágenes** reales (scraping), e **i18n ES/EN** (fase posterior). Se usó el **planner agent**.
+
+- **Brandbook guardado** en `input/Sotsi_and_UHF_Brand_Guidelines.pdf` (copia del de Downloads). Destilado ya existía en `BRAND_REFERENCE.md` (paleta: Navy #0E1631, Cosmic Purple #3C1951, Periwinkle #D2CCFD, Lilac #E7D4F1, Luminous #FFEB45, Golden #FED457; Canela+Jost; foto real nunca IA).
+- **Plan maestro** → `PLAN_WEBFLOW_THEMES_Y_MIGRACION.md` (5 frentes, dependencias, 5 decisiones bloqueantes D1–D5, calendario por sprints).
+- **F1 Themes — EJECUTADO en DEV (escritura autorizada).** En la colección Color (`collection-551453a6-815f-7416-9003-49a7da8266c8`) se crearon **2 modes nuevos**: `UHF Purple` (`mode-ab5bda08-034b-532e-ec95-dc60c355661f`) y `Light Airy` (`mode-f857eff4-7c7f-4152-5a91-4c53dde76031`); el base = SOTSI Navy. Valores asignados (solo lo que difiere del base): UHF → Body BG/Section BG/BG colour = `#3c1951`; Light → esas 3 = `#ffffff` + Luminous Yellow = `#fed457`. **NO se borró ningún token** (para no romper bindings). Se aplicó UHF al `body` para preview y se **revirtió** → DEV quedó en SOTSI Navy. El "dropdown de themes" = el **selector de Mode** nativo del panel Variables. **Pendiente para Light 100%:** mapear las variables de TEXTO por mode (el template reusa el mismo navy para fondo y texto → en Light el texto blanco de secciones oscuras quedaría invisible). SOTSI↔UHF ya cambian limpio.
+- **F3 Copy — HECHO** → `COPY_HOME_SOTSI.md` (12 bloques ES/EN, conserva Hero de Jose, 4 pilares, fundadores Gary&Linda [Linda memorial 🔒], testimonios con placeholders, meta SEO, reglas CTA, 3 notas de voz). Generado por agente con `brand-voice`.
+- **F4 Imágenes — script listo y probado** → `scrape_images.py` (stdlib, reusa URLs del `seo_audit`, respeta Crawl-delay, salta iconos/spam/IA). Modos: `--pages`, `--group principales`, `--all`, `--og-only`. Salida `assets/img/<slug>/` + `manifest.json`. Smoke test OK (bajó 1 foto real 187KB). Falta: correrlo sobre el Home, clasificar (montaña-agua vs humanos), hospedar en URL pública (GCS `22d-trello-assets` o GitHub Pages) y subir con `asset_tool > upload_image_by_url`.
+
+**Decisiones abiertas (D1–D5):** D1 ¿3 themes? (recom. sí, ya montados) · D2 licenciar Canela vs Fraunces/Cormorant · D3 commerce+membership · D4 Webflow Localize (pago) para ES/EN · D5 3 vs 4 pilares.
+**Próximo paso natural:** completar texto del theme Light, o correr `scrape_images.py --group principales`, o empezar a rellenar el Home (F2) con el copy ya listo.
+
+---
+
+## 2026-05-29 — Experimento Supabase Postgres (22d-trello) — LOCAL OK, prod pendiente
+
+Migración exitosa de prueba SQLite → Supabase Postgres free tier ($0/mes) para el 22d-trello dashboard.
+
+**Lo que YA funciona (local laptop):**
+- Cuenta Supabase free tier (sin tarjeta, project ref `syepyikmnxxawyiplccw`, region `us-west-2`, Postgres 17.6)
+- 22 tablas creadas en Supabase via `php artisan migrate --database=pgsql_supabase --force` (25 migrations OK, ~20s total)
+- 451 rows portadas desde SQLite via `php artisan db:port-from-sqlite --target=pgsql_supabase` (100% integridad, comando idempotente)
+- RLS habilitado en las 21 tablas públicas (defense in depth — el rol `postgres` de Laravel bypassea, pero la Data API queda bloqueada para `anon`/`authenticated`)
+- Switch on-demand sin redeploy: `DB_CONNECTION=pgsql_supabase php artisan serve` — afecta solo ese proceso
+
+**Cambios de código (commit-ready):**
+- `config/database.php`: nuevo bloque `pgsql_supabase` que lee de `SUPABASE_DB_*` env vars
+- `app/Console/Commands/PortFromSqlite.php`: comando one-shot reusable
+- `.env` local: 5 vars `SUPABASE_DB_HOST/PORT/DATABASE/USERNAME/PASSWORD` (gitignored)
+
+**⏳ PENDIENTE — Cutover prod a Supabase**
+
+No urgente. Cuando se decida hacerlo:
+
+1. **Cloud Run service `trello-22d`** — agregar 5 env vars (DB_HOST/PORT/DATABASE/USERNAME apuntando a Supabase; DB_PASSWORD desde Secret Manager). Cambiar `DB_CONNECTION=pgsql_supabase` OR sobrescribir DB_* directamente.
+2. **Connection pooler en lugar de Direct** — para Cloud Run serverless usar Transaction pooler (port 6543) en vez de Direct (port 5432) que usamos local. Hay que sacar el URI exacto del Connect button → Connection pooling tab. Hostname será tipo `aws-X-us-west-2.pooler.supabase.com`.
+3. **Cron de backup semanal** — Cloud Scheduler dispara Cloud Run job que hace `pg_dump $SUPABASE_URL > backup.sql && gsutil cp backup.sql gs://22d-trello-backups/` (costo ~$0.02/mes).
+4. **Cron keep-alive** — proyecto Supabase free se pausa después de 7 días sin actividad. Cloud Scheduler con `SELECT 1` cada 6 días lo mantiene warm. Gratis.
+5. **Rotar password Supabase** después del experimento (el actual quedó en transcript de Claude Code 2026-05-29).
+6. **Decommission SQLite** — quitar `database/database.sqlite` del repo, simplificar `config/database.php`.
+
+**Para regenerar el experimento (si Supabase se pausa o se pierde):**
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello"
+php artisan migrate --database=pgsql_supabase --force
+php artisan db:port-from-sqlite --target=pgsql_supabase
+# RLS:
+php artisan tinker --execute="DB::connection('pgsql_supabase')->statement(\"DO \\\$\\\$ DECLARE t RECORD; BEGIN FOR t IN SELECT tablename FROM pg_tables WHERE schemaname='public' LOOP EXECUTE format('ALTER TABLE public.%I ENABLE ROW LEVEL SECURITY', t.tablename); END LOOP; END \\\$\\\$;\");"
+```
+
+---
+
+## 2026-05-29 — SEO audit live site + dashboard cliente + import a 22d-trello
+
+Auditoría técnica complementaria al inventario (que ya cubría drafts / sitemap / categorías). Foco: on-page SEO + tracking pixels + indexación, para deliverable cliente.
+
+**Pipeline nuevo:**
+1. `seo_audit.py` — crawl stdlib del sitemap (post + page + chapters), respeta `Crawl-delay: 3` de robots.txt, extrae por URL: title, meta desc, H1/H2, canonical, OG/Twitter, JSON-LD types, robots meta, word count, imgs sin alt, internal/external links, page weight, status, **tracking IDs** (GA4 / UA / GTM / FB Pixel / Hotjar / GSC verification). Salida: `data/seo_audit_YYYY-MM-DD.{json,csv}`.
+2. `php artisan seo:import-audit data/seo_audit_*.json` (en 22d-trello) — agrupa findings por issue type y los crea como Tasks asignadas por surface: **Christopher** (5) = SEO copy/meta, **Joel+Jose** (1,2) = tech (H1/canonical/schema/errors), **Luna** (3) = content (alt text).
+3. `build_seo_dashboard.py` — produce `seo_dashboard.html` self-contained (Jost + Cormorant) con tabs ES/EN: Resumen · Pages · Posts · Issues · Tracking · Analytics (pendiente GA4+GSC CSV del cliente).
+
+**Resultados crawl (308 URLs, 21.2 min):**
+- Severity: CRITICAL=1 (404 en `/sg/garys-welcome-video/`) · HIGH=31 · MEDIUM=273 · LOW=3
+- 269/308 (87%) sin meta description ← oportunidad masiva SEO
+- 90/308 (29%) sin H1 (incluyendo home)
+- 736/1245 (59%) imágenes sin alt text
+- Tracking limpio: 1 GA4 `G-PZH9QMWR4R` · 1 FB Pixel `630056102333543` · **1 UA legacy `UA-200510356-1`** (sunset jul 2023 — debt) · 0 GTM · 0 Hotjar · 0 GSC verification meta detectada
+
+**10 tasks creadas en 22d-trello DB** (~83h estimadas total):
+- Luna: add alt text en 304 pages (31.4h, high)
+- Christopher: meta descs 268 pages (27.8h) + 195 titles fix (10.8h) + FB pixel review (0.5h) + analytics doc (0.5h)
+- Joel/Jose: missing H1 89 pages (9.4h) + UA cleanup (1h) + multiple H1 (0.8h) + 404 (0.6h)
+
+**Pendiente:** Joel exporta GA4 (Reports → Engagement → Pages and screens, últimos 90d, CSV) + Search Console (Performance → Pages, últimos 3m, CSV). Cuando lleguen los CSVs joineo con audit para el panel Analytics del dashboard.
+
+**Run again:**
+```bash
+python3 seo_audit.py --delay 3                                 # ~20 min
+cd "../22d-trello" && php artisan seo:import-audit "../SOTSI-WordPress-Audit/data/seo_audit_$(date +%F).json"
+cd "../SOTSI-WordPress-Audit" && python3 build_seo_dashboard.py
+```
+
+---
+
 ## How to regenerate everything (quick reference)
 
 Three scripts, run in this order. Zero pip dependencies — stdlib Python 3 only. No API key required.
@@ -630,6 +803,328 @@ git add -A && git commit -m "feat: dashboard v2" && git push   # live en /team ~
 ### Pendiente
 
 - [ ] Revisión de Joel + Jose del Plan de Home (veredictos por sección, horas, mapeo a Shimma).
-- [ ] Publicar (push) para que `/team` muestre la v2.
+- [x] Publicar (push) para que `/team` muestre la v2. ✅
 - [ ] Replicar el patrón de plan para la siguiente página principal (About / Fundadores).
 - [ ] Confirmar decisión de commerce/membership (afecta secciones 4 pilares, books, comunidad).
+
+---
+
+## Session · 2026-05-25/26 — App `22d-trello` (Laravel + Cloud Run), productiza el tablero
+
+> El tablero estático `team.html` evolucionó a una **app real** para el equipo. Proyecto hermano,
+> fuera de este repo: `/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`. Su propio daylog
+> (`daylog-2026-05-25.md`) y README viven ahí. Aquí queda el registro maestro.
+
+### Tarea (Joel)
+Crear un sistema tipo Trello para el equipo (asignar/seguir tareas de la migración), **Laravel +
+Blade sin Vite**, **SQLite**, desplegado en **Cloud Run**. Reutiliza la data de este repo
+(`migration_plan.json` + `page_plans.json` + `posts_extracted.json`). Decisiones: persistencia
+SQLite efímera + **export** de BD (se re-hornea al deploy); **login con contraseña** por usuario;
+alcance amplio (Dashboard + Plan de Home + Kanban + Mapeo + Blogs); sin Docker Desktop.
+
+### Stack y deploy
+- Laravel 13 + Blade puro. **Alpine.js + SortableJS por CDN**, CSS de marca propio. Sin npm/Vite.
+- Cloud Run servicio **`trello-22d`** (no `22d-trello`: Cloud Run no acepta nombre con dígito inicial),
+  región `us-central1`, proyecto `profound-yew-489203-b5`. Deploy con `./deploy.sh`
+  (`gcloud run deploy --source`, Cloud Build remoto → **no se necesita Docker Desktop**). Dockerfile
+  PHP 8.4 Apache puerto 8080, patrón copiado del `DonorBoxAC webhook`.
+- **URL:** https://trello-22d-juyszotmca-uc.a.run.app · login `joel@reneceo.com` / `Reneceo2025!`
+  (equipo: joel, josedaniel, luna, karol, christopher, felipe).
+
+### Vistas entregadas
+1. **Dashboard** — KPIs, grupos de prioridad, horas por rol, planes de página, actividad.
+2. **Páginas principales** — 15 del grupo principales; Home abre su plan, el resto "estructura
+   pendiente · abrir/generar".
+3. **Plan de Home** — 13 secciones editables (viejo/nuevo, acción, bloque Shimma, notas, horas,
+   media video/foto/texto, asignar, checks, comentarios) + Contexto IA + análisis Shimma.
+4. **Kanban** — 110 páginas como tarjetas arrastrables por estatus (SortableJS); click → panel con
+   notas del equipo.
+5. **Blogposts** — revisión manual de los 187 posts (167 keep / 20 drop) en **grid compacto de chips
+   (~6 cols responsivo)** con **tabs** (Por revisar / Aprobados / Drops), **radio de estado** ↻/✓/✗
+   que estampa quién aprobó, **preview screenshot** (thum.io) + notas en panel, filtro por serie, y
+   **evaluación automática determinística** (sin API): score 0-100 (palabras, meta, links, alt) +
+   detección de duplicados → status buen post / aceptable / delgado / posible duplicado / SEO débil.
+6. **Mapeo de páginas** — keep/improve/rebuild vs consolidate/drop, URL vieja → nueva.
+
+### Datos (modelo SQLite)
+`users` (role/color) · `pages` (110, +plan_meta) · `page_sections` (plan de Home) · `tasks` ·
+`notes` · `activities` · `blog_posts` (187, +ai_status/score/reason/recommend). Seeders idempotentes
+desde `database/data/*.json` (copiados de este repo). Comandos: `app:ensure-admin`, `app:db-export`,
+`app:evaluate-blogs`. Tests: `tests/Feature/SmokeTest.php` (PHPUnit) → 13/13.
+
+### Bugs resueltos en el camino
+- Nombre Cloud Run con dígito inicial → `trello-22d`.
+- 500 por `storage/framework/views` excluido de la imagen → el entrypoint crea los dirs.
+- **Mixed content / login roto**: detrás del proxy Cloud Run, Laravel emitía links `http://` →
+  `URL::forceScheme('https')` (prod) + `trustProxies(at:'*')`.
+- Colisión columna `notes` vs relación → relación renombrada `comments()`.
+- Preview iframe bloqueado → screenshot vía **thum.io** (mShots daba 403).
+- Helpers `esc`/`cap` faltantes en el JS (rompían los paneles).
+- Alert "No se pudo actualizar" en blogs: `applyBlogApprover` buscaba `.bchip-appr` (eliminado al
+  compactar) → apuntado a `.bchip-head`.
+
+### Persistencia (recordatorio operativo)
+SQLite vive dentro del contenedor (efímero). Para conservar avance entre deploys: **"↓ Exportar BD"**
+(sidebar admin) o `php artisan app:db-export` → copiar a `database/database.sqlite` → redeploy
+(el entrypoint no re-siembra si ya hay datos). Pocos deploys esperados una vez estable.
+
+### Pendiente (22d-trello)
+- [ ] Generar estructura de secciones de About / Gary / Linda (mismo patrón que Home).
+- [ ] (Opcional) dominio propio + actualizar `APP_URL`.
+- [ ] (Opcional) evaluación editorial real por post vía LLM (gasta tokens) si se quiere ir más allá
+      de la heurística determinística.
+
+---
+
+## Session · 2026-05-26/27 — App `22d-trello`: mapeo de secciones, rediseño de detalle, estados, mapa del plan, tareas del equipo + recursos, deploy rev 00017
+
+> Sigue siendo la app fuera de este repo (`/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`).
+> Aquí el registro maestro de la jornada.
+
+### Detalle de sección (bottom-sheet) — rediseño completo
+- Se abre como **card de abajo hacia arriba** (iframe `?embed=1`); tabs con **iconos FontAwesome**.
+- Header con **pills editables: Action** (Keep/Improve/Add/Rebuild/Consolidate/**Remove=rojo**) y **Stage**
+  (Backlog→Researching→Estimating→Planning→Designing→Building→In QA→Refactoring→Feedback→Done) +
+  **resumen general** + **feedback interno** (editables inline con lápiz). Patrón de estados estándar
+  (Jira/Linear/Asana) investigado.
+- **Content blocks** rediseñados como **cards con icono por tipo** (headline/body/CTA-botón/preview de
+  media), edición inline (texto → lápiz), **sugerencia** integrada, y **comentarios del equipo por bloque**.
+- **Assets en 2 grupos**: **Deliverables** (con seguimiento, 4 fases 25% c/u: Started·Feedback·Approved·
+  Added → build% = promedio) y **Team resources** (sin seguimiento, archivos de apoyo). Dos columnas
+  6|6 con expand a 12.
+- **QA por usuario** con **nota por persona** (todos ven el comentario de QA de la sección).
+- **Tech/Bugs/Improvements**: cada entrada con **prioridad + fases** y **botón de borrar** (Tech gateado a Joel/Jose).
+- **Persistencia de estado**: tab activo + scroll + columna expandida se conservan tras subir archivos
+  (los uploads recargan) → "no se cierra todo".
+
+### Plan de Home — mapa lateral + sliders OLD|NEW
+- **Mapa de secciones a la izquierda** (tipo árbol/rama, sticky, scroll-spy) que hace scroll a cada
+  sección; **línea conectora SVG** del nodo activo a su card en el **color del Action**; nodos inactivos
+  atenuados. Header "Sections · 11".
+- **Las 11 secciones del Home** con **slider OLD|NEW** (componente reutilizable) y **capturas de
+  referencia** del template Shimma en vivo (en `public/img/refs/`): Hero, About, Courses, Membership,
+  Benefits, Team/Founders (Expert Instructors → rebuild a Gary&Linda), Events, Testimonials, Articles,
+  CTA marquee, Nav+Footer. Nota: la numeración de secciones que ve Joel en el template corre **+1** vs
+  la numeración del plan. **Sección 12 (Template cleanup) ocultada** del plan (`hidden:true` en JSON).
+- **Content blocks sembrados para las 11 secciones** según lo que aparece en cada foto.
+
+### Equipo
+- **+1 usuario: Rene Banuelos** (`rene@reneceo.com`). QA del equipo ahora cuenta **/7**.
+
+### Dashboard — tablero de tareas general + recursos (NUEVO)
+- Se reutilizó la tabla `tasks` (existía sin UI; el Kanban mueve *páginas*). **Board tipo Trello** en el
+  dashboard: 5 columnas (To do/In progress/Review/Blocked/Done), **drag** para cambiar estado (SortableJS),
+  **modal** de tarea con **seguimientos** (comentarios), filtro **All/Mine**, prioridad/asignado/página.
+- **11 tareas sembradas** del kickoff (lista de Joel + WhatsApp de Christopher): analizar template Shimma
+  (CMS/estructura), filtrar blogs, planear páginas, generar variantes, **entornos Dev y Test**,
+  **investigar herramienta de landing testing**, **mockup del home (Jose, top priority)**, lista de
+  change-requests (Jose/Karol), design goals (Apple UX + SEO), aplicar identidad de marca.
+- **Team resources**: tabla `resources` (general o por página) + **visor PDF inline**. **Brand book**
+  (`SOTSI & UHF Brand Guidelines`) subido y visible interno; + template Shimma, preview Webflow, ref SEO.
+
+### Investigación (respuesta a Christopher: Webflow vs Unbounce/LeadPages)
+- Webflow **no** tiene A/B testing nativo fuerte → opciones: **Webflow Optimize** (solo Enterprise),
+  **Optibase** (App Marketplace), o externas vía **GTM/scripts/API**. **Unbounce** es CRO-first (A/B
+  nativo, Smart Traffic, popups, heatmaps, reportes). **Conclusión: la idea de Christopher tiene sentido**
+  para experimentación intensa de landings. Hallazgos guardados en la tarea (estado Review).
+
+### Modelo (añadidos)
+`page_sections` +`stage`,`team_feedback` (y `new_status` como resumen) · `section_assets` +`track`
+(deliverable vs recurso) · `section_qa` +`note` · `section_blocks` +comentarios (`notes.section_block_id`)
+· `tasks` +`priority` y follow-ups (`notes.task_id`) · nueva tabla **`resources`**.
+Seeders nuevos idempotentes: `TaskSeeder`, `ResourceSeeder`. Tests: **30/30** (PHPUnit).
+
+### Deploy
+- **Cloud Run `trello-22d` revisión `00017`** vía `./deploy.sh` (Cloud Build, sin Docker local). Se
+  horneó la BD local validada; `entrypoint` corre `migrate --force` (crea las columnas/tablas nuevas).
+- Verificado en vivo: login, dashboard (tareas + recursos + Rene), `/plan/home` (mapa + 11 sliders, sin
+  cleanup), detalle de sección (pills + blocks), brand book PDF (`200 application/pdf`), imágenes ref.
+- URLs: https://trello-22d-juyszotmca-uc.a.run.app · https://trello-22d-778459417925.us-central1.run.app
+
+### Pendiente / decisiones abiertas (registradas como tareas, no construidas)
+- [ ] Elegir herramienta de A/B testing de landings: Unbounce/Instapage vs Webflow Optimize/Optibase.
+- [ ] Montar entornos **Dev / Test / Prod** en Webflow (prod = build de Jose; dev = variantes con Claude + manual).
+- [ ] Lista de change-requests del sitio UHF mantenida por Jose & Karol (revisar/priorizar/aprobar).
+- [ ] **Mockup del home** para presentar al equipo SOTSI (prioridad de Jose).
+- [ ] Aplicar identidad SOTSI/UHF (logos sol+loto, paleta navy/púrpura/amarillo) y quitar todo rastro Shimma/Flowzai.
+
+---
+
+## Session · 2026-05-27 — App `22d-trello`: tarjetas editables, reporte de status, **Snapshot JSON + MCP para Claude**
+
+> Sigue siendo la app hermana fuera de este repo (`/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`).
+> Aquí queda el registro maestro + el **runbook para desplegar y conectar el MCP** (pendiente de probar).
+
+### Dashboard / tarjetas de tarea (UI)
+- **Login**: toggle ojo 👁 para ver/ocultar contraseña. **Favicon** "22" de marca (`public/favicon.svg`) en layout + login (antes salía la X roja por no tener favicon).
+- **Tarjetas de tarea** ahora con: **pill de prioridad** clickeable (cicla High→Med→Low), **estimación de horas** opcional (chip `~4h`), **renombrar inline**, **borrar**, y **modo vista/edición** (los controles arrancan ocultos; el lápiz ✏ los muestra, ✓ cierra). Todo guardado optimista, editable por cualquiera (sin restricción por usuario).
+- **Múltiples asignados** por tarea (columna JSON `tasks.assignee_ids`, migración con backfill del `assignee_id` viejo). Avatares apilados en la tarjeta; se eligen con checkboxes en el panel de la tarea.
+- **Dashboard reestructurado**: header "SOTSI New Website / Tasks & Resources", KPIs compactos en el **topbar** (Progress·Hours left·In progress·Blocked·**My hours**), **tabs** Team tasks | Resources, secciones de abajo (page plans, grupos, horas por rol, actividad) **comentadas** para no saturar. Inputs con look **Material** (CSS propio, sin importar el framework).
+- **Sidebar**: se quitó "Home Plan"; se agregó **"My hour report"** (`/my-hours`) — estimado de horas asignadas a la persona (mock data-driven).
+- **El modal de detalle de tarea no tenía CSS** (la X/💬 "no hacía nada"): se agregaron estilos de `.modal/.modal-ov/.open` (overlay centrado). También arregla el visor de PDF.
+
+### Reporte de status "Resume project" (determinístico, sin IA)
+- Botón **Resume project** en el dashboard → modal con **reporte ejecutivo listo para cliente** (Christopher/jefe): **Print/Save PDF** + **Email** (mailto con cuerpo en texto).
+- **100% de la BD, sin IA ni API**: KPIs reales + tabla por grupo + **highlights/risks/next-steps generados de datos** (tareas done/creadas últimos 7 días, bloqueadas, alta prioridad abiertas, sin estimación) + **comparación semana vs. semana** (▲▼). Lógica en `App\Support\ProjectReport`.
+
+### Snapshot JSON + MCP (para que Claude analice el proyecto desde fuera) — **construido, SIN desplegar**
+- **`GET /snapshot.json?token=…`** — volcado read-only de todo (KPIs, tareas, páginas, horas, reporte). Protegido por token. Lógica en `App\Support\ProjectSnapshot`.
+- **Servidor MCP** en **`/mcp/{token}`** (JSON-RPC sobre HTTP, `App\Http\Controllers\McpController`), 4 tools que leen la BD en vivo: `get_status_report`, `get_kpis`, `list_tasks`, `get_full_snapshot`. CSRF exento para `mcp/*` (`bootstrap/app.php`).
+- **Token**: env **`SNAPSHOT_TOKEN`** (config `app.snapshot_token`). En local ya está en `.env`. Verificado local: handshake `initialize`→`tools/list`→`tools/call`, token malo→401, notificación→202, GET→405. **37/37 tests** (PHPUnit).
+
+### RUNBOOK — desplegar y conectar el MCP en Claude (pendiente de probar)
+```bash
+cd "/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello"
+
+# 1) Deploy con el token como env var de Cloud Run (agregar la flag al deploy):
+gcloud run deploy trello-22d --source . --project profound-yew-489203-b5 \
+  --region us-central1 --platform managed --allow-unauthenticated --port 8080 \
+  --set-env-vars SNAPSHOT_TOKEN=<tu-token-secreto>
+#   (o sin re-deploy:)
+gcloud run services update trello-22d --region us-central1 \
+  --update-env-vars SNAPSHOT_TOKEN=<tu-token-secreto>
+
+# 2) URLs resultantes (base https://trello-22d-…run.app):
+#    Snapshot:  https://trello-22d-…run.app/snapshot.json?token=<token>
+#    MCP:       https://trello-22d-…run.app/mcp/<token>
+```
+**Conectar en Claude (Chrome → claude.ai):** Settings → **Connectors** → **Add custom connector** → pegar la **URL del MCP** (`…/mcp/<token>`). Luego en el prompt: *"Connect to the 22D Trello project and give me the status report"*.
+- ⚠️ **Requisitos reales**: la URL debe ser **pública HTTPS** (por eso hay que desplegar; localhost no sirve para claude.ai web). Y **claude.ai puede exigir OAuth** al agregar el conector — si lo pide, falta montar la capa OAuth 2.1 (Camino B, no construido aún). Si acepta server sin auth, conecta con el token en la URL.
+- Atajo para probar sin claude.ai web: **Claude Desktop** vía `mcp-remote` con la URL del token (sin OAuth).
+- **Demo rápido hoy sin MCP**: abrir el `/snapshot.json`, copiar el JSON y pegarlo en Claude con el prompt "dame un status ejecutivo + 3 riesgos + qué esperar la próxima semana".
+
+### Pendiente (próxima sesión)
+- [ ] Probar el `/snapshot.json` y el conector MCP en Claude (desplegar + setear `SNAPSHOT_TOKEN`).
+- [ ] Si claude.ai exige OAuth → montar OAuth 2.1 (Camino B) para el MCP.
+- [ ] (Opcional) Executive Summary con tendencias más finas / horas por persona en el reporte.
+
+---
+
+## Session · 2026-05-28 — App `22d-trello`: MCP **Fase 2 + 3** (write tools) · Blog posts (SOTSI approval / rating / comments / content extractor) · Blog MCP
+
+> Sigue siendo la app hermana (`/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`).
+> Todo verificado en local; **sin deploy todavía** (decisión: seguir construyendo, desplegar después).
+
+### MCP — Fase 2 (crear tareas desde una minuta)
+- Tools nuevas en `App\Http\Controllers\McpController` (siguen leyendo/escribiendo en la BD local del CRM):
+  - **`list_team`** → ids/nombres del equipo. Claude la llama primero para mapear "Karol" → user_id.
+  - **`create_task`** → una tarea. Acepta `assignee_names`, `page_title`, `created_by_name` (nombres → ids resueltos en server).
+  - **`bulk_create_tasks`** → lote para una minuta de reunión. Crea N tareas en una sola call.
+- Soporte de `dry_run` en todas (preview sin persistir) y atribución correcta en el `activities` log (`created_by` sale del nombre que Claude pase).
+- Validado round-trip: Claude lee una minuta → llama `bulk_create_tasks` con `assignee_names:["Karol"]` + `page_title:"Home"` → server resuelve nombres + página por substring → tareas en el board.
+
+### MCP — Fase 3 (actualizar avances desde una minuta de seguimiento)
+- Tools nuevas:
+  - **`find_tasks`** → fuzzy search por título (con `status` opcional). Para resolver "the hero banner task" desde un texto.
+  - **`update_task`** → cambia status/priority/hours/title/description/page/asignados. Acepta `task_id` o `task_title` fuzzy.
+    - Asignados incrementales: `add_assignees:["Jose"]` / `remove_assignees:["Karol"]` además de replace.
+    - Campo `follow_up` opcional: agrega un comentario en el mismo call (el flujo natural "Karol terminó X" → status:done + nota).
+    - Devuelve **before/after** y soporta `dry_run`.
+  - **`add_follow_up`** → comentario suelto a una tarea.
+  - **`bulk_update_tasks`** → N updates desde una minuta de seguimiento, cada uno con su `follow_up` opcional.
+- **Ambigüedad protegida**: si el `task_title` matchea >1 tarea, devuelve `ok:false` + lista de candidatos con sus ids — Claude no actualiza algo equivocado, te pregunta o usa `task_id`.
+
+### Blog posts — UI nueva en `/blogs`
+- **Migraciones**: `blog_posts` ganó `sotsi_approved` / `sotsi_approved_by_id` / `sotsi_approved_at` / `rating` (good/regular/bad) / `content_sections` (JSON) / `content_fetched_at`. Tabla nueva `blog_post_comments` (id, blog_post_id, user_id, body, timestamps).
+- **Chip de cada post** ahora tiene:
+  - **Rating pill** (click cicla `Rate → ★ Good → ● Regular → ✗ Weak → Rate`). 3 niveles confirmados con Joel.
+  - **Botón SOTSI** que activa/desactiva el visto bueno final del cliente (independiente del review interno). Badge **SOTSI ✓** navy en la cabecera cuando está aprobado.
+- **Tabs**: Pending · Internal approved · Drops · **SOTSI approved** (nuevo). 5 KPIs arriba (agregados "SOTSI approved" y "Rated Good").
+- **Panel del post** (al click): **lazy fetch** del body de WordPress vía REST API, cacheado en BD. Body cortado por **secciones tipadas** (h2/h3/h4 / ¶ párrafo / LIST ul·ol / "quote") con **botón "Copy" por sección** + **"Copy all"** arriba (usa `navigator.clipboard`). Hilo de **comentarios por usuario** (distinto del campo `notes` compartido que sigue ahí).
+
+### Backend del extractor de contenido
+- **`App\Support\WpContentFetcher::sectionsFromHtml($html)`** — parser con `DOMDocument` que devuelve `[{type, text|items}, …]`. Maneja UTF-8, ignora wrappers, recursión un nivel para divs anidados.
+- **Comando** `php artisan app:fetch-blog-content [--limit=N] [--force] [--sleep=200]` — bulk fetch + cache. Probado en vivo: post #84 de Soul Feast → 10 secciones limpias.
+- **Endpoints**: `/blogs/{id}/sotsi`, `/blogs/{id}/rate`, `/blogs/{id}/comment`, `/blogs/{id}/content` (lazy fetch + cache).
+- **Para precargar los 187 posts antes del demo**: `php artisan app:fetch-blog-content` (~40 s con sleep:200ms).
+
+### MCP — Blog posts (8 tools, divididas por intención)
+Confirmamos con Joel la división "kpi para reporte / fill / update":
+
+**Reporte (read):**
+- `get_blog_kpis` → totales por review_status, sotsi_approved, rating (good/regular/bad/unrated), por serie. Para juntarlo en el status report.
+- `list_blog_posts` → filtros `review_status` / `sotsi_approved` / `rating` / `series` / `limit`.
+- `find_blog_posts` → fuzzy por título.
+- `get_blog_post` → post completo con `sections` (body cacheado) + comments. Claude lee antes de comentar.
+
+**Fill (write):**
+- `comment_blog_post` → comentario por usuario con `user_name`.
+
+**Update (write):**
+- `rate_blog_post` → good/regular/bad/null.
+- `sotsi_approve_blog_post` → toggle con atribución (`by_name`).
+
+**Combo:**
+- `bulk_review_blog_posts` → desde una minuta editorial, por post aplica **rating + sotsi + review_status + comment** en una sola call. `dry_run` para preview.
+
+### Estado del MCP completo
+- **19 tools** total: 4 reportes proyecto + 3 crear tareas + 4 actualizar tareas + 8 blog.
+- Endpoint: `/mcp/{token}` (token = `SNAPSHOT_TOKEN`, mismo del `/snapshot.json`).
+- **48/48 PHPUnit tests verdes** (+ las pruebas en vivo del extractor y los bulk).
+
+### Demo flow para Christopher (ya posible local con el snapshot — el conector queda para post-deploy)
+- Tipo minuta de reunión: *"Karol terminó el hero, Jose sube About a review, Books queda bloqueado"* → Claude hace `bulk_update_tasks` con 3 entradas → cambios + follow-ups en el board.
+- Tipo minuta editorial: *"Soul Feast #84 lo aprobamos SOTSI con rating Good. El #62 lo bajamos a Weak"* → Claude hace `bulk_review_blog_posts` → ratings + SOTSI + comments en los chips.
+- *"Connect to 22D Trello and give me the status report including blogs"* → Claude combina `get_status_report` + `get_blog_kpis`.
+
+### Pendiente (decidido: seguir construyendo en local antes del deploy)
+- [ ] Deploy con `SNAPSHOT_TOKEN` env var en Cloud Run.
+- [ ] Probar el conector en claude.ai con minuta real (otter / junta).
+- [ ] OAuth si claude.ai exige (Camino B) — sin construir.
+- [ ] (Opcional, pre-deploy) Más tools del MCP / capas en blog / lo que vaya saliendo en sesión.
+
+---
+
+## Session · 2026-06-01 — Cutover a Supabase PROD · Passwords equipo · MCP conectado a Claude · Endpoint `/read` · Tareas privadas · Repo en GitHub · Config global de Claude
+
+> Sesión larga. App `22d-trello` (sibling: `/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`). Servicio Cloud Run `trello-22d`, proyecto `profound-yew-489203-b5`, región `us-central1`. URL `https://trello-22d-juyszotmca-uc.a.run.app`. Deploy con `./deploy.sh` (Cloud Build `--source`, sin Docker local). Terminó en **rev 00026**.
+
+### Config global de Claude (`~/.claude/settings.json`)
+- `env: { CLAUDE_EFFORT: "high" }` (antes solo en el shell). Niveles low<medium<high<xhigh; xhigh = más tokens, reservar para tareas duras.
+- `statusLine` → barra: modelo · carpeta · branch · **costo de sesión** · ⚠ contexto >200k. Script `~/.claude/scripts/statusline.js`.
+- `includeCoAuthoredBy: false` (commits sin Co-Authored-By). `permissions.deny` con 12 comandos peligrosos.
+- Log global general en `~/.claude/claudeMasterLog.md`.
+
+### Supabase PROD — cutover COMPLETO (antes prod estaba en SQLite)
+- **Dockerfile:** agregado `pdo_pgsql pgsql` + `libpq-dev` (la imagen era solo-SQLite → "could not find driver").
+- **Conexión:** la directa `db.<ref>.supabase.co` es **IPv6-only** → Cloud Run (IPv4) NO la alcanza. Hay que usar el **Pooler**.
+- **Pooler correcto:** `aws-1-us-west-2.pooler.supabase.com` (¡prefijo **`aws-1-`**, no `aws-0-`!), **modo SESIÓN puerto 5432** (más seguro para el `migrate` del entrypoint), usuario `postgres.<project-ref>` (ref empieza con `syepy...`). El `.env` local se cambió de la directa al pooler (host/port/username; password intacto).
+- **6 env vars en Cloud Run** (`DB_CONNECTION=pgsql_supabase` + 5 `SUPABASE_DB_*`) subidas con **`python3 push_supabase_env.py`** (lee `.env`, NUNCA imprime valores, usa `--update-env-vars` con delimitador `\x1f` → no pisa otras vars). El `SNAPSHOT_TOKEN` también se subió igual.
+- **FIX CRÍTICO de secuencias Postgres:** el `db:port-from-sqlite` dejó las secuencias desfasadas → la PRIMERA inserción en cualquier tabla fallaba (`duplicate key … _pkey`). Se reseteó `setval` en 16 tablas. **Si se re-portan datos, repetir esto** (idealmente meterlo en `db:port-from-sqlite`).
+- Datos ya estaban portados (7 users / 110 pages / 187 blogs / 21 tasks). Login en prod verificado (302 → dashboard 200).
+
+### Passwords del equipo
+- Nuevo comando **`php artisan app:set-team-passwords`** → password = `<parte-antes-del-@>` + `reneceo`. Aplicado en Supabase prod a los 7 users: joel→`joelreneceo`, josedaniel→`josedanielreneceo`, luna→`lunareneceo`, karol→`karolreneceo`, christopher→`christopherreneceo`, felipe→`felipereneceo`, rene→`renereneceo`. (El entrypoint `app:ensure-admin` nunca resetea passwords existentes → sobreviven redeploys.)
+
+### MCP conectado a Claude — FUNCIONA
+- Conector custom en **claude.ai** (web): Settings → Connectors → URL `/mcp/<SNAPSHOT_TOKEN>`. Cargó los **19 tools** sin OAuth. (El token vive en el `.env` de 22d-trello; NO se escribe aquí.)
+- También: `claude mcp add --transport http -s user trello-sotsi <url>` para Claude Code.
+- 19 tools: lectura (get_status_report, get_kpis, list_tasks, list_team, get_blog_kpis, list_blog_posts…) + escritura (create_task, bulk_create_tasks, update_task, add_follow_up, rate/sotsi_approve/comment blog…). Casi todas con `dry_run`.
+
+### Endpoints de datos para IA externa (3)
+- `/snapshot.json?token=` → JSON completo (ahora incluye **blogs**).
+- **`/read/<token>`** (NUEVO) → Markdown legible `text/plain`, token en el path (para que ChatGPT/IA lo lea como página). Secciones: **Summary Metrics, Hours by role, Momentum, Team Workload (por persona, tareas+horas abiertas), Priority Tasks, Blogs (counts+series+muestra), Highlights/Risks/Next steps**. `SnapshotController::readable()` + `toMarkdown()`.
+- `/mcp/<token>` → MCP en vivo (lee y escribe). ProjectSnapshot ahora trae `blogs` y `visibility` por tarea.
+
+### Tareas privadas (visibility)
+- Columna `tasks.visibility` ('team' default = compartida, todas las viejas quedan team; 'private'). `Task::visibleTo(User)` → privada visible solo a **creador + asignados + admin**. `DashboardController` filtra el tablero/`$taskJson` por `visibleTo($me)`, pero **el reporte y el MCP/snapshot/read siguen viendo TODAS** (requisito de Joel). UI: selector Team/Private en composer y modal; badge 🔒 (`.tk-private`) en cards privadas.
+
+### Fix UX al agregar tarea + estilo del edit inline (Opción B)
+- **Bug:** local ahora pega a Supabase (más lento que SQLite) → el botón Add no daba feedback → doble-click → tareas duplicadas. **Fix:** `t-add-btn` con spinner (`loading`) + guard `_addingTask`/`_quickAdding` anti-doble-submit en `addTask()` y `commitQuickAdd()`.
+- **Opción B (estilo):** el edit inline de la card (`<select>`/título/horas) se veía nativo/gris. Se estilizó con CSS para el look Shoelace: `.tk-sel` con flecha custom (appearance:none) + hover/focus, y `.tk-title-edit`/`.tk-hrs-in` con anillo de foco suave. (No se incrustó `<sl-select>` en las cards por ser frágil al re-render; queda como opción futura el dropdown flotante exacto.)
+
+### Local → Supabase
+- `.env` local: `DB_CONNECTION=pgsql_supabase`. **OJO: local ahora escribe en la BD de PROD** (misma Supabase). Pendiente decidir si se separa una BD de pruebas.
+
+### GitHub
+- Repo creado: **`github.com/devReneceo/22d-trello`** (privado). Se hizo `git init` + remote + **4 commits** + push de `main`. `.env` real queda fuera (gitignored); solo se subió `.env.example`. Se agregó al `.gitignore`: `/database/*.sqlite`, `/storage/framework/*`.
+- ⚠️ Caveat del historial: por ser repo nuevo, los archivos de cada feature entraron completos en su commit temático → los commits intermedios no son ejecutables solos, pero **HEAD sí está completo** = igual a prod.
+
+### PENDIENTE (próxima sesión)
+- [ ] **Commit + push de los ÚLTIMOS cambios** (NO están en git aún; los 4 commits fueron antes): `resources/views/dashboard.blade.php` (fix add-task) + `public/css/app.css` (estilo edit inline). Sugerido: `feat: add-task loading feedback + inline card edit styling`.
+- [ ] **Limpiar tareas duplicadas** creadas por el doble-click (buscar mismo título seguidos, mostrar antes de borrar).
+- [ ] **Decidir BD de pruebas** vs local=prod (hoy local escribe en Supabase prod).
+- [ ] **Cloud Scheduler keep-alive** (Supabase free se PAUSA tras 7 días sin actividad).
+- [ ] **Backup semanal** `pg_dump` → GCS.
+- [ ] (Opcional) Dropdown `<sl-select>` flotante real en el edit de card (hoy es CSS que imita).
+- Costo de esta sesión: ~$34.26, contexto >200k → se cierra para abrir sesión nueva y barata.
