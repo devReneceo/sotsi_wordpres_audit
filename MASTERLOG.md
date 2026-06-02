@@ -9,6 +9,42 @@
 
 ---
 
+## Session · 2026-06-02 — Webflow DEV: **publicado** + fix hover Cursos, SEO en bloque, Testimonials reales, **piloto de Blogs (3 posts reales migrados)**
+
+> Continuación directa. Se **publicó el DEV** al subdominio (`https://seat-of-the-soul-institut-71acdf22a9cd2.webflow.io`) y se iteró con feedback visual de Joel. Sigue sin dominio propio; PROD intacto.
+
+### Fixes visuales
+- **Hover de los cards de Cursos**: el título (`Class Card Title`) usaba variable de color **oscura** y quedaba ilegible sobre el panel morado del hover; la descripción (`Class Card Details Text`) ya era blanca. Fix: `style_tool > update_style` color del título → **misma variable blanca** (`a46866f5-…-9236ff27be47`). Legible en todos los breakpoints.
+
+### SEO en bloque (Data API `update_page_settings`)
+- Reemplazados los títulos/descripciones heredados **"… - Shimma - Webflow Ecommerce Website Template"** por copy SOTSI en **14 páginas** (Home + About, Courses, Events, Blog, Contact Us, Team, Products, Checkout, Checkout PayPal, Order Confirmation, 404, Password, Home Copy). Patrón título: `<Página> | Seat of the Soul Institute`. OG hereda (`titleCopied/descriptionCopied: true`).
+- **Dejadas fuera a propósito:** 7 páginas-plantilla CMS (título = binding dinámico `{{wf name}}`; tocarlo por API rompe el binding → editar en Designer) y utility pages License/Changelog/Style Guide (candidatas a borrar). **"Home Copy"** (`/home-copy`) es un duplicado publicado de Jose → recomendado borrar/draft.
+
+### Testimonials — límite técnico del MCP (importante)
+- La sección es un **Slider nativo de Webflow** (`SliderWrapper/SliderMask/SliderSlide`). **El MCP NO puede: (a) crear `SliderSlide` nuevos ni duplicar slides, (b) asignar la colección a un Collection List** (al crear un CMSCollection queda sin fuente; `get_bindable_sources` solo devuelve campos de página, ningún CMS). → Ni expandir el slider ni bindear CMS por API; ambas requieren la UI del Designer.
+- Hecho: se **ocultaron las fotos demo** (caras aleatorias que no eran Jay-Z/Oprah/Paulo, `set_visibility:false` en los 3 Image Wrap). Quedan **3 testimonios reales sin foto** (curados: Jay-Z, Oprah, Paulo Coelho).
+- **Para los 8 (hand-off Jose, 5 min):** en Designer, duplicar slides ×5 y editar, **o** agregar Collection List → fuente *Testimonials* → bindear quote/name/`author-title` → ordenar por *Display Order*. (CMS Testimonials ya tiene 8 reales: Oprah, Maya Angelou, Paulo Coelho, Gwyneth Paltrow, Lewis Howes, Jay-Z, Julianne Hough, André Duqum; `photo` null en todos.)
+
+### 🚀 Piloto de migración de Blogs — 3 posts reales (pipeline validado end-to-end)
+Colección **Blogs** (`6a1d0762d6ddc2456edd840d`). Campos: name/slug/short-description/blog-single-description/blog-image/blog-banner-image/editor-name/category-name/blog-rich-text. **Faltan `published-on` (fecha) y `seo-description`** (los debe agregar Jose; sin fecha no hay orden cronológico a escala).
+
+Pipeline ejecutado:
+1. Selección de 3 keep reales del triage (`data/posts_extracted.json`): **Soul Feast #73 (Linda Part 3)**, **Soul Snack #83 (control→authentic power)**, **Soul Feast #82 (Creator or Victim?)**.
+2. Fetch de body completo + imagen destacada del **WP REST API en vivo** (`/wp-json/wp/v2/posts/{id}?_embed`), con delay.
+3. Subida de las 3 imágenes reales de Gary Zukav a assets Webflow (`asset_tool > upload_image_by_url`).
+4. Limpieza de RichText (HTMLParser stdlib: deja p/h2-h4/ul/li/strong/em/b/i/a; quita script/style/clases/ids).
+5. `data_cms_tool > create_collection_items` (×3) — **imagen va como `{"url": <cdn>}`, NO `fileId`** (el `fileId` da 400 "Expected value to have a 'url' field"). Webflow re-hospeda la imagen al crear el item.
+6. `publish_collection_items` + publish del sitio. **Live en `/blog`.**
+
+Item IDs creados: `6a1e7e341e88cddadeb1ad7b/7d/7f`. Aprendizajes guardados como memoria en el sistema del 22d-trello.
+
+### Pendiente (próxima sesión Webflow)
+- [ ] **Jose**: agregar campos `published-on` + `seo-description` a Blogs; arreglar Testimonials (slider→8 o Collection List); títulos SEO de las 7 plantillas CMS en Designer; borrar Home Copy + utility pages.
+- [ ] **Migración Blogs completa**: borrar 4 demo, migrar los 164 restantes con el pipeline validado (re-subir imágenes inline del body; mapear redirects de slug).
+- [ ] Footer socials reales (FB/IG/X/YouTube). · Licenciar Canela antes de PROD.
+
+---
+
 ## Session · 2026-06-01 (noche) — Webflow DEV: primera **edición real del Home** vía MCP Designer (limpieza Shimma/Flowzai + Testimonials reales)
 
 > Primera sesión de **escritura sobre el canvas** del DEV (`6a1d0762d6ddc2456edd8403`) vía MCP `webflow-sotsi`. Antes solo se había leído/diagnosticado. Designer bridge conectado (App MCP lanzada en el Designer, pestaña en foreground). Cambios **guardados en Designer, NO publicados**.
