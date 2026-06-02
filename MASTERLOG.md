@@ -9,6 +9,117 @@
 
 ---
 
+## 🟢 ESTADO AL CIERRE — 2026-06-02 (handoff para la próxima sesión)
+
+**Sitios Webflow:** DEV (trabajo) `6a1d0762d6ddc2456edd8403` · PROD (Jose, no tocar) `6a182f372e1313bdfbeeee21`. Colección Blogs DEV = `6a1d0762d6ddc2456edd840d`. MCP `webflow-sotsi` conectado (Data API headless; Designer bridge requiere abrir el sitio en el Designer con la app MCP).
+
+**App `22d-trello`:** Cloud Run rev **00029** live. URL `https://trello-22d-juyszotmca-uc.a.run.app`. BD = Supabase prod (local=prod). Deploy `./deploy.sh`. MCP en `/mcp/<SNAPSHOT_TOKEN>` ahora con **35 tools**.
+
+**Hecho hoy (3 frentes):**
+1. **Blogs a escala:** 167 keeps triados; ranking SEO/AEO/GEO → top 50 (`data/blog_ranking.json`, `SOTSI_Blog_Top50_SEO_AEO_GEO.csv`). CSVs de import listos: `blogs-webflow-import.csv` (164), `blogs-webflow-import-top50.csv` (48). Pipeline `build_blogs_import_csv.py` + `rank_blogs_seo_aeo_geo.py` (stdlib, caché en `data/wp_cache/`). DEV: borrados 4 demos, **14 blogs reales publicados** (incluye el Top 10) con imagen + video (campo `video-link` creado).
+2. **App tab "AI Picks · SEO/AEO/GEO"** en `/blogs` (migración + `app:import-blog-ranking` + UI; 50 ai_pick en prod).
+3. **MCP page-plan tools** (lee/modifica pages+sections, % por stage) + % visible en `/plan/home`.
+4. **Tarea #62** creada en la app ("Blog Posts: migración Webflow + Top 50 SEO/AEO/GEO", In progress, asignada Joel/Jose/Luna/Karol).
+
+**Bloqueos/topes conocidos:**
+- **DEV en plan Starter (gratis) = 50 items CMS/sitio** → tope alcanzado (49/50). Los 50/167 completos requieren **plan CMS** (~$23/mes) en PROD. El CSV ya está listo para ese momento.
+- **La API NO borra ítems de ecommerce** (SKUs/Products dan 403) → para liberar cupo hay que borrarlos a mano en el Designer (panel Ecommerce).
+
+**Pendiente (prioridad para la próxima sesión):**
+- [ ] **Commit + push** de ambos repos (este: scripts/CSVs ranking; `22d-trello`: tab AI Picks + MCP page tools). NADA commiteado aún (deploys fueron por `--source`).
+- [ ] **Re-cargar el conector MCP en claude.ai** → para ver las 5 tools nuevas de páginas (hoy mostraría 30).
+- [ ] **Seccionar las main pages** (empezar About) como el Home, con decisiones de Joel: About 2 = basura→remove; **separar** About Gary Zukav / Linda Francis; blog post 3 draft→drop; **crear sección Books** (template no la tiene); Contact/Events/FAQ ya existen. Requiere revisar template DEV + WP viejo.
+- [ ] **PROD a plan CMS** → importar `blogs-webflow-import-top50.csv`. Decidir slugs largos (redirects) vs cortos.
+- [ ] **Jose/Designer:** bindear video al campo `video-link` en Blogs Template; agregar `published-on` + `seo-description` a la colección.
+
+---
+
+## Session · 2026-06-02 (noche) — App `22d-trello`: MCP **lee/modifica páginas + secciones** (plan del Home/About) con % por stage (rev 00029)
+
+> Joel: el MCP no podía ver/cambiar el "main pages" ni el plan del Home — solo veía el action "improve", no el avance. Causa raíz: el MCP tenía 30 tools (tareas/blogs/memoria) pero **ninguna de `pages`/`page_sections`**. Decisiones (preguntadas): **% por stage** (Backlog 0% → Done 100%); construir primero las **MCP tools + % visible**, el seccionado de About después.
+
+### % por stage (modelo)
+- `PageSection::STAGE_PCT` + `stagePct()`: backlog 0 · research 10 · estimate 20 · planning 30 · design 45 · build 65 · qa 80 · refactor 85 · feedback 90 · done 100. Secciones con action `remove` cuentan 100% (resueltas).
+- `Page::sectionsPct()` (promedio de secciones) + `Page::generalStatus()` → {key,label,pct}: unplanned / not_started / in_progress / in_qa / done.
+
+### 5 MCP tools nuevas (trait `HandlesPagePlans`, 30 → **35 tools**)
+- `list_pages` (filtro group/verdict) → cada página con status general + % + nº secciones; **overall_pct** del sitio.
+- `get_page_plan` (page_title/page_id) → página + status/% + todas las secciones (action, stage, %, status_note, feedback, horas, asignado).
+- `update_page_section` (section_id o page_title+section) → cambia stage/action/new_status/team_feedback/notes/assignee; valida stage/action; before/after; `dry_run`.
+- `create_page_section` (para módulos que el template no tiene, ej. Books) → genera `sec_id` slug; `dry_run`.
+- `update_page` → status/verdict/notes de la página.
+- Patrón: trait mezclado en `McpController` (merge en `tools()` + fall-through `callPagePlanTool` tras el de memoria). Reusa `resolveAssigneeIds`. Atribución vía `by_name`.
+
+### UI — % visible al entrar (fix "solo se ve improve")
+- `plan/show.blade.php`: cada sección ahora muestra **pill de stage con color + %** junto al action; el header de la página muestra **status general + barra + %** (`generalStatus()`).
+
+### Verificación
+- `PagePlanMcpTest` (6) → **71/71 PHPUnit verdes**. Blades compilan (`view:cache`). Deploy `./deploy.sh` rev **00029**. Live: `tools/list`=35; `get_page_plan` Home = "In QA/Feedback" 19%, 11 secciones.
+- ⚠️ **Re-cargar el conector MCP en claude.ai** para que aparezcan las 5 tools nuevas (hoy mostraría 30).
+
+### Pendiente
+- [ ] **Seccionar las main pages** (empezando About) como el Home, con las decisiones de Joel: About 2 = basura→remove; **separar** About Gary Zukav / About Linda Francis; blog post 3 draft→drop; **Books = crear sección** (el template no la tiene); Contact/Events/FAQ ya existen. (Requiere revisar template DEV + WP viejo a detalle.)
+- [ ] Commit + push de ambos repos.
+
+---
+
+## Session · 2026-06-02 (tarde) — Blogs a escala: **CSV de import de los 164** + campo Video Link + 5 posts reales más en DEV (tope de plan Starter)
+
+> Frente elegido por Joel: **migrar Blogs a escala**. Jose pasó su template de import (`blogs-webflow-import.csv`, solo encabezados). Confirmado: ese formato **sirve para DEV** (CSV import es por colección; schema DEV = PROD, son clones).
+
+### 🚧 Bloqueo de plan descubierto (clave)
+- DEV está en **plan Starter (gratis)** → tope **~50 items CMS en TODO el sitio**. Al intentar importar 164: *"You have reached the limit of Collection items on the Starter site plan."*
+- Para alojar los 167 blogs se necesita **plan CMS** (~$23–29/mes, 2,000 items) en el sitio que salga en vivo (PROD).
+- **Decisión de Joel (preguntada):** **NO pagar DEV.** Validar diseño con pocos posts en DEV (gratis); el import completo de 164 se hace en **PROD** cuando tenga plan CMS. El CSV es agnóstico al sitio → listo para ese momento.
+
+### Pipeline construido — `build_blogs_import_csv.py` (stdlib, resumable)
+1. Lee `data/posts_extracted.json` → 167 auto_keep → excluye 3 del piloto (WP ids **21752, 21765, 21600**) → **164**.
+2. Fetch en vivo `/wp-json/wp/v2/posts/{id}?_embed` con **caché** en `data/wp_cache/{id}.json` (rerun = 0 requests).
+3. Limpia `content.rendered` al RichText de Webflow (HTMLParser: deja p/h2-h4/ul/ol/li/strong/b/em/i/a/blockquote/br; **borra iframe/script/figure/img/clases/ids**).
+4. Extrae la URL de YouTube del iframe del cuerpo → columna **Video Link**.
+5. Escribe **`blogs-webflow-import.csv`** (UTF-8-BOM) con las 10 columnas de Jose **+ Video Link** = 11.
+- **Salida: 164 filas · 164/164 con imagen · 156/164 con video · 0 errores** (533 KB).
+
+### Campo nuevo en la colección Blogs (Data API)
+- Creado **`video-link`** (tipo VideoLink) en DEV Blogs (`6a1d0762d6ddc2456edd840d`). **Webflow auto-resuelve el embed** al meter la URL watch de YouTube (devuelve iframe embedly + thumbnail + título). ✅ El campo funciona por API.
+- ⚠️ **Pendiente Designer:** el video **no se mostrará** en la página de detalle hasta que el "Blogs Template" (`/blogs`, page `…83f3`) tenga un elemento de video **bindeado** a `video-link` (requiere Designer bridge).
+
+### Cambios aplicados en DEV (Data API)
+- **Borrados los 4 demos** ("Robert Fox", lorem jardinería/yoga): item ids `…857d/857c/857f/857e`. Solo afecta DEV (PROD es otro sitio con su propio CMS; imposible tocarlo por API apuntando al collection id de DEV).
+- **+5 posts reales** creados y publicados (mix Soul Feast/Snack, todos con video): SF#84 Scarlett, SS#82 Jealousy, SF#81 Universe, SS#80 Emotions, SF#80 Krishna. IDs `…700995/997/999/99b/99d`.
+- DEV `/blog` ahora muestra **8 reales** (3 piloto + 5). Publicado al subdominio.
+
+### Mapa de páginas Blog en DEV (para el equipo)
+- **Lista:** page "Blog" → `/blog` (`…83ea`). **Detalle:** page "Blogs Template" → `/blogs/{slug}` (`…83f3`, colección Blogs). Home solo muestra 3 (sección Articles).
+
+### Decisiones tomadas en el CSV
+- **Slugs = originales de WP** (largos, permiten redirects 301 1:1). En la muestra de 5 se usaron slugs cortos. **Pendiente decisión de Joel** para el import de PROD: largos (SEO/redirects) vs cortos (limpios).
+- Editor = "Gary Zukav" en los 164. Category = serie (Soul Feast/Snack). Sin fecha (la colección sigue sin `published-on` → Jose).
+
+### Ranking SEO/AEO/GEO + Top 50 (no subir los 164 — curar los mejores)
+> Joel: el plan que SOTSI paga (~$23) NO está en DEV (los clones nacen en Starter gratis → por eso topó). En vez de subir 164, **curar los mejores 50** con SEO/AEO/GEO.
+- **Dedup:** revisados los 167 → **0 duplicados reales** (los sufijos `-2` son colisiones de slug con otras páginas, no posts repetidos).
+- **`rank_blogs_seo_aeo_geo.py`** (stdlib, determinista): rúbrica 0-100 en 3 ejes — **SEO 40** (título/profundidad/estructura/links), **AEO 30** (título-pregunta/listas/timestamps→snippets), **GEO 30** (profundidad+secciones/entidades nombradas/deep-dive). Usa los cuerpos cacheados.
+- Salidas: `data/blog_ranking.json` (167 rankeados), `SOTSI_Blog_Top50_SEO_AEO_GEO.csv`, `blogs-webflow-import-top50.csv` (48 filas listas para Webflow; 2 del top ya en DEV).
+- Top50: prom 70.5/100, 31 Feast + 19 Snack. #1 SF#80 Krishna (80), #2 SF#74 Angel (79), #3 SF#82 Creator/Victim (78). Empate en el corte #50/#51 a 65 pts.
+- Skills/agentes disponibles confirmados: skill `seo`, agente `seo-specialist` (+ deep-research/exa-search/market-research). Ranking hecho determinista (regla del proyecto: sin API por post).
+
+### App `22d-trello` — tab nuevo "AI Picks · SEO/AEO/GEO" (desplegado, rev 00028)
+- **Migración** `2026_06_02_000012_add_geo_ranking_to_blog_posts`: +`seo_score/aeo_score/geo_score/geo_total/geo_rank/ai_pick(bool)/geo_reasons` en `blog_posts`.
+- **Comando** `php artisan app:import-blog-ranking` (lee `database/data/blog_ranking.json`, matchea por `wp_id`, idempotente). Corrido contra Supabase prod: **167 matched, 50 ai_pick**.
+- **UI** (`blogs.blade.php` + `app.js` + `app.css`): tab nuevo con icono ✨, filtra `ai_pick=1`, ordena por `geo_rank` (mejor primero); chips marcados con flag dorado `#rank` + badge `SEO·AEO·GEO=total`. Estilo de marca (amarillo luminoso/púrpura).
+- **Tests:** `BlogRankingTest` (2) → **65/65 PHPUnit verdes**. JS `node --check` OK.
+- **Deploy:** `./deploy.sh` → Cloud Run rev **00028**. Verificado live (login 200, prod 50 picks/187). ⚠️ git commit PENDIENTE (deploy fue por `--source`, no git).
+
+### Pendiente
+- [ ] **Commit + push** de 22d-trello (tab AI Picks) y de este repo (scripts ranking + CSVs).
+- [ ] **PROD a plan CMS** → importar `blogs-webflow-import-top50.csv` (48-50) en vez de los 164. Borrar demos de PROD.
+- [ ] **Decidir slugs** largos vs cortos antes del import.
+- [ ] **Jose/Designer:** bindear elemento de video al campo `video-link` en Blogs Template; agregar `published-on` + `seo-description`.
+- [ ] (Opcional) exponer los AI Picks en el MCP/snapshot del 22d-trello para reportes.
+
+---
+
 ## Session · 2026-06-02 — Webflow DEV: **publicado** + fix hover Cursos, SEO en bloque, Testimonials reales, **piloto de Blogs (3 posts reales migrados)**
 
 > Continuación directa. Se **publicó el DEV** al subdominio (`https://seat-of-the-soul-institut-71acdf22a9cd2.webflow.io`) y se iteró con feedback visual de Joel. Sigue sin dominio propio; PROD intacto.

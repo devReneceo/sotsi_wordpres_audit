@@ -3,3 +3,10 @@ __pycache__/
 .DS_Store
 .claude/
 .env
+
+# Transient run artifacts
+*.log
+*.progress.json
+
+# Regenerable WP body cache (rebuilt from live WP REST API)
+data/wp_cache/

@@ -1,197 +1,250 @@
 {
-  "_comment": "Plan de acción por página, indexado por slug. El builder (build_migration_dashboard.py) lo carga y lo adjunta a la página correspondiente como page.plan. Para agregar el plan de una página nueva: añade una key con su slug. Cada plan: { hours_note, ai_context, template_analysis, sections[] }. Las horas por sección son indicativas y suman el total de role_hours de la página en migration_plan.json.",
-
+  "_comment": "Per-page action plan, keyed by slug. build_migration_dashboard.py and the 22d-trello app load it and attach it to the page. To add a new page plan, add a key with its slug. WEBFLOW-FIRST: the 'sections' are the Shimma template sections in Webflow (the build guide); each maps the SOTSI content that goes there and where it comes from in WordPress. English content.",
   "home": {
-    "base": "WordPress — seatofthesoul.com/ (el /home viejo hace 301 a /; raíz es la canónica, WP page id 41).",
-    "template": "Shimma (shimma.webflow.io) — template de Webflow para wellness, CMS + ecommerce.",
-    "hours_note": "Horas por sección indicativas; suman las 42h totales del Home (Diseño 12 · Contenido 6 · Media 8 · Build 12 · Revisión 4). Nav/Footer globales se cuentan en 'Componentes globales', no aquí.",
-
+    "base": "Webflow template (Shimma) — https://seat-of-the-soul-institute-21f797.webflow.io/  · The template is the GUIDE; we map SOTSI content onto each section Webflow already offers.",
+    "template": "Shimma (wellness). Today only the Courses Offerings cards are customized with real SOTSI programs; everything else is still demo.",
+    "hours_note": "Per-section hours re-estimated for template adaptation (not from scratch). Total ≈ 46.5h (was 42h). Role split: Design 8.5 · Content 10.5 · Media 11 · Build 8.5 · Review 8.",
     "ai_context": {
-      "verdict": "RECONSTRUIR sobre Shimma, consolidando de 10 → 8 secciones y limpiando deuda técnica.",
-      "summary": "El Home actual es un carrusel-hero saturado (4 ofertas rotando) seguido de 10 bandas de texto con CTAs repetidos: la comunidad se empuja 2 veces y el 'Final CTA' dice 'Start your journey' pero apunta al newsletter, no a get-started. Shimma aporta exactamente los bloques que el Home necesita (video-hero, about-split, cards de oferta, team grid, testimonios, banda CTA global), pero viene con identidad wellness café/crema + carrito ecommerce que hay que re-skinnear a la marca SOTSI (navy/Canela) y, en su mayoría, apagar el ecommerce.",
+      "verdict": "BUILD on the 11 Shimma template sections; replace demo with SOTSI content section by section.",
+      "summary": "The Webflow Home already has a solid 11-section skeleton (video hero, about split, programs row, first-visit band, 3 benefits, team grid, events with calendar, testimonials, latest posts, marquee CTA band, footer). TODAY only the Programs row (Courses) is customized with 3 real SOTSI programs (Authentic Power Guidelines, Beyond the Five Senses, Soul Themes); everything else is still Shimma demo (hero 'Harmony', team 'Aria Thompson', fake testimonials & blog, 'Shimma' footer). The Home job is to fill each template section with the right SOTSI content (taken from the old WordPress Home + brand), not to redesign the structure.",
       "recommendations": [
-        "Hero: cambiar el carrusel de 4 slides por UN hero de video (montaña/agua, regla SOTSI — nunca IA) con un solo mensaje ancla 'Create Authentic Power' y un CTA primario a Get Started. Las 3 ofertas rotativas (Evening with Gary, Failing Governments, AI & Human Evolution) bajan a una tira de 'destacados' editable.",
-        "Consolidar comunidad: las 2 bandas de comunidad (mid + closing, ambas a Mighty Networks) se funden en UNA sola banda. El 'Tools Promo' se absorbe en el CTA del intro Authentic Power.",
-        "Reutilizar de Shimma sin rediseñar: about-split (intro), cards de oferta (4 pilares), team-grid (fundadores), testimonial-slider (nuevo), stats-band (nuevo '25+ años'), marquee CTA global (newsletter).",
-        "Re-skin global obligatorio: variables --_color--- y --_font-family--- de Shimma → tokens SOTSI (Midnight Navy #0E1631, Cosmic Purple, Canela títulos, Jost cuerpo). Botones pill OK; quitar paleta café/crema.",
-        "Limpieza de deuda: el HTML vivo trae spam de casino inyectado (sitio WP hackeado) — NO migrar; el botón 'ENROLL IN A COURSE' no tiene destino — arreglar; '/home' debe quedar como 301 → '/' en Webflow.",
-        "Apagar lo ecommerce de Shimma en el Home (carrito, 'Get Template', créditos Flowzai). Decisión de commerce/membership sigue siendo bloqueante para los botones de compra (ver riesgos del plan)."
+        "Use the template order as the fixed guide: hero → about → programs → first-visit → 3 benefits → team → events → testimonials → blog → marquee CTA → footer.",
+        "Hero: swap the 'Harmony' video and the '→ /products' CTA for a real mountain/water video (SOTSI brand rule, never AI), the message 'Spiritual Growth & Emotional Awareness with Gary Zukav', and a Get Started CTA.",
+        "Programs (Courses): already has 3 real ones; decide whether to expand to the 4 pillars (Authentic Power, Emotional Awareness, Responsible Choice, Spiritual Partnership).",
+        "Team: turn the demo grid into the Founders (Gary & Linda) with real photos — Linda is sensitive content (memorial, client sign-off).",
+        "Mandatory global cleanup: SOTSI logo (not Shimma), remove the 'Get Template'/Flowzai promo bar, the 'Shimma…' SEO titles, real social, and decide on the e-commerce cart (active today, hero points to /products).",
+        "Testimonials and Blog are new vs the old Home — testimonials need real approved quotes; the blog is filled in Phase 2 (167 keep)."
       ]
     },
-
     "template_analysis": {
-      "title": "Shimma — qué aprovechar y qué cambiar",
+      "title": "Shimma — global components and blocks (what the template offers)",
       "global_components": [
-        "Navbar con mega-menú 'Pages' + carrito ecommerce + CTA 'Get Template' → reusar la estructura, reescribir links al IA de SOTSI, apagar carrito si no hay commerce, cambiar CTA a 'Get Started'.",
-        "Banda CTA global 'Start Your Journey' (marquee) repetida sobre el footer en todas las páginas → reusar como cierre/newsletter.",
-        "Footer multi-columna (Quick Links + Utilities) + newsletter + social + copyright → reusar; quitar crédito 'Designed by Flowzai / Powered by Webflow' y URLs sociales placeholder."
+        "Navbar with menu (Home/About/Classes/Teams/Events/Blog/Products/Contact) + pages dropdown + 'Get Template' CTA + active e-commerce CART → rewrite links to SOTSI, own logo, remove 'Get Template', decide cart.",
+        "Marquee CTA band 'Start Your Journey' (→ book a class) repeated above the footer on every page → reuse as SOTSI community/newsletter CTA.",
+        "Multi-column footer (Quick Links + Utilities) + newsletter + social + 'Shimma | Flowzai' copyright → reuse; strip Shimma/Flowzai branding and placeholder social."
       ],
-      "tokens": "Shimma: Playfair Display + Libre Caslon + Montserrat sobre crema #fff9f2 / arena #e5d6c7 / espresso #302316 / cobre #9f764e, botones pill 500px. → Re-skin a SOTSI: navy/purple + Canela/Jost. Se cambia central en variables, no por componente.",
+      "tokens": "Shimma ships warm (Playfair + Montserrat on cream/sand/espresso, pill buttons). Central re-skin to SOTSI: navy/purple + Canela/Jost. Change variables, not per component.",
       "reusable_blocks": [
-        "Video Hero (fondo video + overlay + CTA pill)",
-        "About / Intro split (eyebrow + serif heading + copy + imagen)",
-        "Cards de oferta / clases (título + blurb + imagen, 'ver todas')",
-        "Banda CTA centrada (sin media)",
-        "Cards de beneficio con video en loop",
-        "Stats / métricas con contadores animados",
-        "Team / instructores (grid de perfiles, CMS)",
-        "Eventos con badges de fecha (slider, CMS)",
-        "Testimonial slider (cita + nombre + rol)",
-        "Blog / artículos 3-up (CMS)",
-        "Formulario de contacto",
-        "Newsletter band"
+        "Video Hero (background video + overlay + CTA)",
+        "About / intro split (text + image)",
+        "Programs / classes card row (CMS Courses)",
+        "Centered CTA band (first visit)",
+        "3 benefit cards",
+        "Team / instructors grid (CMS Teams)",
+        "Events with calendar + cards (CMS Events)",
+        "Testimonial slider",
+        "Blog / articles 3-up (CMS Blogs)",
+        "Marquee CTA band (global)",
+        "Newsletter band (footer)",
+        "Contact form"
       ],
       "strip_or_fix": [
-        "Carrito ecommerce + páginas Checkout/PayPal/SKU si no se decide commerce.",
-        "CTA 'Get Template', mega-menú promo del autor, crédito Flowzai, social URLs demo.",
-        "4 posts demo lorem del blog + autor 'Robert Fox'.",
-        "Títulos SEO 'Shimma - Webflow Ecommerce Website Template' en todas las páginas."
+        "E-commerce cart + Checkout/PayPal/SKU pages if commerce isn't decided (hero 'Get Started' currently goes to /products).",
+        "'Unlock 250+ Templates' promo bar + 'Get Template' CTA + 'Designed by Flowzai' credit.",
+        "Shimma logo → SOTSI logo; 'Shimma - Webflow Ecommerce Website Template' SEO titles on every page.",
+        "Demo content: team (Aria Thompson…), testimonials, About, Events and the fake blog posts.",
+        "Broken link: the first-visit band 'View beginner guide' points to /team."
       ]
     },
-
     "sections": [
       {
         "id": "hero",
-        "section": "Hero",
-        "old": "Carrusel Swiper de 4 slides (Evening with Gary · Failing Governments · AI & Human Evolution · Start Your Journey), cada slide tarjeta clickeable.",
-        "new": "Video-hero único: mensaje ancla 'Create Authentic Power' + sub + 1 CTA primario → Get Started. Tira de 'destacados' editable debajo para las 3 ofertas rotativas.",
-        "webflow": "Video Hero (+ class-cards para destacados)",
+        "section": "1 · Hero (video)",
+        "old": "Old WordPress hero was a 5-slide rotating carousel (see preview): Authentic Power · Evening with Gary · Failing Governments · AI & Human Evolution · Start Your Journey.",
+        "new": "Single Webflow video hero: real mountain/water background video + headline 'Spiritual Growth & Emotional Awareness with Gary Zukav' + body + 'Get Started' CTA.",
+        "new_status": "Planning — choosing video (Laura made a draft, not finalized yet)",
+        "old_slides": [
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/hero-old-slides/slide1.png",
+            "text": "Beach / ocean sunset — “Supporting You in Creating Authentic Power.”"
+          },
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/hero-old-slides/slide2.png",
+            "text": "Gary Zukav — “Spend an Evening with Gary Zukav.” Monthly live Zoom calls · CTA Register Now."
+          },
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/hero-old-slides/slide3.png",
+            "text": "US Capitol — “What To Do About Failing Governments?” The old consciousness is dying · CTA Read Now."
+          },
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/hero-old-slides/slide4.png",
+            "text": "AI robot — “AI & Human Evolution.” Will AI affect our evolution? · CTA Read Now."
+          },
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/hero-old-slides/slide5.png",
+            "text": "Hand releasing a dove at sunset — “Start Your Journey. The Time is Now.” · CTA Learn More."
+          }
+        ],
+        "webflow": "Content source: WordPress hero carousel + Value Prop",
         "action": "reconstruir",
-        "notes": "Media regla SOTSI: montaña/agua, video > foto, NUNCA IA. Quitar la sobrecarga del carrusel; un solo mensaje.",
-        "hours": 9,
-        "done": false
+        "notes": "Title/headline likely done (confirm/approve). The background video is the open item — single message, real mountain/water, never AI. CTA must NOT go to /products.",
+        "hours": 7.5,
+        "done": false,
+        "new_slides": [
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/new-hero-slides/phase1.png",
+            "text": "Intro animation — “Authentic Power” in gold script on Midnight Navy."
+          },
+          {
+            "url": "https://storage.googleapis.com/22d-trello-assets-778459417925/new-hero-slides/phase2.png",
+            "text": "Video hero — mountains + “Spiritual Growth & Emotional Awareness with Gary Zukav” + Get Started CTA."
+          }
+        ],
+        "phase": 2
       },
       {
-        "id": "authentic-power-intro",
-        "section": "Value Proposition 'Do you want…'",
-        "old": "Banda de texto con gráfico decorativo: 'meaning & purpose / creativity & health / joy & love' + definición de Authentic Power + CTA Start Your Journey.",
-        "new": "About/intro split: heading serif 'Authentic Power' + copy de marca + 1 CTA. Absorbe el 'Tools Promo'.",
-        "webflow": "About / Intro split",
+        "id": "about",
+        "section": "2 · About (text + image)",
+        "old": "Demo: 'A space for slowing down and reconnecting' + 'More about us' → /about.",
+        "new": "Authentic Power intro (alignment of personality + soul) in brand voice + 3 real photos + CTA → /about.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Value Prop 'Do you want…' (WP Home)",
         "action": "mejorar",
-        "notes": "Conservar el copy núcleo de marca (alineación personalidad+alma). Tono calmado, sin urgencia.",
+        "notes": "Keep the brand core; calm tone, no urgency. Real photos.",
+        "hours": 5,
+        "done": false,
+        "phase": 0
+      },
+      {
+        "id": "programs",
+        "section": "3 · Courses Offerings (card row, CMS)",
+        "old": "Already customized by Jose: 3 real programs (Authentic Power Guidelines · Beyond the Five Senses · Soul Themes) + 'See all courses'.",
+        "new": "Confirm/expand to the 4 pillars (Authentic Power, Emotional Awareness, Responsible Choice, Spiritual Partnership) with brand line icons.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Courses Grid (4 pillars) — backed by the Webflow 'Courses' CMS",
+        "action": "mejorar",
+        "notes": "Only section with real content today. Decide 3 vs 4 cards. Destinations to experience.seatofthesoul.com / course pages.",
+        "hours": 2,
+        "done": false,
+        "phase": 3
+      },
+      {
+        "id": "member",
+        "section": "4 · Online Membership",
+        "old": "Demo first-visit band: 'Your first visit, simplified' + 'View beginner guide' → /team (broken link).",
+        "new": "Membership band: 'Unlimited Access to Spiritual Growth Courses' + body + 'Become a Member' + background image.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Membership / community (WP)",
+        "action": "mejorar",
+        "notes": "Fix the broken button link. Membership/commerce is an open risk (Mighty/Memberstack).",
+        "hours": 2.5,
+        "done": false,
+        "phase": 0
+      },
+      {
+        "id": "why",
+        "section": "5 · Benefits (3 cards)",
+        "old": "Demo: 'Built around your well-being' (Guidance at your pace / Gentle structure / Energy that restores).",
+        "new": "3 Authentic Power benefits: meaning & purpose · creativity & health · joy & love.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: 'Do you want…' subheads (WP Home)",
+        "action": "mejorar",
+        "notes": "Brand copy; consistent icons.",
+        "hours": 3.5,
+        "done": false,
+        "phase": 0
+      },
+      {
+        "id": "team",
+        "section": "6 · Team / Founders (grid, CMS)",
+        "old": "Demo: fictional instructors (Aria Thompson, Maya Collins…) with Lorem text.",
+        "new": "Founders: Gary Zukav & Linda Francis with real portraits → About Gary / About Linda.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Founders 'Gary & Linda' (WP Home)",
+        "action": "reconstruir",
+        "notes": "Real photos (no AI). Linda = sensitive content (memorial), requires client sign-off (Sprint 2 gate).",
+        "hours": 6.5,
+        "done": false,
+        "phase": 0
+      },
+      {
+        "id": "events",
+        "section": "7 · Events (calendar + cards, CMS)",
+        "old": "Demo: Slow Flow & Breath, Mobility Workshop… with 'More details'.",
+        "new": "'An Evening with Gary Zukav' + real events (waitlist / Journey to the Soul).",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Event Promo 'Join Gary' (WP Home)",
+        "action": "mejorar",
+        "notes": "Confirm live destinations (experience.seatofthesoul.com/evening-with-gary). Real photo/video.",
         "hours": 4,
-        "done": false
-      },
-      {
-        "id": "tools-promo",
-        "section": "Tools Promo 'Explore powerful tools'",
-        "old": "Banda de texto 'Explore powerful tools' + CTA GET THE TOOLS → /get-started/.",
-        "new": "Se absorbe en el CTA del intro Authentic Power (mismo destino get-started).",
-        "webflow": "— (consolidado)",
-        "action": "consolidar",
-        "notes": "Redundante con el CTA de la sección intro; mismo destino. No es banda propia.",
-        "hours": 0,
-        "done": false
-      },
-      {
-        "id": "four-pillars",
-        "section": "Courses Grid (4 pilares)",
-        "old": "Grid 4-up: Authentic Power · Emotional Awareness · Responsible Choice · Spiritual Partnership. Botón 'ENROLL IN A COURSE' SIN destino (roto).",
-        "new": "Cards de oferta 4-up (CMS Courses, ya creada por Jose) con iconos de línea de marca; cada card linkea a su curso. Arreglar el CTA roto.",
-        "webflow": "Cards de oferta / clases (CMS Courses)",
-        "action": "reconstruir",
-        "notes": "Iconos de marca: Authentic Power (rayo), Spiritual Partnership (peces), Beyond 5 Senses (ojo), Emotional Awareness (mariposa). Destinos a experience.seatofthesoul.com o páginas de curso.",
-        "hours": 5,
-        "done": false
-      },
-      {
-        "id": "evening-with-gary",
-        "section": "Event Promo 'Join Gary'",
-        "old": "Bloque 'Join Gary / Are you ready?' + CTA Register Today → event-waitlist-journey-to-the-soul.",
-        "new": "Banda de evento destacado 'An Evening with Gary Zukav' (CMS Events o feature) → experience.seatofthesoul.com/evening-with-gary.",
-        "webflow": "Eventos con badge de fecha / banda CTA",
-        "action": "mejorar",
-        "notes": "Foto/video real del evento. Confirmar destino vivo (waitlist vs evening-with-gary).",
-        "hours": 3,
-        "done": false
-      },
-      {
-        "id": "books",
-        "section": "Books Promo",
-        "old": "Imagen+texto: 'Read the Legendary Books…' + portada + CTA get the books → /books/.",
-        "new": "About-split imagen+texto con portada real de los libros + CTA a /books. Sin gráfico decorativo IA.",
-        "webflow": "About / Intro split (imagen + texto)",
-        "action": "mejorar",
-        "notes": "Bloquea decisión de commerce si el botón es de compra directa.",
-        "hours": 3,
-        "done": false
-      },
-      {
-        "id": "founders",
-        "section": "Founders 'Gary & Linda'",
-        "old": "Dos columnas con gráfico decorativo: 'Gary & Linda', 25+ años, links More about Gary / linda.",
-        "new": "Bloque de fundadores con 2 retratos reales → About Gary / About Linda. Sensible: tributo memorial Linda (sign-off cliente).",
-        "webflow": "Team / instructores (grid de perfiles)",
-        "action": "reconstruir",
-        "notes": "Fotos reales de fundadores (no IA). Linda = contenido sensible, requiere aprobación del cliente (gate Sprint 2).",
-        "hours": 5,
-        "done": false
-      },
-      {
-        "id": "community",
-        "section": "Community (Invitation + Closing)",
-        "old": "DOS bandas de comunidad separadas (mid 'Begin your transformational journey' + closing 'WE INVITE YOU TO JOIN OUR COMMUNITY'), ambas → Mighty Networks.",
-        "new": "UNA sola banda de comunidad consolidada → Soul School community. Una conversión, no dos.",
-        "webflow": "Banda CTA centrada",
-        "action": "consolidar",
-        "notes": "2 CTAs idénticos al mismo destino externo. Membership/comunidad es riesgo abierto (Memberstack/Outseta/Mighty).",
-        "hours": 3,
-        "done": false
+        "done": false,
+        "phase": 0
       },
       {
         "id": "testimonials",
-        "section": "Testimonios / Historias de la comunidad",
-        "old": "(no existe en el Home actual)",
-        "new": "NUEVO: testimonial slider con historias reales de la comunidad (cita + nombre + rol).",
-        "webflow": "Testimonial slider",
+        "section": "8 · Testimonials (slider)",
+        "old": "Demo: fictional quotes (Maya Thompson, Elijah Carter…).",
+        "new": "Real community testimonials (quote + name + role).",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: NEW (didn't exist on the old Home)",
         "action": "agregar",
-        "notes": "Sujeto a tener testimonios reales aprobados. Refuerza credibilidad antes del CTA final.",
-        "hours": 3,
-        "done": false
+        "notes": "Needs real approved testimonials. Reinforces credibility before the final CTA.",
+        "hours": 3.5,
+        "done": false,
+        "phase": 0
       },
       {
-        "id": "stats",
-        "section": "Stats band '25+ años'",
-        "old": "(no existe como banda; el dato '25+ años' vive dentro de Founders)",
-        "new": "NUEVO (opcional): banda de métricas con contadores ('25+ años', alcance, miembros).",
-        "webflow": "Stats / métricas (contadores)",
+        "id": "articles",
+        "section": "9 · Latest from the blog (3-up, CMS)",
+        "old": "Demo: 4 fictional posts (Finding strength in softer practices…).",
+        "new": "Latest real blog posts (from the 167 keep) → /blog.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Blog (Phase 2, already triaged 167/20)",
         "action": "agregar",
-        "notes": "Solo con números verificables. Si no hay datos sólidos, omitir.",
+        "notes": "Depends on the blog migration (Phase 2). Reserve the slot now, populate later from the Blog posts board.",
         "hours": 2,
-        "done": false
+        "done": false,
+        "phase": 0
       },
       {
-        "id": "latest-blog",
-        "section": "Latest from the blog",
-        "old": "(no existe en el Home actual)",
-        "new": "NUEVO (Fase 2): 3-up de últimos posts del blog (CMS Blogs).",
-        "webflow": "Blog / artículos 3-up (CMS)",
-        "action": "agregar",
-        "notes": "Depende de la migración del blog (Fase 2, 167 keep). Reservar el slot ahora, poblar después.",
+        "id": "marquee",
+        "section": "10 · CTA marquee (pre-footer, global)",
+        "old": "Demo: 'Start Your Journey' + 'book a class' → /contact-us.",
+        "new": "Community (Soul School) or newsletter (Soul Connections) CTA. Consolidates the old Home's two community bands into one.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: Community + Final CTA (WP Home)",
+        "action": "consolidar",
+        "notes": "WP pushed community twice; here just once. Membership/community is still an open risk.",
         "hours": 2,
-        "done": false
+        "done": false,
+        "phase": 0
       },
       {
-        "id": "final-cta-newsletter",
-        "section": "Final CTA / Newsletter",
-        "old": "Banda 'ARE YOU READY TO CREATE AUTHENTIC POWER?' con botón 'Start your journey' que en realidad va al newsletter.",
-        "new": "Banda CTA global de Shimma ('Start Your Journey') reusada como captura de newsletter (Soul Connections). Texto del botón coherente con el destino.",
-        "webflow": "Marquee CTA band (global)",
-        "action": "mejorar",
-        "notes": "Arreglar la incoherencia label/destino. Reusa el componente global, no banda nueva.",
-        "hours": 3,
-        "done": false
+        "id": "global",
+        "section": "11 · Nav + Footer (global)",
+        "old": "Shimma demo: Shimma logo, 'Get Template', Flowzai promo bar, e-commerce cart, 'Shimma | Flowzai' footer, placeholder social.",
+        "new": "SOTSI logo, real nav (Get Started/About/Podcast/Resources/Courses), Soul Connections newsletter, real social, SOTSI copyright. Decide cart.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "Content source: site nav + footer (WP)",
+        "action": "reconstruir",
+        "notes": "Global components: built once, applies site-wide. Remove every trace of Shimma/Flowzai. Commerce decision affects the cart.",
+        "hours": 5,
+        "done": false,
+        "phase": 0
       },
       {
-        "id": "cleanup-spam",
-        "section": "Spam de casino inyectado",
-        "old": "Link de casino (aussielowdepositcasino.com) inyectado en el HTML vivo — señal de WP hackeado.",
-        "new": "NO migrar. Limpiar en WP antes del cutover.",
-        "webflow": "— (eliminar)",
+        "id": "cleanup",
+        "section": "12 · Template cleanup",
+        "old": "SEO titles 'Shimma - Webflow Ecommerce Website Template', 'Get Template' bar, broken 'View beginner guide' → /team, demo content in About/Events/Blog/Teams.",
+        "new": "No trace of Shimma; per-page SEO; correct links; demo replaced or unpublished.",
+        "new_status": null,
+        "old_slides": null,
+        "webflow": "—",
         "action": "quitar",
-        "notes": "Riesgo de seguridad/SEO. Revisar plugins/instalación WP comprometida.",
-        "hours": 0,
-        "done": false
+        "notes": "Cross-cutting checklist before launch. Not a visible band; it's template debt.",
+        "hours": 3,
+        "done": false,
+        "phase": 0
       }
     ]
   }
