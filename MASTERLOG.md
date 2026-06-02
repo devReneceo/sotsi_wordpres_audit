@@ -9,6 +9,51 @@
 
 ---
 
+## Session · 2026-06-01 (noche) — Webflow DEV: primera **edición real del Home** vía MCP Designer (limpieza Shimma/Flowzai + Testimonials reales)
+
+> Primera sesión de **escritura sobre el canvas** del DEV (`6a1d0762d6ddc2456edd8403`) vía MCP `webflow-sotsi`. Antes solo se había leído/diagnosticado. Designer bridge conectado (App MCP lanzada en el Designer, pestaña en foreground). Cambios **guardados en Designer, NO publicados**.
+
+### Conexión MCP (aclaración importante)
+- **Data API (OAuth)**: conectada, funciona headless (sites/pages/cms).
+- **Designer bridge**: requiere abrir la App MCP en el Designer con el link `…design.webflow.com?app=…` y mantener la pestaña activa. Sin eso, los Designer tools dan "Unable to connect to Webflow Designer".
+
+### Audit completo del Home (12 bloques) — vía 2 subagentes (árboles de 70k+ chars)
+- ✅ **Ya branded por Jose**: Hero ("Authentic Power"/Gary Zukav), About, Member Animation, Why Choose Us.
+- 🔴 **Fugas de marca**: Navbar (mega-menú "Pages" con promo Shimma + www.flowzai.com + Templates + Get Template) y Footer (wordmark "Shimma" + "© Shimma | Designed by Flowzai").
+- 🟡 Lorem ipsum leftover en Expert (3) y Coming Events (4).
+
+### ⚠️ Corrección clave: "CMS vacío" era FALSO
+El "No items found" que se ve en el **canvas de edición de componentes** del Designer es solo el estado vacío de esa vista — **el Designer no renderiza items CMS en component-edit**. Verificado vía Data API, las colecciones del DEV ya tienen **contenido real** (Jose las pobló):
+| Colección | Items | Estado |
+|---|---|---|
+| Teams (fundadores) | 4 | Gary Zukav + Linda Francis (fotos reales + bios) + Sara Saii + Melissa Palacios |
+| Courses | 5 | Spiritual Partnership, Authentic Power Guidelines, Beyond the Five Senses, Soul Themes, Emotional Awareness |
+| Events | 4 | Create Authentic Power, Choose Love, Spiritual Partnership, An Evening with Gary Zukav |
+| Testimonials | 8 | Oprah, Maya Angelou, Paulo Coelho, Gwyneth Paltrow, Lewis Howes, Jay-Z, Julianne Hough, André Duqum |
+| **Blogs** | 4 | ⚠️ **DEMO** (genéricos yoga) — faltan los 167 reales |
+
+IDs de colección DEV: Courses `…840b` · Events `…840c` · Blogs `…840d` · Teams `…840e` · Categories `…840f` · SKUs `…8410` · Products `…8411` · Testimonials `…8434`.
+
+### Ediciones aplicadas hoy (Designer + Data API)
+1. **Footer** (`443032c2…eec`): String `…f2c` "© Copyright - Shimma | Designed by " → "© 2026 Seat of the Soul Institute "; **removido** link Flowzai (`…f2d`); wordmark `…f41` "Shimma" → "Seat of the Soul".
+2. **Navbar** (`b2bc2611…314b`): **removido** todo el DropdownWrapper "Pages" (`…53158`) = promo card Shimma + www.flowzai.com + columna Templates + CTAs Get Template + links demo (Style Guide/License/Changelog/404/Password); **removido** CTA móvil "get template" (`…188cd`). **Carrito ecommerce conservado** (`CommerceCartWrapper …257954`, decisión D3 abierta).
+3. **Nav labels**: "classes"→"Courses", "events"→"Events", "blog"→"Blog". Nav final: Home · About · Courses · Events · Blog.
+4. **Lorem ipsum**: removidos 3 en Expert (`…795/7a4/7b3`) + 4 en Coming Events (`…771e7/77232/7727d/772c8`).
+5. **SEO Home** (Data API, page `…83e4`): title → "Seat of the Soul Institute | Authentic Power with Gary Zukav"; description SOTSI; OG hereda.
+6. **Testimonials Section** (`dfd26041…505`): 3 slides demo (Maya Thompson/Elijah Carter/Sofia Martins) → **Jay-Z, Oprah Winfrey, Paulo Coelho** con sus quotes reales sobre *The Seat of the Soul* (display-order 1-3 del CMS).
+
+Verificación: query final → 0 "Shimma" / 0 "Flowzai" en navbar y footer; carrito + nav reales intactos.
+
+### Pendiente
+- [ ] **Publicar el DEV** (webflow.io) para ver en vivo los cambios + el CMS renderizado (hoy todo en Designer sin publicar).
+- [ ] **Blogs**: reemplazar los 4 demo por los 167 reales (migración grande; piloto 3-5 primero, subir imágenes con `asset_tool > upload_image_by_url`).
+- [ ] **Testimonials**: (mejora) rebindear la sección del Home al CMS (8 items + fotos) en vez del slider estático de 3.
+- [ ] **Footer socials**: fb/ig/x apuntan a homepages genéricas → poner URLs reales de SOTSI.
+- [ ] **SEO**: las otras ~24 páginas heredan títulos "Shimma - … Template" (reemplazo bulk vía Data API `update_page_settings`).
+- [ ] Licenciar **Canela** antes de publicar PROD (sigue como "Canela Trial").
+
+---
+
 ## Session · 2026-06-01 (noche) — App `22d-trello`: **AI Project Memory System** (memory / journal / reports + context MD)
 
 > App hermana (`/Users/joeldoradoaguilus/Documents/22D Marketing/22d-trello`). Servicio Cloud Run `trello-22d`, proyecto `profound-yew-489203-b5`, `us-central1`. BD = Supabase PROD (local escribe a prod). Deploy `./deploy.sh`.
