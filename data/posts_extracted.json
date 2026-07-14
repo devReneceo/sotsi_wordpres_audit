@@ -1,12 +1,445 @@
 {
-  "generated_at": "2026-05-13T16:06:46",
+  "generated_at": "2026-06-19T11:54:24",
   "base_url": "https://seatofthesoul.com",
-  "total_posts": 187,
+  "total_posts": 205,
   "auto_drop_count": 20,
-  "auto_keep_count": 167,
+  "auto_keep_count": 178,
   "auto_flag_count": 0,
   "neutral_count": 0,
   "posts": [
+    {
+      "id": 21938,
+      "slug": "soul-snack-89-is-your-harmless-drink-actually-fear-in-disguise",
+      "url": "https://seatofthesoul.com/soul-snack-89-is-your-harmless-drink-actually-fear-in-disguise",
+      "title": "Soul Snack #89:  Is Your “Harmless” Drink Actually Fear in Disguise?",
+      "published_iso": "2026-06-19T07:00:23",
+      "modified_iso": "2026-06-19T16:55:51",
+      "year": "2026",
+      "categories": [
+        "Addiction",
+        "Authentic Power",
+        "Love &amp; Fear",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 480,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power In this episode, Gary Zukav takes on a question that may seem minor on the surface but opens into something much deeper: does casual alcohol use block the creation of authentic power? Rather than offering a […]",
+      "body_plain_preview": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power In this episode, Gary Zukav takes on a question that may seem minor on the surface but opens into something much deeper: does casual alcohol use block the creation of authentic power? Rather than offering a simple yes or no, Gary reframes the question entirely, inviting listeners to examine not what they are doing, but why. He challenges the idea of “casual” behavior altogether, calling instead for conscious, intentional living rooted in an awareness of one’s creative power. At the heart of ",
+      "yoast_title": "Soul Snack #89: Is Your \"Harmless\" Drink Actually Fear in Disguise? - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21935,
+      "slug": "soul-feast-89-the-side-of-temptation-nobody-talks-about-part-2",
+      "url": "https://seatofthesoul.com/soul-feast-89-the-side-of-temptation-nobody-talks-about-part-2",
+      "title": "Soul Feast #89: The Side of Temptation Nobody Talks About, Part 2",
+      "published_iso": "2026-06-15T07:00:09",
+      "modified_iso": "2026-06-17T23:04:37",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Judgment",
+        "Love &amp; Fear",
+        "Podcast",
+        "Temptation"
+      ],
+      "author": "",
+      "word_count": 606,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 4,
+      "external_link_count": 8,
+      "excerpt_plain": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav continues his exploration of temptation, picking up where Part 1 left off, and going deeper into what it truly means to choose between love and fear. Drawing on his own experience […]",
+      "body_plain_preview": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav continues his exploration of temptation, picking up where Part 1 left off, and going deeper into what it truly means to choose between love and fear. Drawing on his own experience with addiction, Gary reveals that temptation is never a matter of right or wrong, good or bad. It is always, at its core, a choice about what experiences you intend to bring into your life and a recognition that no one else can make that choice for you. Building on that foundation, Gary",
+      "yoast_title": "Soul Feast #89: The Side of Temptation Nobody Talks About, Part 2 - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "no_h2_structure",
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21931,
+      "slug": "soul-snack-88-what-if-your-biggest-insecurity-is-actually-a-spiritual-gift",
+      "url": "https://seatofthesoul.com/soul-snack-88-what-if-your-biggest-insecurity-is-actually-a-spiritual-gift",
+      "title": "Soul Snack #88: What If Your Biggest Insecurity Is Actually a Spiritual Gift?",
+      "published_iso": "2026-06-12T07:00:42",
+      "modified_iso": "2026-06-17T23:05:12",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love &amp; Fear",
+        "Multisensory Perception",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 374,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Join the Seat of the Soul monthly newsletter and receive weekly, wisdom filled, insights from Gary In this Soul Snack, Gary Zukav responds to a deeply personal question from a listener who has spent a lifetime feeling unseen and judged – a tall, big‑boned woman born with leg deformities who believes her physical experience […]",
+      "body_plain_preview": "Join the Seat of the Soul monthly newsletter and receive weekly, wisdom filled, insights from Gary In this Soul Snack, Gary Zukav responds to a deeply personal question from a listener who has spent a lifetime feeling unseen and judged – a tall, big‑boned woman born with leg deformities who believes her physical experience may be karmic but does not know what for. Gary reframes the question by drawing a distinction between the personality – the earth suit the soul wears during its time in the Earth school – and the soul itself, which is powerful, compassionate, and without limit. When you focu",
+      "yoast_title": "Soul Snack #88: What If Your Biggest Insecurity Is Actually a Spiritual Gift? - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "short_content",
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21926,
+      "slug": "soul-feast-88-why-you-are-always-being-tempted-and-what-the-universe-wants-you-to-know-part-1",
+      "url": "https://seatofthesoul.com/soul-feast-88-why-you-are-always-being-tempted-and-what-the-universe-wants-you-to-know-part-1",
+      "title": "Soul Feast #88: Why You Are Always Being Tempted – And What the Universe Wants You to Know, Part 1",
+      "published_iso": "2026-06-08T19:44:16",
+      "modified_iso": "2026-06-08T19:45:05",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Podcast",
+        "Temptation"
+      ],
+      "author": "",
+      "word_count": 477,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 1,
+      "excerpt_plain": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this DeepCast, Gary Zukav reveals what he considers the single most fundamental element of spiritual growth and self‑transformation – temptation. Far from the Western view of temptation as an external evil force, Gary reframes it as a gracious […]",
+      "body_plain_preview": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this DeepCast, Gary Zukav reveals what he considers the single most fundamental element of spiritual growth and self‑transformation – temptation. Far from the Western view of temptation as an external evil force, Gary reframes it as a gracious dynamic in the universe – a purposeful invitation to choose between love and fear. Drawing on the lives of the Buddha and Jesus, he shows that every human being meets the same essential crossroads that the great spiritual masters met. Gary challenges the idea that temptati",
+      "yoast_title": "Soul Feast #88: Why You Are Always Being Tempted - And What the Universe Wants You to Know, Part 1 - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "no_internal_links",
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21920,
+      "slug": "soul-snack-87-stop-apologizing-what-authentic-power-does-instead",
+      "url": "https://seatofthesoul.com/soul-snack-87-stop-apologizing-what-authentic-power-does-instead",
+      "title": "Soul Snack #87: Stop Apologizing- What Authentic Power Does Instead",
+      "published_iso": "2026-06-05T07:01:18",
+      "modified_iso": "2026-06-05T20:21:05",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love &amp; Fear",
+        "Multisensory Perception",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 434,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power In this Soul Snack, Gary Zukav explores one of the most common – and most misunderstood – responses to guilt: the apology. He challenges the assumption that saying “I’m sorry” is inherently loving or helpful, and […]",
+      "body_plain_preview": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power In this Soul Snack, Gary Zukav explores one of the most common – and most misunderstood – responses to guilt: the apology. He challenges the assumption that saying “I’m sorry” is inherently loving or helpful, and he reveals that most apologies do not arise from love, but from fear. Using simple, vivid examples – from apologizing for a late reply to his team, to choosing to celebrate a young man’s father rather than offering condolences – Gary shows how apologies often function as unconscious",
+      "yoast_title": "Soul Snack #87: Stop Apologizing- What Authentic Power Does Instead - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21917,
+      "slug": "soul-feast-87-you-are-the-miracle-what-quantum-physics-the-soul-agree-on-gary-zukavs-personal-experiences",
+      "url": "https://seatofthesoul.com/soul-feast-87-you-are-the-miracle-what-quantum-physics-the-soul-agree-on-gary-zukavs-personal-experiences",
+      "title": "Soul Feast #87: You Are the Miracle: What Quantum Physics & the Soul Agree On | Gary Zukav’s Personal Experiences",
+      "published_iso": "2026-06-02T14:52:28",
+      "modified_iso": "2026-06-02T14:52:28",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Personal Stories",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 604,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav shares one of the most astonishing realizations of his spiritual journey: that the words he wrote nearly fifty years ago – in his award‑winning book The Dancing Wu Li Masters – described with […]",
+      "body_plain_preview": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav shares one of the most astonishing realizations of his spiritual journey: that the words he wrote nearly fifty years ago – in his award‑winning book The Dancing Wu Li Masters – described with perfect precision the truth he has since lived, learned, and embodied through decades of experience, love, loss, and guidance from his angelic teacher, Genesis. Drawing on the language of quantum physics, Gary returns to the physicists’ most profound and paradigm‑shattering ",
+      "yoast_title": "Soul Feast #87: You Are the Miracle: What Quantum Physics & the Soul Agree On | Gary Zukav's Personal Experiences - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "no_h2_structure",
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21789,
+      "slug": "soul-snack-86-what-determines-a-soulmate",
+      "url": "https://seatofthesoul.com/soul-snack-86-what-determines-a-soulmate",
+      "title": "Soul Snack #86: What Determines a Soulmate?",
+      "published_iso": "2026-05-29T00:38:19",
+      "modified_iso": "2026-05-29T19:04:25",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love &amp; Fear",
+        "Multisensory Perception",
+        "Podcast",
+        "Soul",
+        "Spiritual Partnership"
+      ],
+      "author": "",
+      "word_count": 330,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Create the life you desire by choosing love over fear. Learn how HERE In this episode, Gary Zukav answers a listener’s question that many have quietly wondered about: what determines a soulmate? His answer is expansive – every person on this planet, all seven billion incarnate souls, is in truth a soulmate. The more […]",
+      "body_plain_preview": "Create the life you desire by choosing love over fear. Learn how HERE In this episode, Gary Zukav answers a listener’s question that many have quietly wondered about: what determines a soulmate? His answer is expansive – every person on this planet, all seven billion incarnate souls, is in truth a soulmate. The more meaningful question is not who your soulmate is, but how you choose to relate to the souls whose paths cross your own. Gary introduces spiritual partnership as the most conscious and fulfilling way to relate to another soul – a relationship between equals, co‑created with intention",
+      "yoast_title": "Soul Snack #86: What Determines a Soulmate? - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "short_content",
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21786,
+      "slug": "soul-feast-86-what-if-you-are-the-universe-the-soul-free-will-every-choice-gary-zukavs-personal-experiences-2",
+      "url": "https://seatofthesoul.com/soul-feast-86-what-if-you-are-the-universe-the-soul-free-will-every-choice-gary-zukavs-personal-experiences-2",
+      "title": "Soul Feast #86: What If You Are the Universe? The Soul, Free Will & Every Choice – Gary Zukav’s Personal Experiences",
+      "published_iso": "2026-05-25T00:38:40",
+      "modified_iso": "2026-05-25T21:25:48",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Personal Stories",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 599,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Discover a new way of seeing and experiencing the world. Start your journey to multisensory perception HERE In this DeepCast, Gary Zukav turns the lens inward with one of the most fundamental questions a human being can ask: What are you? Drawing from the perspective of the new consciousness: Gary invites listeners beyond the limitations […]",
+      "body_plain_preview": "Discover a new way of seeing and experiencing the world. Start your journey to multisensory perception HERE In this DeepCast, Gary Zukav turns the lens inward with one of the most fundamental questions a human being can ask: What are you? Drawing from the perspective of the new consciousness: Gary invites listeners beyond the limitations of the intellect and five-sensory perception, inviting them to see themselves not as personalities born on a date and destined to die – but as immortal souls and unique expressions of a universe made entirely of love. At the heart of this Soul Feast is a disti",
+      "yoast_title": "Soul Feast #86: What If You Are the Universe? The Soul, Free Will & Every Choice - Gary Zukav's Personal Experiences - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21782,
+      "slug": "soul-snack-85-the-mirror-of-compassion-why-how-you-treat-others-reflects-how-you-treat-yourself",
+      "url": "https://seatofthesoul.com/soul-snack-85-the-mirror-of-compassion-why-how-you-treat-others-reflects-how-you-treat-yourself",
+      "title": "Soul Snack #85: The Mirror of Compassion: Why How You Treat Others Reflects How You Treat Yourself",
+      "published_iso": "2026-05-22T00:38:28",
+      "modified_iso": "2026-05-22T19:55:47",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Compassion",
+        "Love &amp; Fear",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 549,
+      "headings": [
+        {
+          "level": "h3",
+          "text": "What You’ll Discover in This Soul Snack:"
+        }
+      ],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Create the life you desire by choosing love over fear. Learn how HERE In this Soul Snack, Gary Zukav and Linda Francis explore the profound connection between compassion for yourself and compassion for others. Gary reveals that the creation of Authentic Power and the cultivation of compassion are, in truth, the same path. Every tool […]",
+      "body_plain_preview": "Create the life you desire by choosing love over fear. Learn how HERE In this Soul Snack, Gary Zukav and Linda Francis explore the profound connection between compassion for yourself and compassion for others. Gary reveals that the creation of Authentic Power and the cultivation of compassion are, in truth, the same path. Every tool of the new consciousness – from multisensory perception to emotional awareness and responsible choice – serves as a direct gateway to the practice of compassion. Gary explains that the frightened parts of the personality are the parts that lack compassion. The very",
+      "yoast_title": "Soul Snack #85: The Mirror of Compassion: Why How You Treat Others Reflects How You Treat Yourself - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21779,
+      "slug": "soul-feast-85-how-do-you-relate-to-your-child-learn-to-talk-to-their-soul-gary-zukavs-personal-experiences",
+      "url": "https://seatofthesoul.com/soul-feast-85-how-do-you-relate-to-your-child-learn-to-talk-to-their-soul-gary-zukavs-personal-experiences",
+      "title": "Soul Feast #85: How Do You Relate To Your Child? Learn to Talk To Their Soul – Gary Zukav’s Personal Experiences",
+      "published_iso": "2026-05-18T00:38:51",
+      "modified_iso": "2026-05-22T19:56:47",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Emotional Awareness",
+        "Personal Stories",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 497,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav explores one of the most profound dimensions of Authentic Power: how we relate to the children in our lives. Gary invites us to see them not merely as developing personalities or “small” versions […]",
+      "body_plain_preview": "Your journey to Authentic Power begins here. Download your copy of the Authentic Power Guidelines today In this DeepCast, Gary Zukav explores one of the most profound dimensions of Authentic Power: how we relate to the children in our lives. Gary invites us to see them not merely as developing personalities or “small” versions of ourselves, but as immortal souls on their own unique journey through the Earth School. Drawing on the perspective of the new consciousness, he reframes parenthood and every interaction with a child as a sacred opportunity to practice conscious, soul-centered love. At ",
+      "yoast_title": "Soul Feast #85: How Do You Relate To Your Child? Learn to Talk To Their Soul - Gary Zukav's Personal Experiences - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21775,
+      "slug": "soul-snack-84-stop-playing-it-safe-how-to-break-free-from-fear-and-live-authentically",
+      "url": "https://seatofthesoul.com/soul-snack-84-stop-playing-it-safe-how-to-break-free-from-fear-and-live-authentically",
+      "title": "Soul Snack #84: Stop Playing It Safe: How to Break Free From Fear and Live Authentically",
+      "published_iso": "2026-05-15T00:36:31",
+      "modified_iso": "2026-05-15T21:02:06",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love &amp; Fear",
+        "Podcast",
+        "The New Consciousness"
+      ],
+      "author": "",
+      "word_count": 489,
+      "headings": [
+        {
+          "level": "h3",
+          "text": "What You’ll Discover in This Soul Snack:"
+        }
+      ],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 1,
+      "external_link_count": 0,
+      "excerpt_plain": "Are you making choices in love or fear? Take this self-assessment today to find out In this Soul Snack, Gary Zukav and Linda Francis explore the concept of freestyling as a powerful metaphor for living authentically. Drawing from the world of sports – skiing, snowboarding, and gymnastics – Gary illuminates how the […]",
+      "body_plain_preview": "Are you making choices in love or fear? Take this self-assessment today to find out In this Soul Snack, Gary Zukav and Linda Francis explore the concept of freestyling as a powerful metaphor for living authentically. Drawing from the world of sports – skiing, snowboarding, and gymnastics – Gary illuminates how the greatest athletes broke free from rigid conventions to create entirely new categories of movement. That same liberation, he teaches, is available to every person willing to move beyond the narrow expectations set by the frightened parts of their personality. Gary explains that the fr",
+      "yoast_title": "Soul Snack #84: Stop Playing It Safe: How to Break Free From Fear and Live Authentically - The Seat of the Soul Institute",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Slug or title matches evergreen series (Soul Snack / Feast / Seed / Wisdom Wednesday)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [
+        "missing_meta_description"
+      ],
+      "requires_ai_review": false
+    },
     {
       "id": 21769,
       "slug": "soul-feast-84-scarlett-lewis-how-to-choose-love-while-youre-still-in-pain-scarlett-lewis-gary-zukavs-personal-experiences",
@@ -6028,7 +6461,7 @@
         "Podcast"
       ],
       "author": "",
-      "word_count": 340,
+      "word_count": 350,
       "headings": [
         {
           "level": "h2",
@@ -6052,7 +6485,7 @@
       "internal_link_count": 0,
       "external_link_count": 1,
       "excerpt_plain": "﻿ In today’s Soul Snack, Gary explores the profound challenges and opportunities depression offers on the spiritual journey. Drawing on his own experiences and insights, Gary reframes depression not just as an overwhelming state of fear but as a chance to develop emotional awareness and authentic power. Through tangible steps, he guides listeners […]",
-      "body_plain_preview": "﻿ In today’s Soul Snack, Gary explores the profound challenges and opportunities depression offers on the spiritual journey. Drawing on his own experiences and insights, Gary reframes depression not just as an overwhelming state of fear but as a chance to develop emotional awareness and authentic power. Through tangible steps, he guides listeners to look beyond the pain and find a path forward rooted in love and connection. Gary explains that depression is an expression of a frightened part of the personality that arises from fear, powerlessness, and lack. These feelings manifest as physical s",
+      "body_plain_preview": "<span data-mce-type=\"bookmark\" style=\"display: inline-block; width: 0px; overflow: hidden; line-height: 0;\" class=\"mce_SELRES_start\">﻿</span> In today’s Soul Snack, Gary explores the profound challenges and opportunities depression offers on the spiritual journey. Drawing on his own experiences and insights, Gary reframes depression not just as an overwhelming state of fear but as a chance to develop emotional awareness and authentic power. Through tangible steps, he guides listeners to look beyond the pain and find a path forward rooted in love and connection. Gary explains that depression is",
       "yoast_title": "Soul Snack #17: How to Grow Spiritually When Depressed - The Seat of the Soul Institute",
       "yoast_description": "",
       "auto_verdict": "auto_keep",
@@ -7240,7 +7673,7 @@
         "Podcast"
       ],
       "author": "",
-      "word_count": 215,
+      "word_count": 225,
       "headings": [
         {
           "level": "h2",
@@ -7256,7 +7689,7 @@
       "internal_link_count": 0,
       "external_link_count": 0,
       "excerpt_plain": "﻿ In today’s Soul Snack, Gary Zukav explores the power of intuition and its vital role in our spiritual growth. He explains how intuition is the voice of the non-physical world and why, as multisensory beings, we are able to access wisdom far beyond the limitations of our five senses. Gary guides us on […]",
-      "body_plain_preview": "﻿ In today’s Soul Snack, Gary Zukav explores the power of intuition and its vital role in our spiritual growth. He explains how intuition is the voice of the non-physical world and why, as multisensory beings, we are able to access wisdom far beyond the limitations of our five senses. Gary guides us on how to cultivate and trust our intuition, using it not only for practical reasons like safety and decision-making but also as a powerful tool for creativity, personal transformation, and deeper spiritual understanding. Gary also shares that developing intuition requires an open, curious approach",
+      "body_plain_preview": "<span data-mce-type=\"bookmark\" style=\"display: inline-block; width: 0px; overflow: hidden; line-height: 0;\" class=\"mce_SELRES_start\">﻿</span> In today’s Soul Snack, Gary Zukav explores the power of intuition and its vital role in our spiritual growth. He explains how intuition is the voice of the non-physical world and why, as multisensory beings, we are able to access wisdom far beyond the limitations of our five senses. Gary guides us on how to cultivate and trust our intuition, using it not only for practical reasons like safety and decision-making but also as a powerful tool for creativity",
       "yoast_title": "Soul Snack #4: Intuition is the Voice of the Non-Physical World - The Seat of the Soul Institute",
       "yoast_description": "",
       "auto_verdict": "auto_keep",
@@ -7469,7 +7902,7 @@
         "Podcast"
       ],
       "author": "",
-      "word_count": 326,
+      "word_count": 336,
       "headings": [
         {
           "level": "h2",
@@ -7481,7 +7914,7 @@
       "internal_link_count": 1,
       "external_link_count": 0,
       "excerpt_plain": "﻿ In today’s Soul Feast, Gary Zukav delves into the inspiration behind his groundbreaking work, “The Seat of the Soul,” and the journey that led him to discover the deeper truths about the universe and non-physical reality. He begins by sharing how the ideas for his work didn’t originate from him alone […]",
-      "body_plain_preview": "﻿ In today’s Soul Feast, Gary Zukav delves into the inspiration behind his groundbreaking work, “The Seat of the Soul,” and the journey that led him to discover the deeper truths about the universe and non-physical reality. He begins by sharing how the ideas for his work didn’t originate from him alone but were co-created with the universe, urging listeners to explore and find their own truth in every teaching. Gary invites us to examine how inspiration comes from beyond our physical senses and how our understanding of consciousness has expanded beyond the limitations of the five senses. Gary ",
+      "body_plain_preview": "<span data-mce-type=\"bookmark\" style=\"display: inline-block; width: 0px; overflow: hidden; line-height: 0;\" class=\"mce_SELRES_start\">﻿</span> In today’s Soul Feast, Gary Zukav delves into the inspiration behind his groundbreaking work, “The Seat of the Soul,” and the journey that led him to discover the deeper truths about the universe and non-physical reality. He begins by sharing how the ideas for his work didn’t originate from him alone but were co-created with the universe, urging listeners to explore and find their own truth in every teaching. Gary invites us to examine how inspiration co",
       "yoast_title": "Soul Feast #2: Where Did the Inspiration for \"The Seat of the Soul\" Come From? - The Seat of the Soul Institute",
       "yoast_description": "",
       "auto_verdict": "auto_keep",
@@ -7553,7 +7986,7 @@
         "Podcast"
       ],
       "author": "",
-      "word_count": 323,
+      "word_count": 333,
       "headings": [
         {
           "level": "h2",
@@ -7565,7 +7998,7 @@
       "internal_link_count": 0,
       "external_link_count": 0,
       "excerpt_plain": "﻿ In today’s episode, Gary Zukav reflects on a pivotal moment in his life—meeting Oprah Winfrey and the profound impact that experience had on his journey. He shares how this encounter brought him from the quiet solitude of Mount Shasta, a small and serene mountain community in Northern California where he spent much of his […]",
-      "body_plain_preview": "﻿ In today’s episode, Gary Zukav reflects on a pivotal moment in his life—meeting Oprah Winfrey and the profound impact that experience had on his journey. He shares how this encounter brought him from the quiet solitude of Mount Shasta, a small and serene mountain community in Northern California where he spent much of his time engaging in outdoor activities, into the national spotlight, forever changing his life. This unexpected meeting not only brought his work to millions but also ignited a transformation in Gary’s life, challenging him to navigate the complexities of fame and recognition ",
+      "body_plain_preview": "<span data-mce-type=\"bookmark\" style=\"display: inline-block; width: 0px; overflow: hidden; line-height: 0;\" class=\"mce_SELRES_start\">﻿</span> In today’s episode, Gary Zukav reflects on a pivotal moment in his life—meeting Oprah Winfrey and the profound impact that experience had on his journey. He shares how this encounter brought him from the quiet solitude of Mount Shasta, a small and serene mountain community in Northern California where he spent much of his time engaging in outdoor activities, into the national spotlight, forever changing his life. This unexpected meeting not only brought ",
       "yoast_title": "Soul Feast #1: How Is It That Oprah Called You? - The Seat of the Soul Institute",
       "yoast_description": "Discover the profound insights of Gary Zukav, a renowned author who gained national recognition through his work with Oprah. Explore the transformative connection between personality and soul, using the sailing ship metaphor to navigate life's meaning and purpose. Experience the spiritual energy of Mount Shasta, a hub for outdoor activities, while embracing gratitude in all aspects of life.",
       "auto_verdict": "auto_keep",
@@ -8821,6 +9254,257 @@
         "alt_text_gaps",
         "missing_meta_description"
       ],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21970,
+      "slug": "soul-feast-93-why-every-person-you-meet-is-an-old-friend-what-about-the-world",
+      "url": "https://seatofthesoul.com/soul-feast-93-why-every-person-you-meet-is-an-old-friend-what-about-the-world",
+      "title": "Soul Feast #93: Why Every Person You Meet Is an Old Friend | What About the World",
+      "published_iso": "2026-07-13T05:00:03",
+      "modified_iso": "2026-07-14T17:57:57",
+      "year": "2026",
+      "categories": [
+        "Podcast",
+        "The New Consciousness",
+        "What About the World (Series)"
+      ],
+      "author": "",
+      "word_count": 440,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Are you ready to live Beyond the Five senses? Learn how HERE. In this DeepCast Soul Feast, Gary Zukav examines a phrase so familiar it has become almost meaningless: “we’re all in this together.” Rather than treating it as a feel-good sentiment, Gary explores what it actually means through the lens of the new consciousness […]",
+      "body_plain_preview": "Are you ready to live Beyond the Five senses? Learn how HERE . In this DeepCast Soul Feast, Gary Zukav examines a phrase so familiar it has become almost meaningless: “we’re all in this together.” Rather than treating it as a feel-good sentiment, Gary explores what it actually means through the lens of the new consciousness now emerging in humanity, revealing that this togetherness is not emotional reassurance but a literal description of how reality works in the Earth School. He explains that in the old consciousness, power meant manipulation and control, built on a hard line between “in here",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21977,
+      "slug": "soul-snack-92-how-to-stop-letting-fear-decide-whats-possible-for-you",
+      "url": "https://seatofthesoul.com/soul-snack-92-how-to-stop-letting-fear-decide-whats-possible-for-you",
+      "title": "Soul Snack #92: How to Stop Letting Fear Decide What’s Possible For You",
+      "published_iso": "2026-07-10T05:00:50",
+      "modified_iso": "2026-07-10T21:46:38",
+      "year": "2026",
+      "categories": [
+        "Emotional Awareness",
+        "Linda Francis",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 374,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Join Gary LIVE every month as shares his wisdom and answers your questions live. REGISTER HERE for An Evening with Gary Zukav In this Soul Snack, Linda Francis addresses a question many people quietly carry: what do you do when you don’t like what’s happening in your life? Rather than offering a strategy to fix […]",
+      "body_plain_preview": "Join Gary LIVE every month as shares his wisdom and answers your questions live. REGISTER HERE for An Evening with Gary Zukav In this Soul Snack, Linda Francis addresses a question many people quietly carry: what do you do when you don’t like what’s happening in your life? Rather than offering a strategy to fix outer circumstances, Linda redirects attention inward – to the part of the personality that is reacting to the discomfort in the first place. That reaction, she explains, often comes from a frightened part of the personality. When fear is present, it becomes difficult to see what else i",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21974,
+      "slug": "soul-feast-92-the-spiritual-truth-about-boundaries-nobody-talks-about-what-about-the-world",
+      "url": "https://seatofthesoul.com/soul-feast-92-the-spiritual-truth-about-boundaries-nobody-talks-about-what-about-the-world",
+      "title": "Soul Feast #92: The Spiritual Truth About Boundaries Nobody Talks About | What About the World",
+      "published_iso": "2026-07-06T05:00:30",
+      "modified_iso": "2026-07-10T21:46:08",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Podcast",
+        "The New Consciousness",
+        "What About the World (Series)"
+      ],
+      "author": "",
+      "word_count": 442,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this DeepCast episode, Gary Zukav explores one of the most commonly accepted ideas in modern self‑help culture – that setting boundaries is essential to healthy living. From the perspective of the old and new consciousness: Gary reframes the entire […]",
+      "body_plain_preview": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this DeepCast episode, Gary Zukav explores one of the most commonly accepted ideas in modern self‑help culture – that setting boundaries is essential to healthy living. From the perspective of the old and new consciousness: Gary reframes the entire notion of boundaries, showing that what once supported human survival is no longer aligned with where human evolution is now moving. The old consciousness rests on a fundamental separation between “in here” and “out there,” and boundaries naturally arise from that div",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21967,
+      "slug": "soul-snack-91-why-you-feel-inferior-to-some-people-and-how-to-stop",
+      "url": "https://seatofthesoul.com/soul-snack-91-why-you-feel-inferior-to-some-people-and-how-to-stop",
+      "title": "Soul Snack #91: Why You Feel Inferior to Some People (And How to Stop)",
+      "published_iso": "2026-07-03T05:00:54",
+      "modified_iso": "2026-07-10T21:45:33",
+      "year": "2026",
+      "categories": [
+        "Courage",
+        "Linda Francis",
+        "Love & Fear",
+        "Podcast"
+      ],
+      "author": "",
+      "word_count": 353,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power: https://seatofthesoul.com/daily-intuition-practice/ In this Soul Snack, Linda Francis invites a deeper look at a feeling many people know well – the sense of being unequal to someone else. From a five‑sensory perspective, differences in talent, intelligence, or […]",
+      "body_plain_preview": "Learn how to connect with your intuition every day. Click here to start your journey to authentic power: https://seatofthesoul.com/daily-intuition-practice/ In this Soul Snack, Linda Francis invites a deeper look at a feeling many people know well – the sense of being unequal to someone else . From a five‑sensory perspective, differences in talent, intelligence, or ability can make inequality appear obvious. Yet Linda turns our attention to what is actually creating that experience. The discomfort of comparison – the impulse to shrink in someone’s presence or place them above us – does not com",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21964,
+      "slug": "soul-feast-91-why-you-dislike-people-it-says-more-about-you-what-about-the-world-series",
+      "url": "https://seatofthesoul.com/soul-feast-91-why-you-dislike-people-it-says-more-about-you-what-about-the-world-series",
+      "title": "Soul Feast #91: Why You Dislike People (It Says More About You) | What about the World Series",
+      "published_iso": "2026-06-29T05:00:42",
+      "modified_iso": "2026-06-29T23:15:23",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love & Fear",
+        "Podcast",
+        "The New Consciousness",
+        "What About the World (Series)"
+      ],
+      "author": "",
+      "word_count": 449,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Are you ready to live Beyond the Five Sense? Learn how HERE: www.seatofthesoul.com/beyondthefivesensescourse In this DeepCast episode, Gary Zukav reveals one of Earth School’s most profound truths: the world around you is not a backdrop to your life – it is a mirror. Every reaction, judgment, and moment of dislike or admiration you experience in […]",
+      "body_plain_preview": "Are you ready to live Beyond the Five Sense? Learn how HERE: www.seatofthesoul.com/beyondthefivesensescourse In this DeepCast episode, Gary Zukav reveals one of Earth School’s most profound truths: the world around you is not a backdrop to your life – it is a mirror. Every reaction, judgment, and moment of dislike or admiration you experience in others is a direct reflection of something alive within yourself. Drawing on Carl Jung’s concept of projection: Gary brings clarity to how the qualities that trigger the strongest responses in us are the very qualities we have yet to fully recognize in",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21943,
+      "slug": "soul-snack-90-your-comfort-zone-is-costing-you-more-than-you-think",
+      "url": "https://seatofthesoul.com/soul-snack-90-your-comfort-zone-is-costing-you-more-than-you-think",
+      "title": "Soul Snack #90: Your Comfort Zone Is Costing You More Than You Think",
+      "published_iso": "2026-06-26T07:00:02",
+      "modified_iso": "2026-06-27T01:55:39",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love & Fear",
+        "Podcast",
+        "Responsible Choice"
+      ],
+      "author": "",
+      "word_count": 349,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Are you making choices in love or fear? Take this self-assessment today to find out In this Soul Snack, Linda Francis shares a story she has never forgotten – one that reshaped the way she moves through the world. Separated from Gary at a retreat and seated among a group of unfamiliar Texas attorneys, Linda […]",
+      "body_plain_preview": "Are you making choices in love or fear? Take this self-assessment today to find out In this Soul Snack, Linda Francis shares a story she has never forgotten – one that reshaped the way she moves through the world. Separated from Gary at a retreat and seated among a group of unfamiliar Texas attorneys, Linda felt a frightened part of her personality become active immediately. The pull to withdraw was strong, and yet she chose to stay present with her experience, and in that moment, to create Authentic Power. The familiar often disguises itself as preference and comfort, but beneath it is the qu",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
+      "requires_ai_review": false
+    },
+    {
+      "id": 21941,
+      "slug": "soul-feast-90-youre-being-tempted-right-now-heres-what-the-universe-wants-you-to-do",
+      "url": "https://seatofthesoul.com/soul-feast-90-youre-being-tempted-right-now-heres-what-the-universe-wants-you-to-do",
+      "title": "Soul Feast #90: You’re Being Tempted Right Now – Here’s What the Universe Wants You to Do",
+      "published_iso": "2026-06-22T07:00:17",
+      "modified_iso": "2026-06-27T01:56:14",
+      "year": "2026",
+      "categories": [
+        "Authentic Power",
+        "Love & Fear",
+        "Podcast",
+        "Temptation"
+      ],
+      "author": "",
+      "word_count": 600,
+      "headings": [],
+      "image_count": 0,
+      "images_missing_alt": 0,
+      "internal_link_count": 0,
+      "external_link_count": 0,
+      "excerpt_plain": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this Soul Feast, Gary Zukav brings the Temptation series to its most expansive conclusion – revealing that the greatest temptation you will ever face is not a single dramatic moment of crisis, but the one unfolding right now, in […]",
+      "body_plain_preview": "Your emotions are messages from your soul. Learn How to Tune In and Listen Here In this Soul Feast, Gary Zukav brings the Temptation series to its most expansive conclusion – revealing that the greatest temptation you will ever face is not a single dramatic moment of crisis, but the one unfolding right now, in this moment, and in every moment of your life. Drawing on his own experience of writing The Dancing Wu Li Masters against impossible odds, Gary illuminates the difference between what a frightened part of the personality creates and what a loving part of the personality sees – and why th",
+      "yoast_title": "",
+      "yoast_description": "",
+      "auto_verdict": "auto_keep",
+      "auto_reasons": [
+        "Added by ingest_wp_new_posts.py (missing from snapshot)"
+      ],
+      "dated_signals": [],
+      "event_signals": [],
+      "referenced_years": [],
+      "referenced_month_years": [],
+      "quality_flags": [],
       "requires_ai_review": false
     }
   ]
